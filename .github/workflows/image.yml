@@ -1,0 +1,21 @@
+name: image
+on:
+  push:
+    branches: [master]
+    paths: ["Dockerfile", "requirements.txt", "common/**", "sdks/**", "data/**", "fixtures/**", ".github/workflows/image.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with: {registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}"}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/aaronyang0628/astro-sdk-services:latest,ghcr.io/aaronyang0628/astro-sdk-services:${{ github.sha }}
