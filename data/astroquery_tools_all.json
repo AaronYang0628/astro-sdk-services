@@ -3638,12 +3638,12 @@
     "name": "auth_urls",
     "type": "list",
     "required": false,
-    "desc": "auth_urls，详见官方 API 文档（默认 ['asa.alma.cl', 'rh-cas.alma.cl']）"
+    "desc": "auth_urls，详见官方 API 文档（默认 ['rh-cas.alma.cl']）"
    }
   ],
   "domain": "星表查询与数据获取",
   "cn": "ALMA登录",
-  "orig_params": "username[str] 可选: Username to the ALMA Science Portal. If not given, it should be specified in the config file.（默认 None）\nstore_password[bool] 可选: Stores the password securely in your keyring. Default is False.（默认 False）\nreenter_password[bool] 可选: Asks for the password even if it is already stored in the keyring. This is the way to overwrite an already…（默认 False）\nauth_urls[list] 可选: auth_urls，详见官方 API 文档（默认 ['asa.alma.cl', 'rh-cas.alma.cl']）"
+  "orig_params": "username[str] 可选: Username to the ALMA Science Portal. If not given, it should be specified in the config file.（默认 None）\nstore_password[bool] 可选: Stores the password securely in your keyring. Default is False.（默认 False）\nreenter_password[bool] 可选: Asks for the password even if it is already stored in the keyring. This is the way to overwrite an already…（默认 False）\nauth_urls[list] 可选: auth_urls，详见官方 API 文档（默认 ['rh-cas.alma.cl']）"
  },
  {
   "name": "astroquery_sdss_query_region",

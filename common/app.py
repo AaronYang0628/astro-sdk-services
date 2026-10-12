@@ -1,4 +1,4 @@
-import json, os, resource, warnings, traceback, time
+import hmac, json, os, resource, warnings, traceback, time
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Any, Optional
@@ -24,6 +24,12 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=4):
         path = request.scope["path"]
         if path == pre or path.startswith(pre + "/"):
             request.scope["path"] = path[len(pre):] or "/"
+        tok = os.environ.get("API_TOKEN")
+        if tok and request.scope["path"] != "/health":
+            got = request.headers.get("authorization", "")
+            if not hmac.compare_digest(got, f"Bearer {tok}"):
+                from fastapi.responses import JSONResponse
+                return JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)
         return await call_next(request)
 
     @app.get("/health")

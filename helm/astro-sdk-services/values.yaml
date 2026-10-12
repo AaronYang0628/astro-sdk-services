@@ -17,3 +17,5 @@ services:            # each entry -> Deployment + Service + Ingress path /<name>
 resources:
   requests: {cpu: 100m, memory: 512Mi}
   limits: {cpu: "1", memory: 4Gi}
+auth:
+  secretName: ""   # k8s Secret with key `token` -> API_TOKEN (Bearer auth; /health exempt)

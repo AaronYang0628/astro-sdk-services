@@ -19,6 +19,10 @@ spec:
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           env:
             - {name: SDK, value: {{ .name | quote }}}
+            {{- if $.Values.auth.secretName }}
+            - name: API_TOKEN
+              valueFrom: {secretKeyRef: {name: {{ $.Values.auth.secretName }}, key: token}}
+            {{- end }}
           ports: [{containerPort: 8000}]
           readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15}
           resources: {{- toYaml $.Values.resources | nindent 12 }}

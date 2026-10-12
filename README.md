@@ -52,3 +52,7 @@ Candidates in astroquery whose external service timed out (NED, SDSS) were left 
 ## Helm
 `helm/astro-sdk-services`: one Deployment + Service per SDK and a path-routed Ingress (host `astro.example.com`,
 placeholder). Not deployed or linted against a cluster; the image must be built from `Dockerfile` (`SDK` env selects the service).
+
+## Authentication
+Set env `API_TOKEN` (Helm: `--set auth.secretName=<secret with key "token">`) to require `Authorization: Bearer <token>` on every endpoint except `/health`.
+Regression against a deployed instance: `BASE_URL=https://astro.example.com API_TOKEN=... python tests/run_cases.py <sdk>`.
