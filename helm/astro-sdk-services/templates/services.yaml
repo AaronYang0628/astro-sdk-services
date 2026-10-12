@@ -24,7 +24,7 @@ spec:
               valueFrom: {secretKeyRef: {name: {{ $.Values.auth.secretName }}, key: token}}
             {{- end }}
           ports: [{containerPort: 8000}]
-          readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15}
+          readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
           resources: {{- toYaml $.Values.resources | nindent 12 }}
 ---
 apiVersion: v1
