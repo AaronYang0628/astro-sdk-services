@@ -9,6 +9,36 @@
 | `POST /<sdk>/invoke` | REST 调用：`{"function_name": "...", "arguments": {...}}` | Bearer token |
 | `POST /<sdk>/mcp` | MCP Streamable HTTP 端点 | Bearer token |
 
+## 一个镜像 = 5 个 MCP 服务
+
+只有**一个镜像** `ghcr.io/aaronyang0628/astro-sdk-services`。容器启动时用环境变量 `SDK=astropy|astroquery|photutils|astroplan|sunpy` 指定加载哪个 SDK，每个容器就是一个**独立的 MCP 服务**（各自 20 个工具）。
+
+| `SDK` 取值 | 服务（Deployment）名 | MCP 地址 | HTTP 地址 | 工具数 | 对应简介文件 |
+|---|---|---|---|---|---|
+| `astropy` | `astro-astropy` | `https://<你的域名>/astropy/mcp` | `https://<你的域名>/astropy/invoke` | 20 | `astropy.json` |
+| `astroquery` | `astro-astroquery` | `https://<你的域名>/astroquery/mcp` | `https://<你的域名>/astroquery/invoke` | 20 | `astroquery.json` |
+| `photutils` | `astro-photutils` | `https://<你的域名>/photutils/mcp` | `https://<你的域名>/photutils/invoke` | 20 | `photutils.json` |
+| `astroplan` | `astro-astroplan` | `https://<你的域名>/astroplan/mcp` | `https://<你的域名>/astroplan/invoke` | 20 | `astroplan.json` |
+| `sunpy` | `astro-sunpy` | `https://<你的域名>/sunpy/mcp` | `https://<你的域名>/sunpy/invoke` | 20 | `sunpy.json` |
+
+- **Helm**：chart 按 `values.yaml` 的 `services[]` 一次部署全部 5 个（每个一个 Deployment + Service `astro-<sdk>`），由同一个 Ingress 按 `/<sdk>` 路径分流，见第 3 节。
+- **Docker**：起 5 个容器即可，例如：
+
+  ```bash
+  TOKEN=$(openssl rand -hex 24)
+  port=8001
+  for sdk in astropy astroquery photutils astroplan sunpy; do
+    docker run -d --name astro-$sdk -p $port:8000 \
+      -e SDK=$sdk -e API_TOKEN=$TOKEN \
+      ghcr.io/aaronyang0628/astro-sdk-services:latest
+    port=$((port+1))
+  done
+  ```
+
+  直连容器时，服务同时接受带前缀和不带前缀的路径，例如 astropy 为 `http://<主机>:8001/astropy/mcp`（或 `/mcp`）、`http://<主机>:8001/astropy/invoke`（或 `/invoke`）；对外提供时可用反向代理把 `/<sdk>` 前缀分流到对应端口，无需改写路径。
+- **Token**：5 个服务可以共用同一个 `API_TOKEN`（Helm 中即同一个 Secret）。
+- **上架到 MCP 平台**：请登记 **5 个独立的 MCP 条目**，每个条目填写各自的 MCP 地址、请求头 `Authorization: Bearer <你的token>`，并使用对应的 `<sdk>.json` 简介文件。
+
 ## 1. 镜像
 
 | 项 | 值 |
