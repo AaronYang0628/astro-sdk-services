@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Produced with astropy.io.votable version 8.0.1
+     http://www.astropy.org/ -->
+<VOTABLE version="1.4" xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/VOTable-1.4.xsd">
+ <RESOURCE type="results">
+  <TABLE>
+   <FIELD ID="id" datatype="long" name="id"/>
+   <FIELD ID="ra" datatype="double" name="ra" unit="deg"/>
+   <FIELD ID="dec" datatype="double" name="dec" unit="deg"/>
+   <FIELD ID="mag" datatype="double" name="mag"/>
+   <FIELD ID="name" arraysize="1" datatype="unicodeChar" name="name"/>
+   <DATA>
+    <TABLEDATA>
+     <TR>
+      <TD>1</TD>
+      <TD>10.1</TD>
+      <TD>41.1</TD>
+      <TD>12.1</TD>
+      <TD>a</TD>
+     </TR>
+     <TR>
+      <TD>2</TD>
+      <TD>10.2</TD>
+      <TD>41.2</TD>
+      <TD>13.2</TD>
+      <TD>b</TD>
+     </TR>
+     <TR>
+      <TD>3</TD>
+      <TD>10.3</TD>
+      <TD>41.3</TD>
+      <TD>14.3</TD>
+      <TD>c</TD>
+     </TR>
+     <TR>
+      <TD>4</TD>
+      <TD>10.4</TD>
+      <TD>41.4</TD>
+      <TD>15.4</TD>
+      <TD>d</TD>
+     </TR>
+     <TR>
+      <TD>5</TD>
+      <TD>10.5</TD>
+      <TD>41.5</TD>
+      <TD>16.5</TD>
+      <TD>e</TD>
+     </TR>
+    </TABLEDATA>
+   </DATA>
+  </TABLE>
+ </RESOURCE>
+</VOTABLE>

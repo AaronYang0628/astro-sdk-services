@@ -1,0 +1,5 @@
+apiVersion: v2
+name: astro-sdk-services
+description: One HTTP tool service per astronomy SDK, routed by path prefix on a single Ingress host
+version: 0.1.0
+appVersion: "0.1.0"

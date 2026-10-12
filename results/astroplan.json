@@ -1,0 +1,947 @@
+[
+ {
+  "name": "astroplan_observer_create",
+  "arguments": {
+   "location": {
+    "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+    "args": [
+     {
+      "value": -155.47,
+      "unit": "deg"
+     },
+     {
+      "value": 19.82,
+      "unit": "deg"
+     },
+     {
+      "value": 4200,
+      "unit": "m"
+     }
+    ]
+   },
+   "name": "TestSite",
+   "timezone": "UTC"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "object",
+   "class": "astroplan.observer.Observer",
+   "handle": "h1",
+   "repr": "<Observer: name='TestSite',\n    location (lon, lat, el)=(-155.47000000000003 deg, 19.82 deg, 4200.00000000097 m),\n    timezone=<UTC>>"
+  },
+  "elapsed": 0.31,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_altaz",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   },
+   "target": {
+    "__call__": "astroplan.FixedTarget",
+    "kwargs": {
+     "coord": {
+      "ra": 10.684,
+      "dec": 41.269,
+      "unit": "deg"
+     },
+     "name": "M31"
+    }
+   },
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "SkyCoord",
+   "frame": "altaz",
+   "lon_deg": 52.15971703874385,
+   "lat_deg": 39.18812766216272
+  },
+  "elapsed": 0.4,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_target_is_up",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   },
+   "target": {
+    "__call__": "astroplan.FixedTarget",
+    "kwargs": {
+     "coord": {
+      "ra": 10.684,
+      "dec": 41.269,
+      "unit": "deg"
+     },
+     "name": "M31"
+    }
+   },
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": true,
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_target_rise_time",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-12 12:00:00"
+    ]
+   },
+   "target": {
+    "__call__": "astroplan.FixedTarget",
+    "kwargs": {
+     "coord": {
+      "ra": 10.684,
+      "dec": 41.269,
+      "unit": "deg"
+     },
+     "name": "M31"
+    }
+   },
+   "which": "next",
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": "2026-10-13 02:25:15.217",
+   "jd": 2461326.6008705627,
+   "scale": "utc"
+  },
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_target_set_time",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-12 12:00:00"
+    ]
+   },
+   "target": {
+    "__call__": "astroplan.FixedTarget",
+    "kwargs": {
+     "coord": {
+      "ra": 10.684,
+      "dec": 41.269,
+      "unit": "deg"
+     },
+     "name": "M31"
+    }
+   },
+   "which": "next",
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": "2026-10-12 16:55:09.979",
+   "jd": 2461326.204976606,
+   "scale": "utc"
+  },
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_sun_rise_time",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-12 12:00:00"
+    ]
+   },
+   "which": "next",
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": "2026-10-12 16:19:19.560",
+   "jd": 2461326.180087499,
+   "scale": "utc"
+  },
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_sun_set_time",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-12 12:00:00"
+    ]
+   },
+   "which": "next",
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": "2026-10-13 03:56:56.160",
+   "jd": 2461326.6645388845,
+   "scale": "utc"
+  },
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_twilight_evening_astronomical",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-12 12:00:00"
+    ]
+   },
+   "which": "next",
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": "2026-10-13 05:13:46.233",
+   "jd": 2461326.7178962138,
+   "scale": "utc"
+  },
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_moon_illumination",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   },
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": 0.07050019507213434,
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_is_night",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   },
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": true,
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_local_sidereal_time",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   },
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "value": 21.089908711830965,
+   "unit": "hourangle"
+  },
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observer_parallactic_angle",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   },
+   "target": {
+    "__call__": "astroplan.FixedTarget",
+    "kwargs": {
+     "coord": {
+      "ra": 10.684,
+      "dec": 41.269,
+      "unit": "deg"
+     },
+     "name": "M31"
+    }
+   },
+   "_self": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "value": -1.7097830658419435,
+   "unit": "rad"
+  },
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_fixed_target_from_name",
+  "arguments": {
+   "query_name": "M31"
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "object",
+   "class": "astroplan.target.FixedTarget",
+   "handle": "h2",
+   "repr": "<FixedTarget \"M31\" at SkyCoord (ICRS): (ra, dec) in deg (10.68470833, 41.26875)>"
+  },
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_is_observable",
+  "arguments": {
+   "constraints": [
+    {
+     "__call__": "astroplan.AltitudeConstraint",
+     "kwargs": {
+      "min": {
+       "value": 30,
+       "unit": "deg"
+      }
+     }
+    },
+    {
+     "__call__": "astroplan.AtNightConstraint.twilight_astronomical"
+    }
+   ],
+   "observer": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   },
+   "targets": [
+    {
+     "__call__": "astroplan.FixedTarget",
+     "kwargs": {
+      "coord": {
+       "ra": 10.684,
+       "dec": 41.269,
+       "unit": "deg"
+      },
+      "name": "M31"
+     }
+    }
+   ],
+   "time_range": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     [
+      "2026-10-12 08:00:00",
+      "2026-10-12 16:00:00"
+     ]
+    ]
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+   true
+  ],
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_is_always_observable",
+  "arguments": {
+   "constraints": [
+    {
+     "__call__": "astroplan.AltitudeConstraint",
+     "kwargs": {
+      "min": {
+       "value": 30,
+       "unit": "deg"
+      }
+     }
+    },
+    {
+     "__call__": "astroplan.AtNightConstraint.twilight_astronomical"
+    }
+   ],
+   "observer": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   },
+   "targets": [
+    {
+     "__call__": "astroplan.FixedTarget",
+     "kwargs": {
+      "coord": {
+       "ra": 10.684,
+       "dec": 41.269,
+       "unit": "deg"
+      },
+      "name": "M31"
+     }
+    }
+   ],
+   "time_range": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     [
+      "2026-10-12 08:00:00",
+      "2026-10-12 16:00:00"
+     ]
+    ]
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": [
+   false
+  ],
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_observability_table",
+  "arguments": {
+   "constraints": [
+    {
+     "__call__": "astroplan.AltitudeConstraint",
+     "kwargs": {
+      "min": {
+       "value": 30,
+       "unit": "deg"
+      }
+     }
+    },
+    {
+     "__call__": "astroplan.AtNightConstraint.twilight_astronomical"
+    }
+   ],
+   "observer": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   },
+   "targets": [
+    {
+     "__call__": "astroplan.FixedTarget",
+     "kwargs": {
+      "coord": {
+       "ra": 10.684,
+       "dec": 41.269,
+       "unit": "deg"
+      },
+      "name": "M31"
+     }
+    }
+   ],
+   "time_range": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     [
+      "2026-10-12 08:00:00",
+      "2026-10-12 16:00:00"
+     ]
+    ]
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Table",
+   "n_rows": 1,
+   "columns": [
+    "target name",
+    "ever observable",
+    "always observable",
+    "fraction of time observable"
+   ],
+   "rows": [
+    {
+     "target name": "M31",
+     "ever observable": true,
+     "always observable": false,
+     "fraction of time observable": 0.8125
+    }
+   ],
+   "units": {}
+  },
+  "elapsed": 0.02,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_moon_illumination",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": 0.07050019507213434,
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_moon_phase_angle",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-13 06:00:00"
+    ]
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "value": 2.6041088068351783,
+   "unit": "rad"
+  },
+  "elapsed": 0.01,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_time_grid_from_range",
+  "arguments": {
+   "time_range": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     [
+      "2026-10-12 08:00:00",
+      "2026-10-12 16:00:00"
+     ]
+    ]
+   },
+   "time_resolution": {
+    "value": 1,
+    "unit": "hour"
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": [
+    "2026-10-12 08:00:00.000",
+    "2026-10-12 09:00:00.000",
+    "2026-10-12 10:00:00.000",
+    "2026-10-12 11:00:00.000",
+    "2026-10-12 12:00:00.000",
+    "2026-10-12 13:00:00.000",
+    "2026-10-12 14:00:00.000",
+    "2026-10-12 15:00:00.000"
+   ],
+   "jd": [
+    2461325.8333333335,
+    2461325.875,
+    2461325.9166666665,
+    2461325.958333333,
+    2461325.9999999995,
+    2461326.041666666,
+    2461326.0833333326,
+    2461326.124999999
+   ],
+   "shape": [
+    8
+   ],
+   "scale": "utc"
+  },
+  "elapsed": 0.0,
+  "status": "可用：真实调用成功"
+ },
+ {
+  "name": "astroplan_eclipsing_system_next_primary_eclipse_time",
+  "arguments": {
+   "time": {
+    "__call__": "astropy.time.Time",
+    "args": [
+     "2026-10-12 12:00:00"
+    ]
+   },
+   "_self": {
+    "__call__": "astroplan.EclipsingSystem",
+    "kwargs": {
+     "primary_eclipse_time": {
+      "__call__": "astropy.time.Time",
+      "args": [
+       "2026-10-01 00:00:00"
+      ]
+     },
+     "orbital_period": {
+      "value": 2.5,
+      "unit": "d"
+     }
+    }
+   }
+  },
+  "ok": true,
+  "error": null,
+  "result": {
+   "__type__": "Time",
+   "iso": [
+    "2026-10-13 12:00:00.000"
+   ],
+   "jd": [
+    2461327.0
+   ],
+   "shape": [
+    1
+   ],
+   "scale": "utc"
+  },
+  "elapsed": 0.0,
+  "status": "可用：真实调用成功"
+ }
+]

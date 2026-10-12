@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+requests
+numpy
+scipy
+pandas
+matplotlib
+astropy>=7
+astroquery
+photutils
+astroplan
+sunpy[map,net,timeseries]

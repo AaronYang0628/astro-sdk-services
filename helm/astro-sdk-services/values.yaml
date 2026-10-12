@@ -1,0 +1,19 @@
+image:
+  repository: ghcr.io/example/astro-sdk-services   # placeholder; one image, SDK chosen via env
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+ingress:
+  enabled: true
+  className: nginx
+  host: astro.example.com
+  annotations: {}
+  tls: []
+services:            # each entry -> Deployment + Service + Ingress path /<name>
+  - name: astropy
+  - name: astroquery
+  - name: photutils
+  - name: astroplan
+  - name: sunpy
+resources:
+  requests: {cpu: 100m, memory: 512Mi}
+  limits: {cpu: "1", memory: 4Gi}

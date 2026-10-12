@@ -1,0 +1,802 @@
+[
+ {
+  "name": "photutils_aperture_photometry",
+  "target": "photutils.aperture.aperture_photometry",
+  "desc": "在已扣除背景的图像上围绕源定义几何孔径并累加孔径内像素通量，对应 photutils.aperture.aperture_photometry。支持 CircularAperture（圆）、CircularAnnulus（环）、EllipticalAperture（椭圆，需 a/b 半轴与 theta 方向角）、RectangularAperture（矩形）等孔径，可用像素坐标或天球坐标（SkyCircularAperture，经 to_pixel/to_sky 与 WCS 互转）。孔径-像素重叠有三种计算方式：method='exact' 精确计算相交多边形面积（默认、最准）、'center' 按像素中心判定（最快）、'subpixel' 子像素采样（默认 5×5=25 个，与 SExtractor 一致）。返回 QTable 含 id、x_center、y_center、aperture_sum 列，传入 error= 背景 RMS 图附加 aperture_sum_err；一次传入多个孔径列表输出 aperture_sum_0/1/2 供曲线增长分析；使用前须确认输入数据已扣除背景，追求速度时可将 method 换为 'center'。",
+  "params": [
+   {
+    "name": "data",
+    "type": "array",
+    "required": true,
+    "desc": "已扣除背景的二维图像数组，未扣背景会引入系统偏差"
+   },
+   {
+    "name": "aperture",
+    "type": "object",
+    "required": true,
+    "desc": "孔径对象，如 CircularAperture(positions, r=5.0)"
+   },
+   {
+    "name": "positions",
+    "type": "list",
+    "required": true,
+    "desc": "孔径中心像素坐标 (x, y) 列表（构造 CircularAperture 时使用）"
+   },
+   {
+    "name": "r",
+    "type": "float",
+    "required": true,
+    "desc": "圆形孔径半径（像素）"
+   },
+   {
+    "name": "a",
+    "type": "float",
+    "required": false,
+    "desc": "椭圆孔径半长轴（EllipticalAperture 用）"
+   },
+   {
+    "name": "b",
+    "type": "float",
+    "required": false,
+    "desc": "椭圆孔径半短轴"
+   },
+   {
+    "name": "theta",
+    "type": "Angle",
+    "required": false,
+    "desc": "椭圆孔径方向角，如 Angle(45, 'deg')"
+   },
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "孔径-像素重叠方法：exact（默认）/center/subpixel"
+   },
+   {
+    "name": "subpixels",
+    "type": "int",
+    "required": false,
+    "desc": "subpixel 方法的子像素细分，默认 5 即 5×5"
+   },
+   {
+    "name": "error",
+    "type": "array",
+    "required": false,
+    "desc": "误差图（如 background_rms），输出 aperture_sum_err 列"
+   }
+  ],
+  "domain": "源检测与测光",
+  "cn": "孔径测光与通量提取",
+  "orig_params": "data[array] 必填: 已扣除背景的二维图像数组，未扣背景会引入系统偏差\naperture[object] 必填: 孔径对象，如 CircularAperture(positions, r=5.0)\npositions[list] 必填: 孔径中心像素坐标 (x, y) 列表（构造 CircularAperture 时使用）\nr[float] 必填: 圆形孔径半径（像素）\na[float] 可选: 椭圆孔径半长轴（EllipticalAperture 用）\nb[float] 可选: 椭圆孔径半短轴\ntheta[Angle] 可选: 椭圆孔径方向角，如 Angle(45, 'deg')\nmethod[str] 可选: 孔径-像素重叠方法：exact（默认）/center/subpixel\nsubpixels[int] 可选: subpixel 方法的子像素细分，默认 5 即 5×5\nerror[array] 可选: 误差图（如 background_rms），输出 aperture_sum_err 列"
+ },
+ {
+  "name": "photutils_aperture_stats",
+  "target": "photutils.aperture.ApertureStats",
+  "desc": "用 photutils.aperture.ApertureStats 类计算孔径内像素的多种统计量与形态学属性，是 aperture_photometry 的增强替代。除通量总和 sum 外还可输出 mean、median、std、var、min、max、sum_aper_area，以及加权质心 centroid（x_centroid/y_centroid）、fwhm、semimajor_axis、semiminor_axis、orientation、eccentricity 等形态参数，可一次性作用于多位置孔径，并用 to_table(columns=...) 导出 QTable。通过 local_bkg 传入逐像素局部背景在统计前扣除，常用于净通量计算（孔径总和减去环形背景中值，如 ApertureStats(data, annulus).median）；sigma_clip 对孔径内像素做 sigma 裁剪抑制邻近源污染；sum_method 控制求和遮罩方法（默认 exact）。在误差估计中常用 CircularAnnulus 定义背景环，取其 median 作为局部背景、std 作为噪声，并用 eccentricity、orientation 等属性判定源形状。",
+  "params": [
+   {
+    "name": "data",
+    "type": "array",
+    "required": true,
+    "desc": "输入图像数组（可含未扣除背景，配合 local_bkg 使用）"
+   },
+   {
+    "name": "aperture",
+    "type": "object",
+    "required": true,
+    "desc": "孔径对象，如 CircularAperture((150, 25), 8)"
+   },
+   {
+    "name": "local_bkg",
+    "type": "array",
+    "required": false,
+    "desc": "每像素局部背景值，统计前逐像素扣除，用于净通量"
+   },
+   {
+    "name": "sigma_clip",
+    "type": "float",
+    "required": false,
+    "desc": "孔径内像素 sigma 裁剪阈值，如 3.0"
+   },
+   {
+    "name": "sum_method",
+    "type": "str",
+    "required": false,
+    "desc": "通量求和的孔径遮罩方法，默认 exact"
+   },
+   {
+    "name": "columns",
+    "type": "list",
+    "required": false,
+    "desc": "to_table() 导出选择的列名，如 id/mean/median/std/var/sum"
+   }
+  ],
+  "domain": "源检测与测光",
+  "cn": "孔径内统计量计算",
+  "orig_params": "data[array] 必填: 输入图像数组（可含未扣除背景，配合 local_bkg 使用）\naperture[object] 必填: 孔径对象，如 CircularAperture((150, 25), 8)\nlocal_bkg[array] 可选: 每像素局部背景值，统计前逐像素扣除，用于净通量\nsigma_clip[float] 可选: 孔径内像素 sigma 裁剪阈值，如 3.0\nsum_method[str] 可选: 通量求和的孔径遮罩方法，默认 exact\ncolumns[list] 可选: to_table() 导出选择的列名，如 id/mean/median/std/var/sum"
+ },
+ {
+  "name": "photutils_find_peaks",
+  "target": "photutils.detection.find_peaks",
+  "desc": "photutils.detection.find_peaks 函数在图像中寻找高于给定阈值的局部极大值，是比 DAOStarFinder 更轻量的检测入口。它不做卷积滤波，直接在原图上按局部窗口判定峰值，返回坐标总是整数像素值（默认不做质心化）；box_size 规定峰值之间的最小间隔（以该边长的局部窗口内只保留一个峰），footprint 支持自定义局部区域形状以适配非矩形邻域，centroid_func 可传入质心函数在峰值位置基础上做亚像素精化。适合快速清点亮源位置、为其他测光流程生成初始坐标列表，或作为自定义检测算法的峰值候选生成器。函数签名：photutils.detection.find_peaks(data, threshold, box_size=5)。",
+  "params": [
+   {
+    "name": "data",
+    "type": "array",
+    "required": true,
+    "desc": "输入二维图像数组"
+   },
+   {
+    "name": "threshold",
+    "type": "float",
+    "required": true,
+    "desc": "峰值探测阈值（绝对像素值）"
+   },
+   {
+    "name": "box_size",
+    "type": "int",
+    "required": false,
+    "desc": "峰值间最小间隔的局部窗口边长（像素），如 5"
+   },
+   {
+    "name": "footprint",
+    "type": "array",
+    "required": false,
+    "desc": "自定义局部区域形状（布尔核）"
+   },
+   {
+    "name": "centroid_func",
+    "type": "callable",
+    "required": false,
+    "desc": "传入质心函数对峰值坐标做亚像素精化"
+   }
+  ],
+  "domain": "源检测与测光",
+  "cn": "局部峰值检测",
+  "orig_params": "data[array] 必填: 输入二维图像数组\nthreshold[float] 必填: 峰值探测阈值（绝对像素值）\nbox_size[int] 可选: 峰值间最小间隔的局部窗口边长（像素），如 5\nfootprint[array] 可选: 自定义局部区域形状（布尔核）\ncentroid_func[callable] 可选: 传入质心函数对峰值坐标做亚像素精化"
+ },
+ {
+  "name": "photutils_background2d",
+  "target": "photutils.background.Background2D",
+  "desc": "photutils.background.Background2D 类用于背景在图像上变化（梯度背景、拼接图像）时生成全分辨率的二维背景图与背景 RMS 图。算法为：按 box_size 把图像划分为网格，在每个网格内用 bkg_estimator 计算背景水平（MedianBackground 中值、ModeEstimatorBackground 众数、MeanBackground 均值、MMMBackground 即 DAOPHOT 的 MMM 算法、SExtractorBackground 即 (2.5*median)-(1.5*mean) 方法），用 bkg_rms_estimator（StdBackgroundRMS、MADStdBackgroundRMS、BiweightScaleBackgroundRMS）计算噪声；网格值经 filter_size 中值滤波抑制异常后再插值放大到全图。sigma_clip 默认 SigmaClip(sigma=3, maxiters=10) 裁剪亮源污染，mask 传入源掩码，coverage_mask 排除无数据区域（如旋转后空白），fill_value 与 exclude_percentile 控制填充与高值网格剔除。输出属性含 background、background_rms、background_mesh、background_median 等，可用 plot_meshes(outlines=True) 在图上叠加网格背景值诊断；适用于拼接图像、梯度背景以及旋转后带空白区的图像（配合 coverage_mask 排除）。",
+  "params": [
+   {
+    "name": "data",
+    "type": "array",
+    "required": true,
+    "desc": "输入二维图像数组"
+   },
+   {
+    "name": "box_size",
+    "type": "int/tuple",
+    "required": true,
+    "desc": "背景网格大小（像素），应大于典型源尺寸小于背景变化尺度，如 (50, 50)"
+   },
+   {
+    "name": "filter_size",
+    "type": "tuple",
+    "required": false,
+    "desc": "网格中值滤波窗口，抑制个别网格估计异常，如 (3, 3)"
+   },
+   {
+    "name": "sigma_clip",
+    "type": "object",
+    "required": false,
+    "desc": "SigmaClip 对象（默认 sigma=3、maxiters=10），设为 None 关闭裁剪"
+   },
+   {
+    "name": "bkg_estimator",
+    "type": "object",
+    "required": false,
+    "desc": "网格背景估计器，如 MedianBackground()/SExtractorBackground()"
+   },
+   {
+    "name": "bkg_rms_estimator",
+    "type": "object",
+    "required": false,
+    "desc": "网格背景 RMS 估计器，如 MADStdBackgroundRMS()"
+   },
+   {
+    "name": "mask",
+    "type": "array",
+    "required": false,
+    "desc": "源掩码或坏像素掩码（应用于输入图像）"
+   },
+   {
+    "name": "coverage_mask",
+    "type": "array",
+    "required": false,
+    "desc": "无数据区域掩码（应用于输出背景图）"
+   },
+   {
+    "name": "fill_value",
+    "type": "float",
+    "required": false,
+    "desc": "无数据区域在背景图中的填充值"
+   },
+   {
+    "name": "exclude_percentile",
+    "type": "float",
+    "required": false,
+    "desc": "排除高值网格的百分位阈值"
+   }
+  ],
+  "domain": "源检测与测光",
+  "cn": "二维背景估计与扣除",
+  "orig_params": "data[array] 必填: 输入二维图像数组\nbox_size[int/tuple] 必填: 背景网格大小（像素），应大于典型源尺寸小于背景变化尺度，如 (50, 50)\nfilter_size[tuple] 可选: 网格中值滤波窗口，抑制个别网格估计异常，如 (3, 3)\nsigma_clip[object] 可选: SigmaClip 对象（默认 sigma=3、maxiters=10），设为 None 关闭裁剪\nbkg_estimator[object] 可选: 网格背景估计器，如 MedianBackground()/SExtractorBackground()\nbkg_rms_estimator[object] 可选: 网格背景 RMS 估计器，如 MADStdBackgroundRMS()\nmask[array] 可选: 源掩码或坏像素掩码（应用于输入图像）\ncoverage_mask[array] 可选: 无数据区域掩码（应用于输出背景图）\nfill_value[float] 可选: 无数据区域在背景图中的填充值\nexclude_percentile[float] 可选: 排除高值网格的百分位阈值"
+ },
+ {
+  "name": "photutils_detect_sources",
+  "target": "photutils.segmentation.detect_sources",
+  "desc": "photutils.segmentation.detect_sources 通过图像分割检测源，适用于点源和延展源：为图像中每个像素分配标签，同一源的所有像素共享同一标签，输出 SegmentationImage 分割图（属性 n_labels、labels）。流程为：背景扣除后用 make_2dgaussian_kernel(fwhm, size) 生成高斯核并经 astropy.convolution.convolve 平滑，再以阈值（通常取 1.5×bkg.background_rms）做二值化与连通区域分析，n_pixels 规定最小连通像素数以滤除噪声。SegmentationImage 提供 relabel_consecutive、keep_labels、remove_labels、remove_border_labels（剔除边缘源）等操作。便捷类 SourceFinder(n_pixels=10) 可把检测封装为一次调用；配合 make_source_mask 还能生成背景估计所需的源掩码，或经 Rasterio/Shapely 把源段转为多边形对象。n_pixels 过小会检出噪声、过大则漏掉小源，需按源尺寸权衡。",
+  "params": [
+   {
+    "name": "data",
+    "type": "array",
+    "required": true,
+    "desc": "输入图像（通常为卷积平滑并扣除背景后的数据）"
+   },
+   {
+    "name": "threshold",
+    "type": "float/array",
+    "required": true,
+    "desc": "检测阈值，可标量或逐像素数组，如 1.5*bkg.background_rms"
+   },
+   {
+    "name": "n_pixels",
+    "type": "int",
+    "required": false,
+    "desc": "源最小连通像素数（典型 5-10，SourceFinder 默认 10）"
+   },
+   {
+    "name": "fwhm",
+    "type": "float",
+    "required": false,
+    "desc": "make_2dgaussian_kernel 的高斯核 FWHM，如 3.0"
+   },
+   {
+    "name": "size",
+    "type": "int",
+    "required": false,
+    "desc": "高斯核尺寸（像素），如 5"
+   },
+   {
+    "name": "progress_bar",
+    "type": "bool",
+    "required": false,
+    "desc": "SourceFinder 是否显示进度条"
+   }
+  ],
+  "domain": "源检测与测光",
+  "cn": "分割法源检测与提取",
+  "orig_params": "data[array] 必填: 输入图像（通常为卷积平滑并扣除背景后的数据）\nthreshold[float/array] 必填: 检测阈值，可标量或逐像素数组，如 1.5*bkg.background_rms\nn_pixels[int] 可选: 源最小连通像素数（典型 5-10，SourceFinder 默认 10）\nfwhm[float] 可选: make_2dgaussian_kernel 的高斯核 FWHM，如 3.0\nsize[int] 可选: 高斯核尺寸（像素），如 5\nprogress_bar[bool] 可选: SourceFinder 是否显示进度条"
+ },
+ {
+  "name": "photutils_detect_threshold",
+  "target": "photutils.segmentation.detect_threshold",
+  "desc": "由背景估计和 N-σ 倍数计算检测阈值图像。主要参数：data、n_sigma、background、error。属于「点源检测与背景估计」，底层调用 photutils.segmentation.detect_threshold。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The 2D array of the image."
+   },
+   {
+    "name": "n_sigma",
+    "type": "float",
+    "required": true,
+    "desc": "The number of standard deviations per pixel above the background for which to consider a pixel as possibly…"
+   },
+   {
+    "name": "background",
+    "type": "float",
+    "required": false,
+    "desc": "The background value(s) of the input data. background may either be a scalar value or a 2D array with the…（默认 None）"
+   },
+   {
+    "name": "error",
+    "type": "float",
+    "required": false,
+    "desc": "The Gaussian 1-sigma standard deviation of the background noise in data. error should include all sources of…（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A boolean mask with the same shape as data, where a True value indicates the corresponding element of data is…（默认 None）"
+   },
+   {
+    "name": "sigma_clip",
+    "type": "SigmaClip",
+    "required": false,
+    "desc": "A ~astropy.stats.SigmaClip object that defines the sigma clipping parameters. If None then no sigma clipping…（默认 库内部默认）"
+   }
+  ],
+  "domain": "点源检测与背景估计",
+  "cn": "检测阈值估计",
+  "orig_params": "data[numpy.ndarray] 必填: The 2D array of the image.\nn_sigma[float] 必填: The number of standard deviations per pixel above the background for which to consider a pixel as possibly…\nbackground[float] 可选: The background value(s) of the input data. background may either be a scalar value or a 2D array with the…（默认 None）\nerror[float] 可选: The Gaussian 1-sigma standard deviation of the background noise in data. error should include all sources of…（默认 None）\nmask[numpy.ndarray] 可选: A boolean mask with the same shape as data, where a True value indicates the corresponding element of data is…（默认 None）\nsigma_clip[SigmaClip] 可选: A ~astropy.stats.SigmaClip object that defines the sigma clipping parameters. If None then no sigma clipping…（默认 库内部默认）"
+ },
+ {
+  "name": "photutils_make_2dgaussian_kernel",
+  "target": "photutils.segmentation.make_2dgaussian_kernel",
+  "desc": "按 FWHM 创建二维高斯卷积核，用于检测前平滑。返回类型：astropy.convolution.Kernel2D。主要参数：fwhm、size、mode、oversampling。属于「点源检测与背景估计」，底层调用 photutils.segmentation.make_2dgaussian_kernel。",
+  "params": [
+   {
+    "name": "fwhm",
+    "type": "float",
+    "required": true,
+    "desc": "The full-width at half-maximum (FWHM) of the 2D circular Gaussian kernel."
+   },
+   {
+    "name": "size",
+    "type": "int",
+    "required": true,
+    "desc": "The size of the kernel along each axis. If size is a scalar then a square size of size will be used. If size…"
+   },
+   {
+    "name": "mode",
+    "type": "str",
+    "required": false,
+    "desc": "The mode to use for discretizing the 2D Gaussian model: * 'oversample' (default): Discretize model by taking…（默认 'oversample'）"
+   },
+   {
+    "name": "oversampling",
+    "type": "int",
+    "required": false,
+    "desc": "The oversampling factor used when mode='oversample'.（默认 10）"
+   }
+  ],
+  "domain": "点源检测与背景估计",
+  "cn": "生成高斯核",
+  "orig_params": "fwhm[float] 必填: The full-width at half-maximum (FWHM) of the 2D circular Gaussian kernel.\nsize[int] 必填: The size of the kernel along each axis. If size is a scalar then a square size of size will be used. If size…\nmode[str] 可选: The mode to use for discretizing the 2D Gaussian model: * 'oversample' (default): Discretize model by taking…（默认 'oversample'）\noversampling[int] 可选: The oversampling factor used when mode='oversample'.（默认 10）"
+ },
+ {
+  "name": "photutils_centroid_com",
+  "target": "photutils.centroids.centroid_com",
+  "desc": "用像素一阶矩计算质心。返回类型：numpy.ndarray。主要参数：data、mask。属于「孔径测光与源测量」，底层调用 photutils.centroids.centroid_com。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The input n-dimensional array. data can be a ~numpy.ma.MaskedArray. The image should be a…"
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "质心矩法定位",
+  "orig_params": "data[numpy.ndarray] 必填: The input n-dimensional array. data can be a ~numpy.ma.MaskedArray. The image should be a…\nmask[numpy.ndarray] 可选: A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+ },
+ {
+  "name": "photutils_centroid_1dg",
+  "target": "photutils.centroids.centroid_1dg",
+  "desc": "用两个一维高斯拟合边缘分布求质心。返回类型：numpy.ndarray。主要参数：data、error、mask。属于「孔径测光与源测量」，底层调用 photutils.centroids.centroid_1dg。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": true,
+    "desc": "The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be a background-subtracted cutout…"
+   },
+   {
+    "name": "error",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "The 2D array of the 1-sigma errors of the input data.（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "1D高斯质心",
+  "orig_params": "data[object] 必填: The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be a background-subtracted cutout…\nerror[numpy.ndarray] 可选: The 2D array of the 1-sigma errors of the input data.（默认 None）\nmask[numpy.ndarray] 可选: A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+ },
+ {
+  "name": "photutils_centroid_2dg",
+  "target": "photutils.centroids.centroid_2dg",
+  "desc": "二维高斯拟合求质心。返回类型：numpy.ndarray。主要参数：data、error、mask。属于「孔径测光与源测量」，底层调用 photutils.centroids.centroid_2dg。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": true,
+    "desc": "The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be a background-subtracted cutout…"
+   },
+   {
+    "name": "error",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "The 2D array of the 1-sigma errors of the input data.（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "2D高斯质心",
+  "orig_params": "data[object] 必填: The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be a background-subtracted cutout…\nerror[numpy.ndarray] 可选: The 2D array of the 1-sigma errors of the input data.（默认 None）\nmask[numpy.ndarray] 可选: A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+ },
+ {
+  "name": "photutils_centroid_quadratic",
+  "target": "photutils.centroids.centroid_quadratic",
+  "desc": "在峰值邻域拟合二次曲面求亚像素质心。返回类型：numpy.ndarray。主要参数：data、mask、fit_boxsize。属于「孔径测光与源测量」，底层调用 photutils.centroids.centroid_quadratic。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": true,
+    "desc": "The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be a background-subtracted cutout…"
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+   },
+   {
+    "name": "fit_boxsize",
+    "type": "int",
+    "required": false,
+    "desc": "The size (in pixels) of the box used to define the fitting region. If fit_boxsize has two elements, they must…（默认 5）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "二次曲面质心",
+  "orig_params": "data[object] 必填: The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be a background-subtracted cutout…\nmask[numpy.ndarray] 可选: A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）\nfit_boxsize[int] 可选: The size (in pixels) of the box used to define the fitting region. If fit_boxsize has two elements, they must…（默认 5）"
+ },
+ {
+  "name": "photutils_centroid_sources",
+  "target": "photutils.centroids.centroid_sources",
+  "desc": "在给定初始位置附近对多个源重新质心。返回类型：numpy.ndarray。主要参数：data、xpos、ypos、box_size。属于「孔径测光与源测量」，底层调用 photutils.centroids.centroid_sources。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": true,
+    "desc": "The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be background-subtracted."
+   },
+   {
+    "name": "xpos",
+    "type": "float",
+    "required": true,
+    "desc": "The initial x and y pixel position(s) of the center position. A cutout image centered on this position will…"
+   },
+   {
+    "name": "ypos",
+    "type": "float",
+    "required": true,
+    "desc": "The initial x and y pixel position(s) of the center position. A cutout image centered on this position will…"
+   },
+   {
+    "name": "box_size",
+    "type": "int",
+    "required": false,
+    "desc": "The size of the cutout image along each axis. If box_size is a number, then a square cutout of box_size will…（默认 11）"
+   },
+   {
+    "name": "footprint",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A 2D boolean array where True values describe the local footprint region to cutout. footprint can be used to…（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A 2D boolean array with the same shape as data, where a True value indicates the corresponding element of…（默认 None）"
+   },
+   {
+    "name": "centroid_func",
+    "type": "callable",
+    "required": false,
+    "desc": "A callable object (e.g., function or class) that is used to calculate the centroid of a 2D array. The…（默认 库内部默认）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "批量质心定位",
+  "orig_params": "data[object] 必填: The 2D image data. data can be a ~numpy.ma.MaskedArray. The image should be background-subtracted.\nxpos[float] 必填: The initial x and y pixel position(s) of the center position. A cutout image centered on this position will…\nypos[float] 必填: The initial x and y pixel position(s) of the center position. A cutout image centered on this position will…\nbox_size[int] 可选: The size of the cutout image along each axis. If box_size is a number, then a square cutout of box_size will…（默认 11）\nfootprint[numpy.ndarray] 可选: A 2D boolean array where True values describe the local footprint region to cutout. footprint can be used to…（默认 None）\nmask[numpy.ndarray] 可选: A 2D boolean array with the same shape as data, where a True value indicates the corresponding element of…（默认 None）\ncentroid_func[callable] 可选: A callable object (e.g., function or class) that is used to calculate the centroid of a 2D array. The…（默认 库内部默认）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "photutils_fit_fwhm",
+  "target": "photutils.psf.fit_fwhm",
+  "desc": "对给定位置的源拟合圆高斯估计 FWHM。返回类型：numpy.ndarray。主要参数：data、xypos、fwhm、fit_shape。属于「孔径测光与源测量」，底层调用 photutils.psf.fit_fwhm。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": true,
+    "desc": "The 2D array of the image. The input array must be background subtracted."
+   },
+   {
+    "name": "xypos",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "The initial (x, y) pixel coordinates of the sources as a list of tuples or a 2D array. If None, then one…（默认 None）"
+   },
+   {
+    "name": "fwhm",
+    "type": "float",
+    "required": false,
+    "desc": "The initial guess for the FWHM of the Gaussian PSF model. If None, then the initial guess is half the mean of…（默认 None）"
+   },
+   {
+    "name": "fit_shape",
+    "type": "int",
+    "required": false,
+    "desc": "The shape of the fitting region. If a scalar, then it is assumed to be a square. If None, then the shape of…（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "object",
+    "required": false,
+    "desc": "A boolean mask with the same shape as the input data, where a True value indicates the corresponding element…（默认 None）"
+   },
+   {
+    "name": "error",
+    "type": "object",
+    "required": false,
+    "desc": "The pixel-wise Gaussian 1-sigma errors of the input data. error is assumed to include *all* sources of error,…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "拟合FWHM",
+  "orig_params": "data[object] 必填: The 2D array of the image. The input array must be background subtracted.\nxypos[numpy.ndarray] 可选: The initial (x, y) pixel coordinates of the sources as a list of tuples or a 2D array. If None, then one…（默认 None）\nfwhm[float] 可选: The initial guess for the FWHM of the Gaussian PSF model. If None, then the initial guess is half the mean of…（默认 None）\nfit_shape[int] 可选: The shape of the fitting region. If a scalar, then it is assumed to be a square. If None, then the shape of…（默认 None）\nmask[object] 可选: A boolean mask with the same shape as the input data, where a True value indicates the corresponding element…（默认 None）\nerror[object] 可选: The pixel-wise Gaussian 1-sigma errors of the input data. error is assumed to include *all* sources of error,…（默认 None）"
+ },
+ {
+  "name": "photutils_fit_2dgaussian",
+  "target": "photutils.psf.fit_2dgaussian",
+  "desc": "对源拟合二维高斯并返回参数表。返回类型：photutils.psf.PSFPhotometry。主要参数：data、xypos、fwhm、fix_fwhm。属于「孔径测光与源测量」，底层调用 photutils.psf.fit_2dgaussian。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": true,
+    "desc": "The 2D array of the image. The input array must be background subtracted."
+   },
+   {
+    "name": "xypos",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "The initial (x, y) pixel coordinates of the sources as a list of tuples or a 2D array. If None, then one…（默认 None）"
+   },
+   {
+    "name": "fwhm",
+    "type": "float",
+    "required": false,
+    "desc": "The initial guess for the FWHM of the Gaussian PSF model. If None, then the initial guess is half the mean of…（默认 None）"
+   },
+   {
+    "name": "fix_fwhm",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether to fix the FWHM of the Gaussian PSF model during the fitting process.（默认 True）"
+   },
+   {
+    "name": "fit_shape",
+    "type": "int",
+    "required": false,
+    "desc": "The shape of the fitting region. If a scalar, then it is assumed to be a square. If None, then the shape of…（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "object",
+    "required": false,
+    "desc": "A boolean mask with the same shape as the input data, where a True value indicates the corresponding element…（默认 None）"
+   },
+   {
+    "name": "error",
+    "type": "object",
+    "required": false,
+    "desc": "The pixel-wise Gaussian 1-sigma errors of the input data. error is assumed to include *all* sources of error,…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "二维高斯拟合",
+  "orig_params": "data[object] 必填: The 2D array of the image. The input array must be background subtracted.\nxypos[numpy.ndarray] 可选: The initial (x, y) pixel coordinates of the sources as a list of tuples or a 2D array. If None, then one…（默认 None）\nfwhm[float] 可选: The initial guess for the FWHM of the Gaussian PSF model. If None, then the initial guess is half the mean of…（默认 None）\nfix_fwhm[bool] 可选: Whether to fix the FWHM of the Gaussian PSF model during the fitting process.（默认 True）\nfit_shape[int] 可选: The shape of the fitting region. If a scalar, then it is assumed to be a square. If None, then the shape of…（默认 None）\nmask[object] 可选: A boolean mask with the same shape as the input data, where a True value indicates the corresponding element…（默认 None）\nerror[object] 可选: The pixel-wise Gaussian 1-sigma errors of the input data. error is assumed to include *all* sources of error,…（默认 None）"
+ },
+ {
+  "name": "photutils_data_properties",
+  "target": "photutils.morphology.data_properties",
+  "desc": "由图像数据直接计算源的矩特性，返回 SourceCatalog。主要参数：data、mask、background、wcs。属于「孔径测光与源测量」，底层调用 photutils.morphology.data_properties。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The 2D array of the image."
+   },
+   {
+    "name": "mask",
+    "type": "object",
+    "required": false,
+    "desc": "A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）"
+   },
+   {
+    "name": "background",
+    "type": "float",
+    "required": false,
+    "desc": "The background level previously present in the input data. background may be a scalar value or a 2D array…（默认 None）"
+   },
+   {
+    "name": "wcs",
+    "type": "object",
+    "required": false,
+    "desc": "A world coordinate system (WCS) transformation that supports the astropy shared interface for WCS…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "图像矩属性",
+  "orig_params": "data[numpy.ndarray] 必填: The 2D array of the image.\nmask[object] 可选: A boolean mask, with the same shape as data, where a True value indicates the corresponding element of data…（默认 None）\nbackground[float] 可选: The background level previously present in the input data. background may be a scalar value or a 2D array…（默认 None）\nwcs[object] 可选: A world coordinate system (WCS) transformation that supports the astropy shared interface for WCS…（默认 None）"
+ },
+ {
+  "name": "photutils_gini",
+  "target": "photutils.morphology.gini",
+  "desc": "计算星系形态 Gini 系数。返回类型：float。主要参数：data、mask。属于「孔径测光与源测量」，底层调用 photutils.morphology.gini。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The 1D or 2D data array or object that can be converted to an array."
+   },
+   {
+    "name": "mask",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A boolean mask with the same shape as data where True values indicate masked pixels. Masked pixels are…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "Gini系数",
+  "orig_params": "data[numpy.ndarray] 必填: The 1D or 2D data array or object that can be converted to an array.\nmask[numpy.ndarray] 可选: A boolean mask with the same shape as data where True values indicate masked pixels. Masked pixels are…（默认 None）"
+ },
+ {
+  "name": "photutils_calc_total_error",
+  "target": "photutils.utils.calc_total_error",
+  "desc": "由背景 RMS 与增益计算含泊松噪声的总误差图。返回类型：numpy.ndarray。主要参数：data、bkg_error、effective_gain。属于「孔径测光与源测量」，底层调用 photutils.utils.calc_total_error。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The background-subtracted data array."
+   },
+   {
+    "name": "bkg_error",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The 1-sigma background-only errors of the input data. bkg_error should include all sources of \"background\"…"
+   },
+   {
+    "name": "effective_gain",
+    "type": "float",
+    "required": true,
+    "desc": "Ratio of counts (e.g., electrons or photons) to the units of data used to calculate the Poisson error of the…"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "总误差图",
+  "orig_params": "data[numpy.ndarray] 必填: The background-subtracted data array.\nbkg_error[numpy.ndarray] 必填: The 1-sigma background-only errors of the input data. bkg_error should include all sources of \"background\"…\neffective_gain[float] 必填: Ratio of counts (e.g., electrons or photons) to the units of data used to calculate the Poisson error of the…"
+ },
+ {
+  "name": "photutils_circular_footprint",
+  "target": "photutils.utils.circular_footprint",
+  "desc": "生成圆形脚印数组。返回类型：numpy.ndarray。主要参数：radius、dtype。属于「孔径测光与源测量」，底层调用 photutils.utils.circular_footprint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "radius",
+    "type": "int",
+    "required": true,
+    "desc": "The radius of the circular footprint. If float, must be a positive finite whole number (e.g., 2.0 is…"
+   },
+   {
+    "name": "dtype",
+    "type": "object",
+    "required": false,
+    "desc": "The data type of the output ~numpy.ndarray.（默认 库内部默认）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "圆形footprint",
+  "orig_params": "radius[int] 必填: The radius of the circular footprint. If float, must be a positive finite whole number (e.g., 2.0 is…\ndtype[object] 可选: The data type of the output ~numpy.ndarray.（默认 库内部默认）"
+ },
+ {
+  "name": "photutils_make_noise_image",
+  "target": "photutils.datasets.make_noise_image",
+  "desc": "生成高斯或泊松噪声图像。主要参数：shape、distribution、mean、stddev。属于「孔径测光与源测量」，底层调用 photutils.datasets.make_noise_image。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "shape",
+    "type": "object",
+    "required": true,
+    "desc": "The shape of the output 2D image."
+   },
+   {
+    "name": "distribution",
+    "type": "str",
+    "required": false,
+    "desc": "The distribution used to generate the random noise: * 'gaussian': Gaussian distributed noise. * 'poisson':…（默认 'gaussian'）"
+   },
+   {
+    "name": "mean",
+    "type": "float",
+    "required": false,
+    "desc": "The mean of the random distribution. Required for both Gaussian and Poisson noise. The default is 0.（默认 None）"
+   },
+   {
+    "name": "stddev",
+    "type": "float",
+    "required": false,
+    "desc": "The standard deviation of the Gaussian noise to add to the output image. Required for Gaussian noise and…（默认 None）"
+   },
+   {
+    "name": "seed",
+    "type": "int",
+    "required": false,
+    "desc": "A seed to initialize the numpy.random.BitGenerator. If None, then fresh, unpredictable entropy will be pulled…（默认 None）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "生成噪声图像",
+  "orig_params": "shape[object] 必填: The shape of the output 2D image.\ndistribution[str] 可选: The distribution used to generate the random noise: * 'gaussian': Gaussian distributed noise. * 'poisson':…（默认 'gaussian'）\nmean[float] 可选: The mean of the random distribution. Required for both Gaussian and Poisson noise. The default is 0.（默认 None）\nstddev[float] 可选: The standard deviation of the Gaussian noise to add to the output image. Required for Gaussian noise and…（默认 None）\nseed[int] 可选: A seed to initialize the numpy.random.BitGenerator. If None, then fresh, unpredictable entropy will be pulled…（默认 None）"
+ },
+ {
+  "name": "photutils_circular_aperture_do_photometry",
+  "target": "photutils.aperture.CircularAperture.do_photometry",
+  "desc": "由孔径对象对数据求和，返回和与误差。返回类型：numpy.ndarray。主要参数：data、error、mask、method。属于「孔径测光与源测量」，底层调用 photutils.aperture.CircularAperture.do_photometry。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The 2D array on which to perform photometry. data should be background subtracted."
+   },
+   {
+    "name": "error",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "The pixel-wise Gaussian 1-sigma errors of the input data. error is assumed to include *all* sources of error,…（默认 None）"
+   },
+   {
+    "name": "mask",
+    "type": "object",
+    "required": false,
+    "desc": "A boolean mask with the same shape as data where a True value indicates the corresponding element of data is…（默认 None）"
+   },
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "The method used to determine the overlap of the aperture on the pixel grid. Not all options are available for…（默认 'exact'）"
+   },
+   {
+    "name": "subpixels",
+    "type": "int",
+    "required": false,
+    "desc": "For the 'subpixel' method, resample pixels by this factor in each dimension. That is, each pixel is divided…（默认 5）"
+   }
+  ],
+  "domain": "孔径测光与源测量",
+  "cn": "孔径对象测光",
+  "orig_params": "data[numpy.ndarray] 必填: The 2D array on which to perform photometry. data should be background subtracted.\nerror[numpy.ndarray] 可选: The pixel-wise Gaussian 1-sigma errors of the input data. error is assumed to include *all* sources of error,…（默认 None）\nmask[object] 可选: A boolean mask with the same shape as data where a True value indicates the corresponding element of data is…（默认 None）\nmethod[str] 可选: The method used to determine the overlap of the aperture on the pixel grid. Not all options are available for…（默认 'exact'）\nsubpixels[int] 可选: For the 'subpixel' method, resample pixels by this factor in each dimension. That is, each pixel is divided…（默认 5）"
+ }
+]

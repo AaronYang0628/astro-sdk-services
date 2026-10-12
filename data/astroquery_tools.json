@@ -1,0 +1,650 @@
+[
+ {
+  "name": "astroquery_simbad_query_object",
+  "target": "astroquery.simbad.Simbad.query_object",
+  "desc": "按天体名称（如 M1、HD 189733）查询 SIMBAD 数据库，返回基本信息（坐标、类型、星等等）的 Table；可指定通配符与 ADQL 条件。返回类型：astropy.table.Table。主要参数：object_name、wildcard、criteria、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_object。",
+  "params": [
+   {
+    "name": "object_name",
+    "type": "str",
+    "required": true,
+    "desc": "name of object to be queried."
+   },
+   {
+    "name": "wildcard",
+    "type": "bool",
+    "required": false,
+    "desc": "When it is set to True it implies that the object is specified with wildcards. This parameter will render the…（默认 False）"
+   },
+   {
+    "name": "criteria",
+    "type": "str",
+    "required": false,
+    "desc": "Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "是否输出详细信息（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD按名称查询",
+  "orig_params": "object_name[str] 必填: name of object to be queried.\nwildcard[bool] 可选: When it is set to True it implies that the object is specified with wildcards. This parameter will render the…（默认 False）\ncriteria[str] 可选: Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nverbose[bool] 可选: 是否输出详细信息（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_query_objects",
+  "target": "astroquery.simbad.Simbad.query_objects",
+  "desc": "一次对多个天体名称查询 SIMBAD，返回合并结果表，适合批量证认。返回类型：astropy.table.Table。主要参数：object_names、wildcard、criteria、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_objects。",
+  "params": [
+   {
+    "name": "object_names",
+    "type": "object",
+    "required": true,
+    "desc": "names of objects to be queried"
+   },
+   {
+    "name": "wildcard",
+    "type": "bool",
+    "required": false,
+    "desc": "When True, the names may have wildcards in them. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "criteria",
+    "type": "str",
+    "required": false,
+    "desc": "Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "是否输出详细信息（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "是否缓存下载结果（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD批量名称查询",
+  "orig_params": "object_names[object] 必填: names of objects to be queried\nwildcard[bool] 可选: When True, the names may have wildcards in them. Defaults to False.（默认 False）\ncriteria[str] 可选: Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nverbose[bool] 可选: 是否输出详细信息（默认 False）\ncache[bool] 可选: 是否缓存下载结果（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_query_region",
+  "target": "astroquery.simbad.Simbad.query_region",
+  "desc": "按锥形区域（中心坐标+半径）或多边形搜索 SIMBAD 天体，返回区域内所有源。返回类型：astropy.table.Table。主要参数：coordinates、radius、criteria、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_region。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "str",
+    "required": true,
+    "desc": "The identifier or coordinates around which to query."
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "the radius of the region. Defaults to 2 arcmin.（默认 库内部默认）"
+   },
+   {
+    "name": "criteria",
+    "type": "str",
+    "required": false,
+    "desc": "Criteria to be applied to the query. These should be written in the ADQL syntax in a single string.（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "equinox",
+    "type": "object",
+    "required": false,
+    "desc": "equinox，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "epoch",
+    "type": "object",
+    "required": false,
+    "desc": "历元（默认 None）"
+   },
+   {
+    "name": "cache",
+    "type": "object",
+    "required": false,
+    "desc": "是否缓存下载结果（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD区域查询",
+  "orig_params": "coordinates[str] 必填: The identifier or coordinates around which to query.\nradius[str] 可选: the radius of the region. Defaults to 2 arcmin.（默认 库内部默认）\ncriteria[str] 可选: Criteria to be applied to the query. These should be written in the ADQL syntax in a single string.（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nequinox[object] 可选: equinox，详见官方 API 文档（默认 None）\nepoch[object] 可选: 历元（默认 None）\ncache[object] 可选: 是否缓存下载结果（默认 None）"
+ },
+ {
+  "name": "astroquery_simbad_query_objectids",
+  "target": "astroquery.simbad.Simbad.query_objectids",
+  "desc": "列出某个天体在 SIMBAD 中的全部别名标识符。返回类型：astropy.table.Table。主要参数：object_name、criteria、get_query_payload、async_job。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_objectids。",
+  "params": [
+   {
+    "name": "object_name",
+    "type": "str",
+    "required": true,
+    "desc": "name of object to be queried"
+   },
+   {
+    "name": "criteria",
+    "type": "str",
+    "required": false,
+    "desc": "an additional criteria to constrain the result. As the output of this method has only one column, these…（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "object",
+    "required": false,
+    "desc": "是否输出详细信息（默认 None）"
+   },
+   {
+    "name": "cache",
+    "type": "object",
+    "required": false,
+    "desc": "是否缓存下载结果（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD别名查询",
+  "orig_params": "object_name[str] 必填: name of object to be queried\ncriteria[str] 可选: an additional criteria to constrain the result. As the output of this method has only one column, these…（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nverbose[object] 可选: 是否输出详细信息（默认 None）\ncache[object] 可选: 是否缓存下载结果（默认 None）"
+ },
+ {
+  "name": "astroquery_simbad_query_tap",
+  "target": "astroquery.simbad.Simbad.query_tap",
+  "desc": "向 SIMBAD TAP 服务提交任意 ADQL 查询，灵活访问全部表。返回类型：astropy.table.Table。主要参数：query、maxrec、async_job、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_tap。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "A string containing the query written in the Astronomical Data Query Language (ADQL)."
+   },
+   {
+    "name": "maxrec",
+    "type": "int",
+    "required": false,
+    "desc": "The number of records to be returned. Its maximum value is given by ~astroquery.simbad.SimbadClass.hardlimit.（默认 10000）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "uploads",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD TAP查询",
+  "orig_params": "query[str] 必填: A string containing the query written in the Astronomical Data Query Language (ADQL).\nmaxrec[int] 可选: The number of records to be returned. Its maximum value is given by ~astroquery.simbad.SimbadClass.hardlimit.（默认 10000）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nuploads[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_simbad_list_votable_fields",
+  "target": "astroquery.simbad.Simbad.list_votable_fields",
+  "desc": "列出 SIMBAD 查询可附加的输出字段。无需额外参数。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.list_votable_fields。",
+  "params": [],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD可用字段列表",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astroquery_simbad_get_votable_fields",
+  "target": "astroquery.simbad.Simbad.get_votable_fields",
+  "desc": "查看当前会话已启用的输出字段。无需额外参数。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.get_votable_fields。",
+  "params": [],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD当前输出字段",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astroquery_simbad_list_tables",
+  "target": "astroquery.simbad.Simbad.list_tables",
+  "desc": "列出 SIMBAD TAP 中的所有表与说明。主要参数：get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.list_tables。",
+  "params": [
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD表列表",
+  "orig_params": "get_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_get_field_description",
+  "target": "astroquery.simbad.Simbad.get_field_description",
+  "desc": "返回某输出字段的详细说明。主要参数：field_name。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.get_field_description。",
+  "params": [
+   {
+    "name": "field_name",
+    "type": "object",
+    "required": true,
+    "desc": "field_name，详见官方 API 文档"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD字段描述",
+  "orig_params": "field_name[object] 必填: field_name，详见官方 API 文档"
+ },
+ {
+  "name": "astroquery_simbad_list_columns",
+  "target": "astroquery.simbad.Simbad.list_columns",
+  "desc": "列出指定 SIMBAD 表的列及其说明。返回类型：astropy.table.Table。主要参数：tables、keyword、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.list_columns。",
+  "params": [
+   {
+    "name": "tables",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "keyword",
+    "type": "str",
+    "required": false,
+    "desc": "A keyword to look for in column names, table names, or descriptions.（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD列列表",
+  "orig_params": "tables[tuple] 可选: 额外位置参数\nkeyword[str] 可选: A keyword to look for in column names, table names, or descriptions.（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+ },
+ {
+  "name": "astroquery_vizier_find_catalogs",
+  "target": "astroquery.vizier.Vizier.find_catalogs",
+  "desc": "按关键词/主题搜索 VizieR 星表，返回星表元数据字典。返回类型：dict。主要参数：keywords、include_obsolete、verbose、max_catalogs。属于「星表查询与数据获取」，底层调用 astroquery.vizier.Vizier.find_catalogs。",
+  "params": [
+   {
+    "name": "keywords",
+    "type": "list",
+    "required": true,
+    "desc": "List of keywords, or space-separated set of keywords. From Vizier…"
+   },
+   {
+    "name": "include_obsolete",
+    "type": "bool",
+    "required": false,
+    "desc": "If set to True, catalogs marked obsolete will also be returned.（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "是否输出详细信息（默认 False）"
+   },
+   {
+    "name": "max_catalogs",
+    "type": "int",
+    "required": false,
+    "desc": "The maximum number of catalogs to return. If None, all catalogs will be returned.（默认 None）"
+   },
+   {
+    "name": "return_type",
+    "type": "str",
+    "required": false,
+    "desc": "return_type，详见官方 API 文档（默认 'votable'）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "VizieR星表检索",
+  "orig_params": "keywords[list] 必填: List of keywords, or space-separated set of keywords. From Vizier…\ninclude_obsolete[bool] 可选: If set to True, catalogs marked obsolete will also be returned.（默认 False）\nverbose[bool] 可选: 是否输出详细信息（默认 False）\nmax_catalogs[int] 可选: The maximum number of catalogs to return. If None, all catalogs will be returned.（默认 None）\nreturn_type[str] 可选: return_type，详见官方 API 文档（默认 'votable'）"
+ },
+ {
+  "name": "astroquery_vizier_query_object",
+  "target": "astroquery.vizier.Vizier.query_object",
+  "desc": "在 VizieR 星表库中按天体名称或坐标检索，返回 TableList（各星表一张表），可指定星表、半径与列。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.vizier.Vizier.query_object。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "VizieR按天体查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_vizier_query_region",
+  "target": "astroquery.vizier.Vizier.query_region",
+  "desc": "按圆形、矩形区域查询 VizieR 星表，可限定星表如 I/355/gaiadr3。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.vizier.Vizier.query_region。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "VizieR区域查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_gaia_cone_search",
+  "target": "astroquery.gaia.Gaia.cone_search",
+  "desc": "在 Gaia 档案中按中心坐标和半径做锥形搜索，返回 Gaia 源表，同步执行。主要参数：coordinate、radius、table_name、ra_column_name。属于「天体测量与Gaia数据」，底层调用 astroquery.gaia.Gaia.cone_search。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "str",
+    "required": true,
+    "desc": "coordinates center point"
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "radius（默认 None）"
+   },
+   {
+    "name": "table_name",
+    "type": "str",
+    "required": false,
+    "desc": "str, optional, default main gaia table name doing the cone search against（默认 None）"
+   },
+   {
+    "name": "ra_column_name",
+    "type": "str",
+    "required": false,
+    "desc": "ra column doing the cone search against（默认 'ra'）"
+   },
+   {
+    "name": "dec_column_name",
+    "type": "str",
+    "required": false,
+    "desc": "dec column doing the cone search against（默认 'dec'）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format. Available formats are: 'votable', 'votable_plain', 'fits', 'csv', 'ecsv' and 'json', default…（默认 'votable_gzip'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "dump_to_file",
+    "type": "bool",
+    "required": false,
+    "desc": "if True, the results are saved in a file instead of using memory（默认 False）"
+   },
+   {
+    "name": "columns",
+    "type": "tuple",
+    "required": false,
+    "desc": "if empty, all columns will be selected（默认 ()）"
+   }
+  ],
+  "domain": "天体测量与Gaia数据",
+  "cn": "Gaia锥形搜索",
+  "orig_params": "coordinate[str] 必填: coordinates center point\nradius[str] 可选: radius（默认 None）\ntable_name[str] 可选: str, optional, default main gaia table name doing the cone search against（默认 None）\nra_column_name[str] 可选: ra column doing the cone search against（默认 'ra'）\ndec_column_name[str] 可选: dec column doing the cone search against（默认 'dec'）\noutput_file[str] 可选: file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）\noutput_format[str] 可选: results format. Available formats are: 'votable', 'votable_plain', 'fits', 'csv', 'ecsv' and 'json', default…（默认 'votable_gzip'）\nverbose[bool] 可选: flag to display information about the process（默认 False）\ndump_to_file[bool] 可选: if True, the results are saved in a file instead of using memory（默认 False）\ncolumns[tuple] 可选: if empty, all columns will be selected（默认 ()）"
+ },
+ {
+  "name": "astroquery_gaia_launch_job",
+  "target": "astroquery.gaia.Gaia.launch_job",
+  "desc": "同步提交 ADQL 查询（最多 2000 行）。主要参数：query、name、output_file、output_format。属于「天体测量与Gaia数据」，底层调用 astroquery.gaia.Gaia.launch_job。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "query to be executed"
+   },
+   {
+    "name": "name",
+    "type": "str",
+    "required": false,
+    "desc": "custom name defined by the user for the job that is going to be created（默认 None）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format. Available formats are: 'votable_gzip', 'votable', 'votable_plain', 'fits', 'csv', 'ecsv' and…（默认 'votable_gzip'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "dump_to_file",
+    "type": "bool",
+    "required": false,
+    "desc": "if True, the results are saved in a file instead of using memory（默认 False）"
+   },
+   {
+    "name": "upload_resource",
+    "type": "str",
+    "required": false,
+    "desc": "resource to be uploaded to UPLOAD_SCHEMA（默认 None）"
+   },
+   {
+    "name": "upload_table_name",
+    "type": "str",
+    "required": false,
+    "desc": "resource temporary table name associated to the uploaded resource. This argument is required if…（默认 None）"
+   }
+  ],
+  "domain": "天体测量与Gaia数据",
+  "cn": "Gaia同步ADQL",
+  "orig_params": "query[str] 必填: query to be executed\nname[str] 可选: custom name defined by the user for the job that is going to be created（默认 None）\noutput_file[str] 可选: file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）\noutput_format[str] 可选: results format. Available formats are: 'votable_gzip', 'votable', 'votable_plain', 'fits', 'csv', 'ecsv' and…（默认 'votable_gzip'）\nverbose[bool] 可选: flag to display information about the process（默认 False）\ndump_to_file[bool] 可选: if True, the results are saved in a file instead of using memory（默认 False）\nupload_resource[str] 可选: resource to be uploaded to UPLOAD_SCHEMA（默认 None）\nupload_table_name[str] 可选: resource temporary table name associated to the uploaded resource. This argument is required if…（默认 None）"
+ },
+ {
+  "name": "astroquery_mpc_get_observatory_location",
+  "target": "astroquery.mpc.MPC.get_observatory_location",
+  "desc": "按观测站代码取地理位置。返回类型：Angle。主要参数：code、cache。属于「望远镜观测规划」，底层调用 astroquery.mpc.MPC.get_observatory_location。",
+  "params": [
+   {
+    "name": "code",
+    "type": "str",
+    "required": true,
+    "desc": "Three-character IAU observatory code."
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to True. If set overrides global caching behavior. See caching documentation <astroquery_cache>.（默认 True）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "MPC观测站位置",
+  "orig_params": "code[str] 必填: Three-character IAU observatory code.\ncache[bool] 可选: Defaults to True. If set overrides global caching behavior. See caching documentation <astroquery_cache>.（默认 True）"
+ },
+ {
+  "name": "astroquery_irsa_dust_get_extinction_table",
+  "target": "astroquery.irsa_dust.IrsaDust.get_extinction_table",
+  "desc": "查询 SFD/Schlegel 尘埃图给出的 E(B-V) 及各滤光片消光。主要参数：coordinate、radius、timeout、show_progress。属于「星表查询与数据获取」，底层调用 astroquery.irsa_dust.IrsaDust.get_extinction_table。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "str",
+    "required": true,
+    "desc": "Can be either the name of an object or a coordinate string If a name, must be resolvable by NED, SIMBAD,…"
+   },
+   {
+    "name": "radius",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The size of the region to include in the dust query, in radian, degree or hour as per format specified by…（默认 None）"
+   },
+   {
+    "name": "timeout",
+    "type": "int",
+    "required": false,
+    "desc": "Time limit for establishing successful connection with remote server. Defaults to…（默认 30）"
+   },
+   {
+    "name": "show_progress",
+    "type": "bool",
+    "required": false,
+    "desc": "show_progress，详见官方 API 文档（默认 True）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "IRSA尘埃消光",
+  "orig_params": "coordinate[str] 必填: Can be either the name of an object or a coordinate string If a name, must be resolvable by NED, SIMBAD,…\nradius[astropy.units.Quantity] 可选: The size of the region to include in the dust query, in radian, degree or hour as per format specified by…（默认 None）\ntimeout[int] 可选: Time limit for establishing successful connection with remote server. Defaults to…（默认 30）\nshow_progress[bool] 可选: show_progress，详见官方 API 文档（默认 True）"
+ },
+ {
+  "name": "astroquery_heasarc_list_catalogs",
+  "target": "astroquery.heasarc.Heasarc.list_catalogs",
+  "desc": "列出 HEASARC 星表。主要参数：master、keywords。属于「星表查询与数据获取」，底层调用 astroquery.heasarc.Heasarc.list_catalogs。",
+  "params": [
+   {
+    "name": "master",
+    "type": "bool",
+    "required": false,
+    "desc": "Select only master catalogs. Default is False（默认 False）"
+   },
+   {
+    "name": "keywords",
+    "type": "str",
+    "required": false,
+    "desc": "a str or a list of str of keywords used as search terms for catalogs. Words with a str separated by a space…（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "HEASARC星表列表",
+  "orig_params": "master[bool] 可选: Select only master catalogs. Default is False（默认 False）\nkeywords[str] 可选: a str or a list of str of keywords used as search terms for catalogs. Words with a str separated by a space…（默认 None）"
+ },
+ {
+  "name": "astroquery_jpl_spec_get_species_table",
+  "target": "astroquery.jplspec.JPLSpec.get_species_table",
+  "desc": "获取 JPL 目录物种表。返回类型：astropy.table.Table。主要参数：catfile。属于「光谱分析」，底层调用 astroquery.jplspec.JPLSpec.get_species_table。",
+  "params": [
+   {
+    "name": "catfile",
+    "type": "str",
+    "required": false,
+    "desc": "The catalog file, installed locally along with the package（默认 'catdir.cat'）"
+   }
+  ],
+  "domain": "光谱分析",
+  "cn": "JPL物种表",
+  "orig_params": "catfile[str] 可选: The catalog file, installed locally along with the package（默认 'catdir.cat'）"
+ },
+ {
+  "name": "astroquery_nasa_exoplanet_archive_query_object",
+  "target": "astroquery.nasa_exoplanet_archive.NasaExoplanetArchive.query_object",
+  "desc": "按行星或恒星名称查询。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.nasa_exoplanet_archive.NasaExoplanetArchive.query_object。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "系外行星按名称查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ }
+]

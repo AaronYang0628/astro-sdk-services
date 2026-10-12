@@ -1,0 +1,485 @@
+[
+ {
+  "name": "astropy_sky_coord_create",
+  "arguments": {
+   "ra": 10.684,
+   "dec": 41.269,
+   "unit": "deg"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_transform_to",
+  "arguments": {
+   "frame": "galactic",
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_separation",
+  "arguments": {
+   "other": {
+    "ra": 11.0,
+    "dec": 42.0,
+    "unit": "deg"
+   },
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_position_angle",
+  "arguments": {
+   "other": {
+    "ra": 11.0,
+    "dec": 42.0,
+    "unit": "deg"
+   },
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_match_to_catalog_sky",
+  "arguments": {
+   "catalogcoord": {
+    "ra": [
+     10.0,
+     11.0,
+     12.0
+    ],
+    "dec": [
+     41.0,
+     42.0,
+     43.0
+    ],
+    "unit": "deg"
+   },
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_from_name",
+  "arguments": {
+   "name": "M31",
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_get_body",
+  "arguments": {
+   "body": "jupiter",
+   "time": {
+    "__type__": "Time",
+    "value": "2026-10-12T12:00:00",
+    "scale": "utc"
+   },
+   "location": {
+    "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+    "args": [
+     {
+      "value": -155.47,
+      "unit": "deg"
+     },
+     {
+      "value": 19.82,
+      "unit": "deg"
+     },
+     {
+      "value": 4200,
+      "unit": "m"
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_get_sun",
+  "arguments": {
+   "time": {
+    "__type__": "Time",
+    "value": "2026-10-12T12:00:00",
+    "scale": "utc"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_time_create",
+  "arguments": {
+   "val": [
+    "2026-10-12T12:00:00"
+   ],
+   "format": "isot",
+   "scale": "utc"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_time_sidereal_time",
+  "arguments": {
+   "kind": "apparent",
+   "longitude": {
+    "value": -155.47,
+    "unit": "deg"
+   },
+   "_self": {
+    "__type__": "Time",
+    "value": "2026-10-12T12:00:00",
+    "scale": "utc"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_quantity_to",
+  "arguments": {
+   "unit": "m",
+   "_self": {
+    "value": 1.5,
+    "unit": "km"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_doppler_optical",
+  "arguments": {
+   "rest": {
+    "value": 500,
+    "unit": "nm"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_luminosity_distance",
+  "arguments": {
+   "_args": [
+    0.5
+   ],
+   "_self": {
+    "__call__": "astropy.cosmology.FlatLambdaCDM",
+    "kwargs": {
+     "H0": 70,
+     "Om0": 0.3
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_lookback_time",
+  "arguments": {
+   "_args": [
+    0.5
+   ],
+   "_self": {
+    "__call__": "astropy.cosmology.FlatLambdaCDM",
+    "kwargs": {
+     "H0": 70,
+     "Om0": 0.3
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_angular_diameter_distance",
+  "arguments": {
+   "_args": [
+    0.5
+   ],
+   "_self": {
+    "__call__": "astropy.cosmology.FlatLambdaCDM",
+    "kwargs": {
+     "H0": 70,
+     "Om0": 0.3
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_skycoord_to_pixel",
+  "arguments": {
+   "coords": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "wcs": {
+    "__call__": "astropy.wcs.WCS",
+    "args": [
+     {
+      "NAXIS": 2,
+      "CTYPE1": "RA---TAN",
+      "CTYPE2": "DEC--TAN",
+      "CRPIX1": 50,
+      "CRPIX2": 50,
+      "CRVAL1": 10.684,
+      "CRVAL2": 41.269,
+      "CDELT1": -0.0002778,
+      "CDELT2": 0.0002778,
+      "CUNIT1": "deg",
+      "CUNIT2": "deg"
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_getheader",
+  "arguments": {
+   "filename": "/workspace/astro_services/fixtures/image.fits"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sigma_clipped_stats",
+  "arguments": {
+   "data": {
+    "__type__": "ndarray",
+    "data": [
+     1.0,
+     2.0,
+     2.5,
+     3.0,
+     4.0,
+     5.0,
+     7.0,
+     12.0
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_lomb_scargle_autopower",
+  "arguments": {
+   "_self": {
+    "__call__": "astropy.timeseries.LombScargle",
+    "args": [
+     {
+      "__type__": "ndarray",
+      "data": [
+       0.0,
+       1.0,
+       2.0,
+       3.0,
+       4.0,
+       5.0,
+       6.0,
+       7.0,
+       8.0,
+       9.0,
+       10.0,
+       11.0,
+       12.0,
+       13.0,
+       14.0,
+       15.0,
+       16.0,
+       17.0,
+       18.0,
+       19.0,
+       20.0,
+       21.0,
+       22.0,
+       23.0,
+       24.0,
+       25.0,
+       26.0,
+       27.0,
+       28.0,
+       29.0,
+       30.0,
+       31.0,
+       32.0,
+       33.0,
+       34.0,
+       35.0,
+       36.0,
+       37.0,
+       38.0,
+       39.0
+      ]
+     },
+     {
+      "__type__": "ndarray",
+      "data": [
+       1.1,
+       1.01,
+       1.02,
+       1.0,
+       1.01,
+       1.12,
+       1.0,
+       1.01,
+       1.02,
+       1.0,
+       1.11,
+       1.02,
+       1.0,
+       1.01,
+       1.02,
+       1.1,
+       1.01,
+       1.02,
+       1.0,
+       1.01,
+       1.12,
+       1.0,
+       1.01,
+       1.02,
+       1.0,
+       1.11,
+       1.02,
+       1.0,
+       1.01,
+       1.02,
+       1.1,
+       1.01,
+       1.02,
+       1.0,
+       1.01,
+       1.12,
+       1.0,
+       1.01,
+       1.02,
+       1.0
+      ]
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_box_least_squares_autopower",
+  "arguments": {
+   "duration": 0.5,
+   "_self": {
+    "__call__": "astropy.timeseries.BoxLeastSquares",
+    "args": [
+     {
+      "__type__": "ndarray",
+      "data": [
+       0.0,
+       1.0,
+       2.0,
+       3.0,
+       4.0,
+       5.0,
+       6.0,
+       7.0,
+       8.0,
+       9.0,
+       10.0,
+       11.0,
+       12.0,
+       13.0,
+       14.0,
+       15.0,
+       16.0,
+       17.0,
+       18.0,
+       19.0,
+       20.0,
+       21.0,
+       22.0,
+       23.0,
+       24.0,
+       25.0,
+       26.0,
+       27.0,
+       28.0,
+       29.0,
+       30.0,
+       31.0,
+       32.0,
+       33.0,
+       34.0,
+       35.0,
+       36.0,
+       37.0,
+       38.0,
+       39.0
+      ]
+     },
+     {
+      "__type__": "ndarray",
+      "data": [
+       1.1,
+       1.01,
+       1.02,
+       1.0,
+       1.01,
+       1.12,
+       1.0,
+       1.01,
+       1.02,
+       1.0,
+       1.11,
+       1.02,
+       1.0,
+       1.01,
+       1.02,
+       1.1,
+       1.01,
+       1.02,
+       1.0,
+       1.01,
+       1.12,
+       1.0,
+       1.01,
+       1.02,
+       1.0,
+       1.11,
+       1.02,
+       1.0,
+       1.01,
+       1.02,
+       1.1,
+       1.01,
+       1.02,
+       1.0,
+       1.01,
+       1.12,
+       1.0,
+       1.01,
+       1.02,
+       1.0
+      ]
+     }
+    ]
+   }
+  },
+  "skip": null
+ }
+]

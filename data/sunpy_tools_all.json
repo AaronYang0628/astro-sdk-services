@@ -1,0 +1,1944 @@
+[
+ {
+  "name": "sunpy_map",
+  "target": "sunpy.map.Map",
+  "desc": "读取 FITS 等并构造 GenericMap，自动识别 SDO/AIA、HMI、SOHO 等仪器。返回类型：sunpy.map.GenericMap。主要参数：args、composite、sequence、allow_errors。属于「太阳物理」，底层调用 sunpy.map.Map。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "composite",
+    "type": "bool",
+    "required": false,
+    "desc": "Return a sunpy.map.CompositeMap object comprised of all the parsed maps.（默认 False）"
+   },
+   {
+    "name": "sequence",
+    "type": "bool",
+    "required": false,
+    "desc": "Return a sunpy.map.MapSequence object comprised of all the parsed maps.（默认 False）"
+   },
+   {
+    "name": "allow_errors",
+    "type": "bool",
+    "required": false,
+    "desc": "allow_errors，详见官方 API 文档（默认 False）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "读取太阳图Map",
+  "orig_params": "args[tuple] 可选: 额外位置参数\ncomposite[bool] 可选: Return a sunpy.map.CompositeMap object comprised of all the parsed maps.（默认 False）\nsequence[bool] 可选: Return a sunpy.map.MapSequence object comprised of all the parsed maps.（默认 False）\nallow_errors[bool] 可选: allow_errors，详见官方 API 文档（默认 False）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_rotate",
+  "target": "sunpy.map.GenericMap.rotate",
+  "desc": "按角度、缩放绕中心旋转太阳图并更新 WCS。返回类型：sunpy.map.GenericMap。主要参数：angle、rmatrix、order、scale。属于「太阳物理」，底层调用 sunpy.map.GenericMap.rotate。",
+  "params": [
+   {
+    "name": "angle",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The angle (degrees) to rotate counterclockwise.（默认 None）"
+   },
+   {
+    "name": "rmatrix",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "2x2 linear transformation rotation matrix.（默认 None）"
+   },
+   {
+    "name": "order",
+    "type": "int",
+    "required": false,
+    "desc": "Interpolation order to be used. The precise meaning depends on the rotation method specified by method.…（默认 3）"
+   },
+   {
+    "name": "scale",
+    "type": "float",
+    "required": false,
+    "desc": "A scale factor for the image, default is no scaling（默认 1.0）"
+   },
+   {
+    "name": "recenter",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, position the reference coordinate at the center of the new map Default: False（默认 False）"
+   },
+   {
+    "name": "missing",
+    "type": "float",
+    "required": false,
+    "desc": "The value to use for pixels in the output map that are beyond the extent of the input map. Default: numpy.nan（默认 nan）"
+   },
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "Rotation function to use. Defaults to 'scipy'.（默认 'scipy'）"
+   },
+   {
+    "name": "clip",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, clips the pixel values of the output image to the range of the input image (including the value of…（默认 True）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "图像旋转",
+  "orig_params": "angle[astropy.units.Quantity] 可选: The angle (degrees) to rotate counterclockwise.（默认 None）\nrmatrix[numpy.ndarray] 可选: 2x2 linear transformation rotation matrix.（默认 None）\norder[int] 可选: Interpolation order to be used. The precise meaning depends on the rotation method specified by method.…（默认 3）\nscale[float] 可选: A scale factor for the image, default is no scaling（默认 1.0）\nrecenter[bool] 可选: If True, position the reference coordinate at the center of the new map Default: False（默认 False）\nmissing[float] 可选: The value to use for pixels in the output map that are beyond the extent of the input map. Default: numpy.nan（默认 nan）\nmethod[str] 可选: Rotation function to use. Defaults to 'scipy'.（默认 'scipy'）\nclip[bool] 可选: If True, clips the pixel values of the output image to the range of the input image (including the value of…（默认 True）"
+ },
+ {
+  "name": "sunpy_generic_map_resample",
+  "target": "sunpy.map.GenericMap.resample",
+  "desc": "把图像重采样到新维度。返回类型：sunpy.map.GenericMap。主要参数：dimensions、method。属于「太阳物理」，底层调用 sunpy.map.GenericMap.resample。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "dimensions",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Output pixel dimensions. The first argument corresponds to the 'x' axis and the second argument corresponds…"
+   },
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "Method to use for resampling interpolation. * 'nearest' and 'linear' - Use n x 1-D interpolations using…（默认 'linear'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "图像重采样",
+  "orig_params": "dimensions[astropy.units.Quantity] 必填: Output pixel dimensions. The first argument corresponds to the 'x' axis and the second argument corresponds…\nmethod[str] 可选: Method to use for resampling interpolation. * 'nearest' and 'linear' - Use n x 1-D interpolations using…（默认 'linear'）"
+ },
+ {
+  "name": "sunpy_generic_map_superpixel",
+  "target": "sunpy.map.GenericMap.superpixel",
+  "desc": "合并像素降低分辨率。返回类型：sunpy.map.GenericMap。主要参数：dimensions、offset、func、conservative_mask。属于「太阳物理」，底层调用 sunpy.map.GenericMap.superpixel。",
+  "params": [
+   {
+    "name": "dimensions",
+    "type": "tuple",
+    "required": true,
+    "desc": "One superpixel in the new map is equal to (dimension[0], dimension[1]) pixels of the original map. The first…"
+   },
+   {
+    "name": "offset",
+    "type": "tuple",
+    "required": false,
+    "desc": "Offset from (0,0) in original map pixels used to calculate where the data used to make the resulting…（默认 库内部默认）"
+   },
+   {
+    "name": "func",
+    "type": "object",
+    "required": false,
+    "desc": "Function applied to the original data. The function 'func' must take a numpy array as its first argument, and…（默认 库内部默认）"
+   },
+   {
+    "name": "conservative_mask",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, a superpixel is masked if any of its constituent pixels are masked. If False, a superpixel is masked…（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "超像素合并",
+  "orig_params": "dimensions[tuple] 必填: One superpixel in the new map is equal to (dimension[0], dimension[1]) pixels of the original map. The first…\noffset[tuple] 可选: Offset from (0,0) in original map pixels used to calculate where the data used to make the resulting…（默认 库内部默认）\nfunc[object] 可选: Function applied to the original data. The function 'func' must take a numpy array as its first argument, and…（默认 库内部默认）\nconservative_mask[bool] 可选: If True, a superpixel is masked if any of its constituent pixels are masked. If False, a superpixel is masked…（默认 False）"
+ },
+ {
+  "name": "sunpy_generic_map_submap",
+  "target": "sunpy.map.GenericMap.submap",
+  "desc": "按坐标范围裁剪子图。返回类型：sunpy.map.GenericMap。主要参数：bottom_left、top_right、width、height。属于「太阳物理」，底层调用 sunpy.map.GenericMap.submap。",
+  "params": [
+   {
+    "name": "bottom_left",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "The bottom-left coordinate of the rectangle. If a ~astropy.coordinates.SkyCoord it can have shape (2,) and…"
+   },
+   {
+    "name": "top_right",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The top-right coordinate of the rectangle. If top_right is specified width and height must be omitted.（默认 None）"
+   },
+   {
+    "name": "width",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The width of the rectangle. Required if top_right is omitted.（默认 None）"
+   },
+   {
+    "name": "height",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The height of the rectangle. Required if top_right is omitted.（默认 None）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "裁剪子图",
+  "orig_params": "bottom_left[astropy.units.Quantity] 必填: The bottom-left coordinate of the rectangle. If a ~astropy.coordinates.SkyCoord it can have shape (2,) and…\ntop_right[astropy.units.Quantity] 可选: The top-right coordinate of the rectangle. If top_right is specified width and height must be omitted.（默认 None）\nwidth[astropy.units.Quantity] 可选: The width of the rectangle. Required if top_right is omitted.（默认 None）\nheight[astropy.units.Quantity] 可选: The height of the rectangle. Required if top_right is omitted.（默认 None）"
+ },
+ {
+  "name": "sunpy_generic_map_reproject_to",
+  "target": "sunpy.map.GenericMap.reproject_to",
+  "desc": "把图重投影到目标 WCS（使用 reproject）。返回类型：sunpy.map.GenericMap。主要参数：target_wcs、algorithm、return_footprint、auto_extent。属于「太阳物理」，底层调用 sunpy.map.GenericMap.reproject_to。",
+  "params": [
+   {
+    "name": "target_wcs",
+    "type": "dict",
+    "required": true,
+    "desc": "The destination FITS WCS header or WCS instance"
+   },
+   {
+    "name": "algorithm",
+    "type": "str",
+    "required": false,
+    "desc": "One of the supported reproject algorithms (see below)（默认 'interpolation'）"
+   },
+   {
+    "name": "return_footprint",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the footprint is returned in addition to the new map. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "auto_extent",
+    "type": "object",
+    "required": false,
+    "desc": "If None, the extent of the reprojected map comes from the target WCS. If not None, the extent of the…（默认 None）"
+   },
+   {
+    "name": "preserve_date_obs",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the observation time of the reprojected map is set to the observation time of the original map…（默认 False）"
+   },
+   {
+    "name": "reproject_args",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "重投影到另一WCS",
+  "orig_params": "target_wcs[dict] 必填: The destination FITS WCS header or WCS instance\nalgorithm[str] 可选: One of the supported reproject algorithms (see below)（默认 'interpolation'）\nreturn_footprint[bool] 可选: If True, the footprint is returned in addition to the new map. Defaults to False.（默认 False）\nauto_extent[object] 可选: If None, the extent of the reprojected map comes from the target WCS. If not None, the extent of the…（默认 None）\npreserve_date_obs[bool] 可选: If True, the observation time of the reprojected map is set to the observation time of the original map…（默认 False）\nreproject_args[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_world_to_pixel",
+  "target": "sunpy.map.GenericMap.world_to_pixel",
+  "desc": "天球/日面坐标转像素。返回类型：astropy.units.Quantity。主要参数：coordinate。属于「太阳物理」，底层调用 sunpy.map.GenericMap.world_to_pixel。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The coordinate object to convert to pixel coordinates."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "世界到像素",
+  "orig_params": "coordinate[SkyCoord] 必填: The coordinate object to convert to pixel coordinates."
+ },
+ {
+  "name": "sunpy_generic_map_pixel_to_world",
+  "target": "sunpy.map.GenericMap.pixel_to_world",
+  "desc": "像素转日面坐标。返回类型：astropy.coordinates.SkyCoord。主要参数：x、y。属于「太阳物理」，底层调用 sunpy.map.GenericMap.pixel_to_world。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "x",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Pixel coordinate of the CTYPE1 axis. (Normally solar-x)."
+   },
+   {
+    "name": "y",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Pixel coordinate of the CTYPE2 axis. (Normally solar-y)."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "像素到世界",
+  "orig_params": "x[astropy.units.Quantity] 必填: Pixel coordinate of the CTYPE1 axis. (Normally solar-x).\ny[astropy.units.Quantity] 必填: Pixel coordinate of the CTYPE2 axis. (Normally solar-y)."
+ },
+ {
+  "name": "sunpy_generic_map_plot",
+  "target": "sunpy.map.GenericMap.plot",
+  "desc": "带 WCSAxes 的图像绘制，自动使用仪器色表。主要参数：annotate、axes、title、autoalign。属于「太阳物理」，底层调用 sunpy.map.GenericMap.plot。需配合 matplotlib 使用，在当前或指定坐标轴上作图。",
+  "params": [
+   {
+    "name": "annotate",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the data is plotted at its natural scale; with title and axis labels.（默认 True）"
+   },
+   {
+    "name": "axes",
+    "type": "Axes",
+    "required": false,
+    "desc": "If provided the image will be plotted on the given axes. Else the current Matplotlib axes will be used.（默认 None）"
+   },
+   {
+    "name": "title",
+    "type": "str",
+    "required": false,
+    "desc": "The plot title. If True, uses the default title for this map.（默认 True）"
+   },
+   {
+    "name": "autoalign",
+    "type": "bool",
+    "required": false,
+    "desc": "If other than False, the plotting accounts for any difference between the WCS of the map and the WCS of the…（默认 True）"
+   },
+   {
+    "name": "clip_interval",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "If provided, the data will be clipped to the percentile interval bounded by the two numbers.（默认 None）"
+   },
+   {
+    "name": "imshow_kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "绘制太阳图",
+  "orig_params": "annotate[bool] 可选: If True, the data is plotted at its natural scale; with title and axis labels.（默认 True）\naxes[Axes] 可选: If provided the image will be plotted on the given axes. Else the current Matplotlib axes will be used.（默认 None）\ntitle[str] 可选: The plot title. If True, uses the default title for this map.（默认 True）\nautoalign[bool] 可选: If other than False, the plotting accounts for any difference between the WCS of the map and the WCS of the…（默认 True）\nclip_interval[astropy.units.Quantity] 可选: If provided, the data will be clipped to the percentile interval bounded by the two numbers.（默认 None）\nimshow_kwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_draw_limb",
+  "target": "sunpy.map.GenericMap.draw_limb",
+  "desc": "叠加光球边缘线。返回类型：matplotlib.patches.Polygon。主要参数：axes、resolution、kwargs。属于「太阳物理」，底层调用 sunpy.map.GenericMap.draw_limb。需配合 matplotlib 使用，在当前或指定坐标轴上作图。",
+  "params": [
+   {
+    "name": "axes",
+    "type": "object",
+    "required": false,
+    "desc": "Axes to plot limb on or None to use current axes.（默认 None）"
+   },
+   {
+    "name": "resolution",
+    "type": "int",
+    "required": false,
+    "desc": "The number of points to use to represent the limb.（默认 1000）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "绘制日面边缘",
+  "orig_params": "axes[object] 可选: Axes to plot limb on or None to use current axes.（默认 None）\nresolution[int] 可选: The number of points to use to represent the limb.（默认 1000）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_draw_grid",
+  "target": "sunpy.map.GenericMap.draw_grid",
+  "desc": "叠加太阳经纬度网格。主要参数：axes、grid_spacing、annotate、system。属于「太阳物理」，底层调用 sunpy.map.GenericMap.draw_grid。需配合 matplotlib 使用，在当前或指定坐标轴上作图。",
+  "params": [
+   {
+    "name": "axes",
+    "type": "object",
+    "required": false,
+    "desc": "Axes to plot limb on, or None to use current axes.（默认 None）"
+   },
+   {
+    "name": "grid_spacing",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Spacing for longitude and latitude grid, if length two it specifies (lon, lat) spacing.（默认 库内部默认）"
+   },
+   {
+    "name": "annotate",
+    "type": "bool",
+    "required": false,
+    "desc": "Passing False disables the axes labels and the ticks on the top and right axes.（默认 True）"
+   },
+   {
+    "name": "system",
+    "type": "str",
+    "required": false,
+    "desc": "Coordinate system for the grid. Must be 'stonyhurst' or 'carrington'.（默认 'stonyhurst'）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "绘制经纬网",
+  "orig_params": "axes[object] 可选: Axes to plot limb on, or None to use current axes.（默认 None）\ngrid_spacing[astropy.units.Quantity] 可选: Spacing for longitude and latitude grid, if length two it specifies (lon, lat) spacing.（默认 库内部默认）\nannotate[bool] 可选: Passing False disables the axes labels and the ticks on the top and right axes.（默认 True）\nsystem[str] 可选: Coordinate system for the grid. Must be 'stonyhurst' or 'carrington'.（默认 'stonyhurst'）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_draw_contours",
+  "target": "sunpy.map.GenericMap.draw_contours",
+  "desc": "叠加等值线。返回类型：list。主要参数：levels、axes、fill、contour_args。属于「太阳物理」，底层调用 sunpy.map.GenericMap.draw_contours。需配合 matplotlib 使用，在当前或指定坐标轴上作图。",
+  "params": [
+   {
+    "name": "levels",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "A list of numbers indicating the contours to draw. These are given as a percentage of the maximum value of…"
+   },
+   {
+    "name": "axes",
+    "type": "Axes",
+    "required": false,
+    "desc": "The axes on which to plot the contours. Defaults to the current axes.（默认 None）"
+   },
+   {
+    "name": "fill",
+    "type": "bool",
+    "required": false,
+    "desc": "Determines the style of the contours: - If False (default), contours are drawn as lines using…（默认 False）"
+   },
+   {
+    "name": "contour_args",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "绘制等值线",
+  "orig_params": "levels[astropy.units.Quantity] 必填: A list of numbers indicating the contours to draw. These are given as a percentage of the maximum value of…\naxes[Axes] 可选: The axes on which to plot the contours. Defaults to the current axes.（默认 None）\nfill[bool] 可选: Determines the style of the contours: - If False (default), contours are drawn as lines using…（默认 False）\ncontour_args[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_draw_quadrangle",
+  "target": "sunpy.map.GenericMap.draw_quadrangle",
+  "desc": "叠加天球四边形。主要参数：bottom_left、width、height、axes。属于「太阳物理」，底层调用 sunpy.map.GenericMap.draw_quadrangle。需配合 matplotlib 使用，在当前或指定坐标轴上作图。",
+  "params": [
+   {
+    "name": "bottom_left",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The bottom-left coordinate of the rectangle. If a ~astropy.coordinates.SkyCoord it can have shape (2,) and…"
+   },
+   {
+    "name": "width",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The width of the quadrangle. Required if top_right is omitted.（默认 None）"
+   },
+   {
+    "name": "height",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The height of the quadrangle. Required if top_right is omitted.（默认 None）"
+   },
+   {
+    "name": "axes",
+    "type": "Axes",
+    "required": false,
+    "desc": "The axes on which to plot the quadrangle. Defaults to the current axes.（默认 None）"
+   },
+   {
+    "name": "top_right",
+    "type": "SkyCoord",
+    "required": false,
+    "desc": "The top-right coordinate of the quadrangle. If top_right is specified width and height must be omitted.（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "绘制四边形",
+  "orig_params": "bottom_left[SkyCoord] 必填: The bottom-left coordinate of the rectangle. If a ~astropy.coordinates.SkyCoord it can have shape (2,) and…\nwidth[astropy.units.Quantity] 可选: The width of the quadrangle. Required if top_right is omitted.（默认 None）\nheight[astropy.units.Quantity] 可选: The height of the quadrangle. Required if top_right is omitted.（默认 None）\naxes[Axes] 可选: The axes on which to plot the quadrangle. Defaults to the current axes.（默认 None）\ntop_right[SkyCoord] 可选: The top-right coordinate of the quadrangle. If top_right is specified width and height must be omitted.（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_map_save",
+  "target": "sunpy.map.GenericMap.save",
+  "desc": "写出为 FITS 文件。主要参数：filepath、filetype、kwargs。属于「太阳物理」，底层调用 sunpy.map.GenericMap.save。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "filepath",
+    "type": "str",
+    "required": true,
+    "desc": "Location to save the file to. If filepath ends with \".asdf\" and filetype=\"auto\", an ASDF file will be created."
+   },
+   {
+    "name": "filetype",
+    "type": "str",
+    "required": false,
+    "desc": "The file format to save the map in. Defaults to \"auto\" which infers the format from the file extension.…（默认 'auto'）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "保存图为FITS",
+  "orig_params": "filepath[str] 必填: Location to save the file to. If filepath ends with \".asdf\" and filetype=\"auto\", an ASDF file will be created.\nfiletype[str] 可选: The file format to save the map in. Defaults to \"auto\" which infers the format from the file extension.…（默认 'auto'）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_make_fitswcs_header",
+  "target": "sunpy.map.make_fitswcs_header",
+  "desc": "由数据形状与参考坐标创建 FITS-WCS 头。返回类型：sunpy.util.MetaDict。主要参数：data、coordinate、reference_pixel、scale。属于「WCS与天球投影」，底层调用 sunpy.map.make_fitswcs_header。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Array data of Map for which a header is required, or the shape of the data array (in numpy order, i.e.…"
+   },
+   {
+    "name": "coordinate",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The coordinate of the reference pixel."
+   },
+   {
+    "name": "reference_pixel",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Reference pixel along each axis. These are expected to be Cartestian ordered, i.e the first index is the x…（默认 None）"
+   },
+   {
+    "name": "scale",
+    "type": "object",
+    "required": false,
+    "desc": "Pixel scaling along x and y axis (i.e. the spatial scale of the pixels (dx, dy)). These are expected to be…（默认 None）"
+   },
+   {
+    "name": "rotation_angle",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Coordinate system rotation angle, will be converted to a rotation matrix and stored in the PCi_j matrix. Can…（默认 None）"
+   },
+   {
+    "name": "rotation_matrix",
+    "type": "object",
+    "required": false,
+    "desc": "Matrix describing the rotation required to align solar North with the top of the image in FITS PCi_j…（默认 None）"
+   },
+   {
+    "name": "instrument",
+    "type": "str",
+    "required": false,
+    "desc": "Name of the instrument of the observation.（默认 None）"
+   },
+   {
+    "name": "telescope",
+    "type": "str",
+    "required": false,
+    "desc": "Name of the telescope of the observation.（默认 None）"
+   },
+   {
+    "name": "observatory",
+    "type": "str",
+    "required": false,
+    "desc": "Name of the observatory of the observation.（默认 None）"
+   },
+   {
+    "name": "detector",
+    "type": "str",
+    "required": false,
+    "desc": "Name of the detector of the observation.（默认 None）"
+   },
+   {
+    "name": "wavelength",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Wavelength of the observation as an astropy quantity, e.g. 171*u.angstrom. From this keyword, the meta…（默认 None）"
+   },
+   {
+    "name": "exposure",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Exposure time of the observation（默认 None）"
+   },
+   {
+    "name": "projection_code",
+    "type": "str",
+    "required": false,
+    "desc": "The FITS standard projection code for the new header.（默认 'TAN'）"
+   },
+   {
+    "name": "unit",
+    "type": "Unit",
+    "required": false,
+    "desc": "Units of the array data of the Map. This will populate the the 'bunit' meta keyword. If data is a…（默认 None）"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "构造WCS头",
+  "orig_params": "data[numpy.ndarray] 必填: Array data of Map for which a header is required, or the shape of the data array (in numpy order, i.e.…\ncoordinate[SkyCoord] 必填: The coordinate of the reference pixel.\nreference_pixel[astropy.units.Quantity] 可选: Reference pixel along each axis. These are expected to be Cartestian ordered, i.e the first index is the x…（默认 None）\nscale[object] 可选: Pixel scaling along x and y axis (i.e. the spatial scale of the pixels (dx, dy)). These are expected to be…（默认 None）\nrotation_angle[astropy.units.Quantity] 可选: Coordinate system rotation angle, will be converted to a rotation matrix and stored in the PCi_j matrix. Can…（默认 None）\nrotation_matrix[object] 可选: Matrix describing the rotation required to align solar North with the top of the image in FITS PCi_j…（默认 None）\ninstrument[str] 可选: Name of the instrument of the observation.（默认 None）\ntelescope[str] 可选: Name of the telescope of the observation.（默认 None）\nobservatory[str] 可选: Name of the observatory of the observation.（默认 None）\ndetector[str] 可选: Name of the detector of the observation.（默认 None）\nwavelength[astropy.units.Quantity] 可选: Wavelength of the observation as an astropy quantity, e.g. 171*u.angstrom. From this keyword, the meta…（默认 None）\nexposure[astropy.units.Quantity] 可选: Exposure time of the observation（默认 None）\nprojection_code[str] 可选: The FITS standard projection code for the new header.（默认 'TAN'）\nunit[Unit] 可选: Units of the array data of the Map. This will populate the the 'bunit' meta keyword. If data is a…（默认 None）"
+ },
+ {
+  "name": "sunpy_make_heliographic_header",
+  "target": "sunpy.map.make_heliographic_header",
+  "desc": "创建 Carrington 经纬度全日面 WCS 头。返回类型：sunpy.util.MetaDict。主要参数：date、observer_coordinate、shape、frame。属于「WCS与天球投影」，底层调用 sunpy.map.make_heliographic_header。",
+  "params": [
+   {
+    "name": "date",
+    "type": "object",
+    "required": true,
+    "desc": "Date for the output header."
+   },
+   {
+    "name": "observer_coordinate",
+    "type": "object",
+    "required": true,
+    "desc": "Observer coordinate for the output header."
+   },
+   {
+    "name": "shape",
+    "type": "object",
+    "required": true,
+    "desc": "Output map shape, number of pixels in (latitude, longitude)."
+   },
+   {
+    "name": "frame",
+    "type": "object",
+    "required": true,
+    "desc": "Coordinate frame."
+   },
+   {
+    "name": "projection_code",
+    "type": "str",
+    "required": false,
+    "desc": "Projection to use for the latitude coordinate.（默认 'CAR'）"
+   },
+   {
+    "name": "map_center_longitude",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Heliographic longitude of the map center（默认 库内部默认）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "日面全球图WCS头",
+  "orig_params": "date[object] 必填: Date for the output header.\nobserver_coordinate[object] 必填: Observer coordinate for the output header.\nshape[object] 必填: Output map shape, number of pixels in (latitude, longitude).\nframe[object] 必填: Coordinate frame.\nprojection_code[str] 可选: Projection to use for the latitude coordinate.（默认 'CAR'）\nmap_center_longitude[astropy.units.Quantity] 可选: Heliographic longitude of the map center（默认 库内部默认）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_contains_full_disk",
+  "target": "sunpy.map.contains_full_disk",
+  "desc": "判断图是否包含全部日面。返回类型：bool。主要参数：smap。属于「太阳物理」，底层调用 sunpy.map.contains_full_disk。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "smap",
+    "type": "GenericMap",
+    "required": true,
+    "desc": "A map in helioprojective Cartesian coordinates."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "是否含全日面",
+  "orig_params": "smap[GenericMap] 必填: A map in helioprojective Cartesian coordinates."
+ },
+ {
+  "name": "sunpy_coordinate_is_on_solar_disk",
+  "target": "sunpy.map.coordinate_is_on_solar_disk",
+  "desc": "判断坐标位于日面内。返回类型：bool。主要参数：coordinates。属于「太阳物理」，底层调用 sunpy.map.coordinate_is_on_solar_disk。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The input coordinate. The coordinate frame must be ~sunpy.coordinates.Helioprojective."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "坐标是否在日面上",
+  "orig_params": "coordinates[SkyCoord] 必填: The input coordinate. The coordinate frame must be ~sunpy.coordinates.Helioprojective."
+ },
+ {
+  "name": "sunpy_all_coordinates_from_map",
+  "target": "sunpy.map.all_coordinates_from_map",
+  "desc": "返回图中所有像素的 SkyCoord。返回类型：astropy.coordinates.SkyCoord。主要参数：smap。属于「太阳物理」，底层调用 sunpy.map.all_coordinates_from_map。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "smap",
+    "type": "GenericMap",
+    "required": true,
+    "desc": "A SunPy map."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "全像素坐标",
+  "orig_params": "smap[GenericMap] 必填: A SunPy map."
+ },
+ {
+  "name": "sunpy_sample_at_coords",
+  "target": "sunpy.map.sample_at_coords",
+  "desc": "在指定坐标处采样图值。返回类型：astropy.units.Quantity。主要参数：smap、coordinates。属于「太阳物理」，底层调用 sunpy.map.sample_at_coords。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "smap",
+    "type": "GenericMap",
+    "required": true,
+    "desc": "A SunPy map."
+   },
+   {
+    "name": "coordinates",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "Input coordinates."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "沿坐标采样",
+  "orig_params": "smap[GenericMap] 必填: A SunPy map.\ncoordinates[SkyCoord] 必填: Input coordinates."
+ },
+ {
+  "name": "sunpy_pixelate_coord_path",
+  "target": "sunpy.map.pixelate_coord_path",
+  "desc": "把坐标路径转成像素序列。返回类型：astropy.coordinates.SkyCoord。主要参数：smap、coord_path、bresenham。属于「太阳物理」，底层调用 sunpy.map.pixelate_coord_path。",
+  "params": [
+   {
+    "name": "smap",
+    "type": "GenericMap",
+    "required": true,
+    "desc": "The sunpy map."
+   },
+   {
+    "name": "coord_path",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The coordinate path."
+   },
+   {
+    "name": "bresenham",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, use Bresenham's line algorithm instead of the default algorithm. Bresenham's line algorithm is…（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "路径像素化",
+  "orig_params": "smap[GenericMap] 必填: The sunpy map.\ncoord_path[SkyCoord] 必填: The coordinate path.\nbresenham[bool] 可选: If True, use Bresenham's line algorithm instead of the default algorithm. Bresenham's line algorithm is…（默认 False）"
+ },
+ {
+  "name": "sunpy_solar_angular_radius",
+  "target": "sunpy.map.solar_angular_radius",
+  "desc": "计算太阳视角半径。返回类型：astropy.units.Quantity。主要参数：coordinates。属于「太阳物理」，底层调用 sunpy.map.solar_angular_radius。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The input coordinate. The coordinate frame must be ~sunpy.coordinates.Helioprojective."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳角半径",
+  "orig_params": "coordinates[SkyCoord] 必填: The input coordinate. The coordinate frame must be ~sunpy.coordinates.Helioprojective."
+ },
+ {
+  "name": "sunpy_map_sequence_create",
+  "target": "sunpy.map.MapSequence",
+  "desc": "时间序列 Map，可批量叠加、动画。主要参数：args、sortby。属于「太阳物理」，底层调用 sunpy.map.MapSequence。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "sortby",
+    "type": "str",
+    "required": false,
+    "desc": "Method by which the MapSequence should be sorted along the z-axis. Defaults to sorting by: \"date\" and is the…（默认 'date'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "图序列",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nsortby[str] 可选: Method by which the MapSequence should be sorted along the z-axis. Defaults to sorting by: \"date\" and is the…（默认 'date'）"
+ },
+ {
+  "name": "sunpy_composite_map_create",
+  "target": "sunpy.map.CompositeMap",
+  "desc": "叠加多张 Map 绘制。主要参数：args、kwargs。属于「太阳物理」，底层调用 sunpy.map.CompositeMap。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "复合图",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_parse_time",
+  "target": "sunpy.time.parse_time",
+  "desc": "sunpy 灵活时间解析函数，返回 astropy Time。返回类型：astropy.time.Time。主要参数：time_string、format、kwargs。属于「坐标与时间系统」，底层调用 sunpy.time.parse_time。",
+  "params": [
+   {
+    "name": "time_string",
+    "type": "tuple",
+    "required": true,
+    "desc": "Time to parse."
+   },
+   {
+    "name": "format",
+    "type": "str",
+    "required": false,
+    "desc": "Specifies the format user has provided the time_string in. We support the same formats as astropy.time.Time,…（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "解析时间",
+  "orig_params": "time_string[tuple] 必填: Time to parse.\nformat[str] 可选: Specifies the format user has provided the time_string in. We support the same formats as astropy.time.Time,…（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_time_range_create",
+  "target": "sunpy.time.TimeRange",
+  "desc": "表示开始-结束的时间范围，可分割、迭代。主要参数：a、b、format。属于「坐标与时间系统」，底层调用 sunpy.time.TimeRange。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "a",
+    "type": "tuple",
+    "required": true,
+    "desc": "A time (the start time) specified as a parse_time-compatible time string, number, or a datetime object."
+   },
+   {
+    "name": "b",
+    "type": "tuple",
+    "required": false,
+    "desc": "Another time (the end time) specified as a parse_time-compatible time string, number, or a datetime object.…（默认 None）"
+   },
+   {
+    "name": "format",
+    "type": "object",
+    "required": false,
+    "desc": "format，详见官方 API 文档（默认 None）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "时间范围",
+  "orig_params": "a[tuple] 必填: A time (the start time) specified as a parse_time-compatible time string, number, or a datetime object.\nb[tuple] 可选: Another time (the end time) specified as a parse_time-compatible time string, number, or a datetime object.…（默认 None）\nformat[object] 可选: format，详见官方 API 文档（默认 None）"
+ },
+ {
+  "name": "sunpy_is_time",
+  "target": "sunpy.time.is_time",
+  "desc": "判断输入是否可解析为时间。返回类型：bool。主要参数：time_string、time_format。属于「坐标与时间系统」，底层调用 sunpy.time.is_time。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time_string",
+    "type": "int",
+    "required": true,
+    "desc": "Date to parse."
+   },
+   {
+    "name": "time_format",
+    "type": "object",
+    "required": false,
+    "desc": "Specifies the format user has provided the time_string in.（默认 None）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "是否时间",
+  "orig_params": "time_string[int] 必填: Date to parse.\ntime_format[object] 可选: Specifies the format user has provided the time_string in.（默认 None）"
+ },
+ {
+  "name": "sunpy_julian_centuries",
+  "target": "sunpy.time.julian_centuries",
+  "desc": "计算自 J2000 起的儒略世纪数。主要参数：t。属于「坐标与时间系统」，底层调用 sunpy.time.julian_centuries。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "str",
+    "required": false,
+    "desc": "t，详见官方 API 文档（默认 'now'）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "儒略世纪数",
+  "orig_params": "t[str] 可选: t，详见官方 API 文档（默认 'now'）"
+ },
+ {
+  "name": "sunpy_get_earth",
+  "target": "sunpy.coordinates.get_earth",
+  "desc": "给定时间返回地球在 HeliographicStonyhurst 中的位置。返回类型：astropy.coordinates.SkyCoord。主要参数：time、include_velocity。属于「太阳物理」，底层调用 sunpy.coordinates.get_earth。",
+  "params": [
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format（默认 'now'）"
+   },
+   {
+    "name": "include_velocity",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, include the Earth's velocity in the output coordinate. Defaults to False.（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "地球日心位置",
+  "orig_params": "time[tuple] 可选: Time to use in a parse_time-compatible format（默认 'now'）\ninclude_velocity[bool] 可选: If True, include the Earth's velocity in the output coordinate. Defaults to False.（默认 False）"
+ },
+ {
+  "name": "sunpy_get_horizons_coord",
+  "target": "sunpy.coordinates.get_horizons_coord",
+  "desc": "从 JPL Horizons 获取天体在 sunpy 框架下的坐标。返回类型：astropy.coordinates.SkyCoord。主要参数：body、time、id_type、include_velocity。属于「太阳物理」，底层调用 sunpy.coordinates.get_horizons_coord。",
+  "params": [
+   {
+    "name": "body",
+    "type": "str",
+    "required": true,
+    "desc": "The solar-system body for which to calculate positions. One can also use the search form linked below to find…"
+   },
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format. Alternatively, this can be a dictionary defining a range of…（默认 'now'）"
+   },
+   {
+    "name": "id_type",
+    "type": "object",
+    "required": false,
+    "desc": "Defaults to None, which searches major bodies first, and then searches small bodies (comets and asteroids) if…（默认 None）"
+   },
+   {
+    "name": "include_velocity",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, include the body's velocity in the output coordinate. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "log_response",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, send the received response to the logger at the INFO level. This is useful for viewing/recording the…（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Horizons日心坐标",
+  "orig_params": "body[str] 必填: The solar-system body for which to calculate positions. One can also use the search form linked below to find…\ntime[tuple] 可选: Time to use in a parse_time-compatible format. Alternatively, this can be a dictionary defining a range of…（默认 'now'）\nid_type[object] 可选: Defaults to None, which searches major bodies first, and then searches small bodies (comets and asteroids) if…（默认 None）\ninclude_velocity[bool] 可选: If True, include the body's velocity in the output coordinate. Defaults to False.（默认 False）\nlog_response[bool] 可选: If True, send the received response to the logger at the INFO level. This is useful for viewing/recording the…（默认 False）"
+ },
+ {
+  "name": "sunpy_get_body_heliographic_stonyhurst",
+  "target": "sunpy.coordinates.get_body_heliographic_stonyhurst",
+  "desc": "计算太阳系天体的 HGS 坐标。主要参数：body、time、observer、include_velocity。属于「太阳物理」，底层调用 sunpy.coordinates.get_body_heliographic_stonyhurst。",
+  "params": [
+   {
+    "name": "body",
+    "type": "str",
+    "required": true,
+    "desc": "The solar-system body for which to calculate positions"
+   },
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format（默认 'now'）"
+   },
+   {
+    "name": "observer",
+    "type": "SkyCoord",
+    "required": false,
+    "desc": "If None, the returned coordinate is the instantaneous or \"true\" location. If not None, the returned…（默认 None）"
+   },
+   {
+    "name": "include_velocity",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, include the body's velocity in the output coordinate. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "quiet",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the function will not emit logger output for light-travel-time corrections. Defaults to False.（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "天体日面坐标",
+  "orig_params": "body[str] 必填: The solar-system body for which to calculate positions\ntime[tuple] 可选: Time to use in a parse_time-compatible format（默认 'now'）\nobserver[SkyCoord] 可选: If None, the returned coordinate is the instantaneous or \"true\" location. If not None, the returned…（默认 None）\ninclude_velocity[bool] 可选: If True, include the body's velocity in the output coordinate. Defaults to False.（默认 False）\nquiet[bool] 可选: If True, the function will not emit logger output for light-travel-time corrections. Defaults to False.（默认 False）"
+ },
+ {
+  "name": "sunpy_helioprojective_create",
+  "target": "sunpy.coordinates.Helioprojective",
+  "desc": "定义观测者视角的 Helioprojective（Tx,Ty）框架。主要参数：args、kwargs。属于「太阳物理」，底层调用 sunpy.coordinates.Helioprojective。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "日面投影坐标系",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_heliographic_stonyhurst_create",
+  "target": "sunpy.coordinates.HeliographicStonyhurst",
+  "desc": "定义 HGS 经纬度框架。主要参数：args、kwargs。属于「太阳物理」，底层调用 sunpy.coordinates.HeliographicStonyhurst。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Stonyhurst日面经纬",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_heliographic_carrington_create",
+  "target": "sunpy.coordinates.HeliographicCarrington",
+  "desc": "定义 Carrington 自转系日面坐标。主要参数：args、kwargs。属于「太阳物理」，底层调用 sunpy.coordinates.HeliographicCarrington。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Carrington日面经纬",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_rotated_sun_frame_create",
+  "target": "sunpy.coordinates.RotatedSunFrame",
+  "desc": "应用太阳差旋转到另一时间的坐标框架。主要参数：args、kwargs。属于「太阳物理」，底层调用 sunpy.coordinates.RotatedSunFrame。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "差旋转坐标框架",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_propagate_with_solar_surface",
+  "target": "sunpy.coordinates.propagate_with_solar_surface",
+  "desc": "上下文：坐标随太阳自转到另一时间。主要参数：rotation_model。属于「太阳物理」，底层调用 sunpy.coordinates.propagate_with_solar_surface。",
+  "params": [
+   {
+    "name": "rotation_model",
+    "type": "str",
+    "required": false,
+    "desc": "Accepted model names are 'howard' (default), 'snodgrass', 'allen', and 'rigid'. See the documentation for…（默认 'howard'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "沿太阳表面传播",
+  "orig_params": "rotation_model[str] 可选: Accepted model names are 'howard' (default), 'snodgrass', 'allen', and 'rigid'. See the documentation for…（默认 'howard'）"
+ },
+ {
+  "name": "sunpy_transform_with_sun_center",
+  "target": "sunpy.coordinates.transform_with_sun_center",
+  "desc": "上下文：转换时保持日心不变。无需额外参数。属于「太阳物理」，底层调用 sunpy.coordinates.transform_with_sun_center。",
+  "params": [],
+  "domain": "太阳物理",
+  "cn": "以日心转换",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "sunpy_b0",
+  "target": "sunpy.coordinates.sun.B0",
+  "desc": "计算指定时间太阳 B0（日面中心纬度）。返回类型：astropy.coordinates.Latitude。主要参数：time。属于「太阳物理」，底层调用 sunpy.coordinates.sun.B0。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳B0角",
+  "orig_params": "time[tuple] 可选: Time to use in a parse_time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_l0",
+  "target": "sunpy.coordinates.sun.L0",
+  "desc": "计算太阳中心 Carrington 经度。返回类型：astropy.coordinates.Longitude。主要参数：time、light_travel_time_correction、nearest_point、aberration_correction。属于「太阳物理」，底层调用 sunpy.coordinates.sun.L0。",
+  "params": [
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format（默认 'now'）"
+   },
+   {
+    "name": "light_travel_time_correction",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, apply the correction for light travel time from Sun to Earth. Defaults to True.（默认 True）"
+   },
+   {
+    "name": "nearest_point",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, calculate the light travel time to the nearest point on the Sun's surface rather than the light…（默认 True）"
+   },
+   {
+    "name": "aberration_correction",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, apply the stellar-aberration correction due to Earth's motion. Defaults to False.（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳L0角",
+  "orig_params": "time[tuple] 可选: Time to use in a parse_time-compatible format（默认 'now'）\nlight_travel_time_correction[bool] 可选: If True, apply the correction for light travel time from Sun to Earth. Defaults to True.（默认 True）\nnearest_point[bool] 可选: If True, calculate the light travel time to the nearest point on the Sun's surface rather than the light…（默认 True）\naberration_correction[bool] 可选: If True, apply the stellar-aberration correction due to Earth's motion. Defaults to False.（默认 False）"
+ },
+ {
+  "name": "sunpy_p",
+  "target": "sunpy.coordinates.sun.P",
+  "desc": "计算太阳自转轴位置角。返回类型：astropy.coordinates.Angle。主要参数：time。属于「太阳物理」，底层调用 sunpy.coordinates.sun.P。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳P角",
+  "orig_params": "time[tuple] 可选: Time to use in a parse_time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_angular_radius",
+  "target": "sunpy.coordinates.sun.angular_radius",
+  "desc": "计算太阳视角半径。主要参数：t。属于「太阳物理」，底层调用 sunpy.coordinates.sun.angular_radius。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse-time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳视角半径",
+  "orig_params": "t[tuple] 可选: Time to use in a parse-time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_carrington_rotation_number",
+  "target": "sunpy.coordinates.sun.carrington_rotation_number",
+  "desc": "计算 Carrington 自转周数。主要参数：t。属于「太阳物理」，底层调用 sunpy.coordinates.sun.carrington_rotation_number。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse-time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Carrington自转周数",
+  "orig_params": "t[tuple] 可选: Time to use in a parse-time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_carrington_rotation_time",
+  "target": "sunpy.coordinates.sun.carrington_rotation_time",
+  "desc": "由自转周数求时间。返回类型：astropy.time.Time。主要参数：crot、longitude。属于「太阳物理」，底层调用 sunpy.coordinates.sun.carrington_rotation_time。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "crot",
+    "type": "int",
+    "required": true,
+    "desc": "Carrington rotation number(s). Can be a fractional rotation number."
+   },
+   {
+    "name": "longitude",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Carrington longitude(s), which must be > 0 degrees and <= 360 degrees. If provided, crot must be strictly…（默认 None）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Carrington周起始时间",
+  "orig_params": "crot[int] 必填: Carrington rotation number(s). Can be a fractional rotation number.\nlongitude[astropy.units.Quantity] 可选: Carrington longitude(s), which must be > 0 degrees and <= 360 degrees. If provided, crot must be strictly…（默认 None）"
+ },
+ {
+  "name": "sunpy_earth_distance",
+  "target": "sunpy.coordinates.sun.earth_distance",
+  "desc": "计算日地距离。返回类型：astropy.coordinates.Distance。主要参数：time。属于「太阳物理」，底层调用 sunpy.coordinates.sun.earth_distance。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse_time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "日地距离",
+  "orig_params": "time[tuple] 可选: Time to use in a parse_time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_true_longitude",
+  "target": "sunpy.coordinates.sun.true_longitude",
+  "desc": "计算太阳几何真黄经。主要参数：t。属于「太阳物理」，底层调用 sunpy.coordinates.sun.true_longitude。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse-time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳真黄经",
+  "orig_params": "t[tuple] 可选: Time to use in a parse-time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_sky_position",
+  "target": "sunpy.coordinates.sun.sky_position",
+  "desc": "太阳在天球上的位置（RA/Dec）。主要参数：t、equinox_of_date。属于「太阳物理」，底层调用 sunpy.coordinates.sun.sky_position。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse-time-compatible format（默认 'now'）"
+   },
+   {
+    "name": "equinox_of_date",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, output is referred to the true equinox of date. Otherwise, output is referred to the J2000.0 epoch…（默认 True）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳赤道坐标",
+  "orig_params": "t[tuple] 可选: Time to use in a parse-time-compatible format（默认 'now'）\nequinox_of_date[bool] 可选: If True, output is referred to the true equinox of date. Otherwise, output is referred to the J2000.0 epoch…（默认 True）"
+ },
+ {
+  "name": "sunpy_eclipse_amount",
+  "target": "sunpy.coordinates.sun.eclipse_amount",
+  "desc": "计算指定地点日食的遮挡量。主要参数：observer、moon_radius。属于「太阳物理」，底层调用 sunpy.coordinates.sun.eclipse_amount。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "observer",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The observer location and observation time."
+   },
+   {
+    "name": "moon_radius",
+    "type": "str",
+    "required": false,
+    "desc": "The choice of which radius to use for the Moon. The default option ('IAU') is the IAU mean radius (R_moon /…（默认 'IAU'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "日食食分",
+  "orig_params": "observer[SkyCoord] 必填: The observer location and observation time.\nmoon_radius[str] 可选: The choice of which radius to use for the Moon. The default option ('IAU') is the IAU mean radius (R_moon /…（默认 'IAU'）"
+ },
+ {
+  "name": "sunpy_mean_obliquity_of_ecliptic",
+  "target": "sunpy.coordinates.sun.mean_obliquity_of_ecliptic",
+  "desc": "计算平均黄赤交角。主要参数：t。属于「太阳物理」，底层调用 sunpy.coordinates.sun.mean_obliquity_of_ecliptic。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse-time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "平黄赤交角",
+  "orig_params": "t[tuple] 可选: Time to use in a parse-time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_print_params",
+  "target": "sunpy.coordinates.sun.print_params",
+  "desc": "打印当前时刻太阳主要参数。主要参数：t。属于「太阳物理」，底层调用 sunpy.coordinates.sun.print_params。",
+  "params": [
+   {
+    "name": "t",
+    "type": "tuple",
+    "required": false,
+    "desc": "Time to use in a parse-time-compatible format（默认 'now'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "输出太阳参数",
+  "orig_params": "t[tuple] 可选: Time to use in a parse-time-compatible format（默认 'now'）"
+ },
+ {
+  "name": "sunpy_solar_rotate_coordinate",
+  "target": "sunpy.physics.differential_rotation.solar_rotate_coordinate",
+  "desc": "将日面坐标按差旋转传播到新时间。返回类型：astropy.coordinates.SkyCoord。主要参数：coordinate、observer、time、diff_rot_kwargs。属于「太阳物理」，底层调用 sunpy.physics.differential_rotation.solar_rotate_coordinate。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "Any valid coordinate which is transformable to Heliographic Stonyhurst."
+   },
+   {
+    "name": "observer",
+    "type": "BaseCoordinateFrame",
+    "required": false,
+    "desc": "The location of the new observer in space and time (the observer must have an interpretable obstime property).（默认 None）"
+   },
+   {
+    "name": "time",
+    "type": "Time",
+    "required": false,
+    "desc": "~astropy.time.Time, ~astropy.time.TimeDelta, ~astropy.units.Quantity, None（默认 None）"
+   },
+   {
+    "name": "diff_rot_kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "差旋转坐标",
+  "orig_params": "coordinate[SkyCoord] 必填: Any valid coordinate which is transformable to Heliographic Stonyhurst.\nobserver[BaseCoordinateFrame] 可选: The location of the new observer in space and time (the observer must have an interpretable obstime property).（默认 None）\ntime[Time] 可选: ~astropy.time.Time, ~astropy.time.TimeDelta, ~astropy.units.Quantity, None（默认 None）\ndiff_rot_kwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_differential_rotate",
+  "target": "sunpy.physics.differential_rotation.differential_rotate",
+  "desc": "把整幅 Map 按差旋转投影到新时间。返回类型：sunpy.map.GenericMap。主要参数：smap、observer、time、diff_rot_kwargs。属于「太阳物理」，底层调用 sunpy.physics.differential_rotation.differential_rotate。",
+  "params": [
+   {
+    "name": "smap",
+    "type": "GenericMap",
+    "required": true,
+    "desc": "Original map that we want to transform."
+   },
+   {
+    "name": "observer",
+    "type": "BaseCoordinateFrame",
+    "required": false,
+    "desc": "The location of the new observer. Instruments in Earth orbit can be approximated by using the position of the…（默认 None）"
+   },
+   {
+    "name": "time",
+    "type": "object",
+    "required": false,
+    "desc": "Used to define the duration over which the amount of solar rotation is calculated. If 'time' is an…（默认 None）"
+   },
+   {
+    "name": "diff_rot_kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "图像差旋转",
+  "orig_params": "smap[GenericMap] 必填: Original map that we want to transform.\nobserver[BaseCoordinateFrame] 可选: The location of the new observer. Instruments in Earth orbit can be approximated by using the position of the…（默认 None）\ntime[object] 可选: Used to define the duration over which the amount of solar rotation is calculated. If 'time' is an…（默认 None）\ndiff_rot_kwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_differential_rotation",
+  "target": "sunpy.sun.models.differential_rotation",
+  "desc": "由时间间隔和纬度计算角位移。返回类型：astropy.units.Quantity。主要参数：duration、latitude、model、frame_time。属于「太阳物理」，底层调用 sunpy.sun.models.differential_rotation。",
+  "params": [
+   {
+    "name": "duration",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Amount of time to rotate over."
+   },
+   {
+    "name": "latitude",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Heliographic latitude."
+   },
+   {
+    "name": "model",
+    "type": "str",
+    "required": false,
+    "desc": "The differential-rotation model to use. One of: | howard : Use values from t:howard_solar_1990 | snodgrass :…（默认 'howard'）"
+   },
+   {
+    "name": "frame_time",
+    "type": "str",
+    "required": false,
+    "desc": "If 'sidereal', returns the change in longitude as referenced to distant stars. If 'synodic', returns the…（默认 'sidereal'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "差旋转速率",
+  "orig_params": "duration[astropy.units.Quantity] 必填: Amount of time to rotate over.\nlatitude[astropy.units.Quantity] 必填: Heliographic latitude.\nmodel[str] 可选: The differential-rotation model to use. One of: | howard : Use values from t:howard_solar_1990 | snodgrass :…（默认 'howard'）\nframe_time[str] 可选: If 'sidereal', returns the change in longitude as referenced to distant stars. If 'synodic', returns the…（默认 'sidereal'）"
+ },
+ {
+  "name": "sunpy_get",
+  "target": "sunpy.sun.constants.get",
+  "desc": "获取太阳物理常数（半径、质量、光度等）。返回类型：astropy.constants.Constant。主要参数：key。属于「太阳物理」，底层调用 sunpy.sun.constants.get。",
+  "params": [
+   {
+    "name": "key",
+    "type": "str",
+    "required": true,
+    "desc": "Key in dictionary in constants."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳常数",
+  "orig_params": "key[str] 必填: Key in dictionary in constants."
+ },
+ {
+  "name": "sunpy_print_all",
+  "target": "sunpy.sun.constants.print_all",
+  "desc": "列出全部太阳常数。无需额外参数。属于「太阳物理」，底层调用 sunpy.sun.constants.print_all。",
+  "params": [],
+  "domain": "太阳物理",
+  "cn": "列出太阳常数",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "sunpy_fido_search",
+  "target": "sunpy.net.Fido.search",
+  "desc": "用 attrs 组合在 VSO、JSOC、GOES 等源统一搜索太阳数据。主要参数：query。属于「太阳物理」，底层调用 sunpy.net.Fido.search。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "query",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Fido统一搜索",
+  "orig_params": "query[tuple] 可选: 额外位置参数"
+ },
+ {
+  "name": "sunpy_fido_fetch",
+  "target": "sunpy.net.Fido.fetch",
+  "desc": "下载搜索结果。返回类型：parfive.Results。主要参数：query_results、path、max_conn、progress。属于「太阳物理」，底层调用 sunpy.net.Fido.fetch。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "query_results",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "path",
+    "type": "str",
+    "required": false,
+    "desc": "The directory to retrieve the files into. Can refer to any fields in…（默认 None）"
+   },
+   {
+    "name": "max_conn",
+    "type": "int",
+    "required": false,
+    "desc": "The number of parallel download slots.（默认 5）"
+   },
+   {
+    "name": "progress",
+    "type": "bool",
+    "required": false,
+    "desc": "If True show a progress bar showing how many of the total files have been downloaded. If False, no progress…（默认 True）"
+   },
+   {
+    "name": "overwrite",
+    "type": "bool",
+    "required": false,
+    "desc": "Determine how to handle downloading if a file already exists with the same name. If False the file download…（默认 False）"
+   },
+   {
+    "name": "downloader",
+    "type": "Downloader",
+    "required": false,
+    "desc": "The download manager to use. If specified the max_conn, progress and overwrite arguments are ignored.（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Fido下载",
+  "orig_params": "query_results[tuple] 可选: 额外位置参数\npath[str] 可选: The directory to retrieve the files into. Can refer to any fields in…（默认 None）\nmax_conn[int] 可选: The number of parallel download slots.（默认 5）\nprogress[bool] 可选: If True show a progress bar showing how many of the total files have been downloaded. If False, no progress…（默认 True）\noverwrite[bool] 可选: Determine how to handle downloading if a file already exists with the same name. If False the file download…（默认 False）\ndownloader[Downloader] 可选: The download manager to use. If specified the max_conn, progress and overwrite arguments are ignored.（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_scraper_create",
+  "target": "sunpy.net.Scraper",
+  "desc": "按模式抓取远程文件列表。主要参数：format、kwargs。属于「太阳物理」，底层调用 sunpy.net.Scraper。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "format",
+    "type": "str",
+    "required": true,
+    "desc": "A string containing the url with the date and other information to be extracted encoded as parse formats, and…"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "网页文件抓取",
+  "orig_params": "format[str] 必填: A string containing the url with the date and other information to be extracted encoded as parse formats, and…\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_time_create",
+  "target": "sunpy.net.attrs.Time",
+  "desc": "用于 Fido.search 的时间范围属性。主要参数：start、end、near。属于「太阳物理」，底层调用 sunpy.net.attrs.Time。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "start",
+    "type": "tuple",
+    "required": true,
+    "desc": "The start time in a format parseable by ~sunpy.time.parse_time or a sunpy.time.TimeRange object."
+   },
+   {
+    "name": "end",
+    "type": "tuple",
+    "required": false,
+    "desc": "The end time of the range.（默认 None）"
+   },
+   {
+    "name": "near",
+    "type": "tuple",
+    "required": false,
+    "desc": "Return a singular record closest in time to this value as possible, inside the start and end window. Note:…（默认 None）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "时间检索属性",
+  "orig_params": "start[tuple] 必填: The start time in a format parseable by ~sunpy.time.parse_time or a sunpy.time.TimeRange object.\nend[tuple] 可选: The end time of the range.（默认 None）\nnear[tuple] 可选: Return a singular record closest in time to this value as possible, inside the start and end window. Note:…（默认 None）"
+ },
+ {
+  "name": "sunpy_instrument_create",
+  "target": "sunpy.net.attrs.Instrument",
+  "desc": "指定仪器名（AIA、HMI 等）。主要参数：value。属于「太阳物理」，底层调用 sunpy.net.attrs.Instrument。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "value",
+    "type": "str",
+    "required": true,
+    "desc": "value，详见官方 API 文档"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "仪器检索属性",
+  "orig_params": "value[str] 必填: value，详见官方 API 文档"
+ },
+ {
+  "name": "sunpy_wavelength_create",
+  "target": "sunpy.net.attrs.Wavelength",
+  "desc": "指定波段范围。主要参数：wavemin、wavemax。属于「太阳物理」，底层调用 sunpy.net.attrs.Wavelength。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "wavemin",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "The lower bounds of the range."
+   },
+   {
+    "name": "wavemax",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The upper bound of the range, if not specified it will default to the lower bound.（默认 None）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "波长检索属性",
+  "orig_params": "wavemin[astropy.units.Quantity] 必填: The lower bounds of the range.\nwavemax[astropy.units.Quantity] 可选: The upper bound of the range, if not specified it will default to the lower bound.（默认 None）"
+ },
+ {
+  "name": "sunpy_level_create",
+  "target": "sunpy.net.attrs.Level",
+  "desc": "指定数据处理级别。主要参数：value。属于「太阳物理」，底层调用 sunpy.net.attrs.Level。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "value",
+    "type": "float",
+    "required": true,
+    "desc": "The value can be entered in of three ways: # . May be entered as a string or any numeric type for equality…"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "数据级别属性",
+  "orig_params": "value[float] 必填: The value can be entered in of three ways: # . May be entered as a string or any numeric type for equality…"
+ },
+ {
+  "name": "sunpy_sample_create",
+  "target": "sunpy.net.attrs.Sample",
+  "desc": "指定采样节奏。主要参数：value。属于「太阳物理」，底层调用 sunpy.net.attrs.Sample。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "value",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "A sampling rate convertible to seconds."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "采样间隔属性",
+  "orig_params": "value[astropy.units.Quantity] 必填: A sampling rate convertible to seconds."
+ },
+ {
+  "name": "sunpy_source_create",
+  "target": "sunpy.net.attrs.Source",
+  "desc": "指定数据来源卫星。主要参数：value。属于「太阳物理」，底层调用 sunpy.net.attrs.Source。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "value",
+    "type": "str",
+    "required": true,
+    "desc": "A keyword describing the Data Source."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "卫星源属性",
+  "orig_params": "value[str] 必填: A keyword describing the Data Source."
+ },
+ {
+  "name": "sunpy_time_series",
+  "target": "sunpy.timeseries.TimeSeries",
+  "desc": "读取 GOES XRS、LYRA 等时序，创建 GenericTimeSeries。主要参数：args、allow_errors、kwargs。属于「太阳物理」，底层调用 sunpy.timeseries.TimeSeries。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "allow_errors",
+    "type": "bool",
+    "required": false,
+    "desc": "allow_errors，详见官方 API 文档（默认 False）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "太阳时序读取",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nallow_errors[bool] 可选: allow_errors，详见官方 API 文档（默认 False）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_time_series_truncate",
+  "target": "sunpy.timeseries.GenericTimeSeries.truncate",
+  "desc": "按时间范围截取。返回类型：sunpy.timeseries.TimeSeries。主要参数：a、b、int。属于「太阳物理」，底层调用 sunpy.timeseries.GenericTimeSeries.truncate。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "a",
+    "type": "TimeRange",
+    "required": true,
+    "desc": "Either a time range to truncate to, or a start time in some format recognized by pandas, or a index integer."
+   },
+   {
+    "name": "b",
+    "type": "str",
+    "required": false,
+    "desc": "If specified, the end time of the time range in some format recognized by pandas, or a index integer.…（默认 None）"
+   },
+   {
+    "name": "int",
+    "type": "int",
+    "required": false,
+    "desc": "If specified, the integer indicating the slicing intervals. Defaults to None.（默认 None）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "截取时序",
+  "orig_params": "a[TimeRange] 必填: Either a time range to truncate to, or a start time in some format recognized by pandas, or a index integer.\nb[str] 可选: If specified, the end time of the time range in some format recognized by pandas, or a index integer.…（默认 None）\nint[int] 可选: If specified, the integer indicating the slicing intervals. Defaults to None.（默认 None）"
+ },
+ {
+  "name": "sunpy_generic_time_series_concatenate",
+  "target": "sunpy.timeseries.GenericTimeSeries.concatenate",
+  "desc": "连接多段时序。返回类型：sunpy.timeseries.TimeSeries。主要参数：others、same_source、kwargs。属于「太阳物理」，底层调用 sunpy.timeseries.GenericTimeSeries.concatenate。",
+  "params": [
+   {
+    "name": "others",
+    "type": "TimeSeries",
+    "required": true,
+    "desc": "Another ~sunpy.timeseries.TimeSeries or an iterable containing multiple ~sunpy.timeseries.TimeSeries."
+   },
+   {
+    "name": "same_source",
+    "type": "bool",
+    "required": false,
+    "desc": "Set to True to check if the sources of the time series match. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "时序拼接",
+  "orig_params": "others[TimeSeries] 必填: Another ~sunpy.timeseries.TimeSeries or an iterable containing multiple ~sunpy.timeseries.TimeSeries.\nsame_source[bool] 可选: Set to True to check if the sources of the time series match. Defaults to False.（默认 False）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_time_series_to_dataframe",
+  "target": "sunpy.timeseries.GenericTimeSeries.to_dataframe",
+  "desc": "转为 pandas DataFrame。主要参数：kwargs。属于「太阳物理」，底层调用 sunpy.timeseries.GenericTimeSeries.to_dataframe。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "转DataFrame",
+  "orig_params": "kwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_time_series_to_table",
+  "target": "sunpy.timeseries.GenericTimeSeries.to_table",
+  "desc": "转为 astropy Table。返回类型：astropy.table.Table。主要参数：kwargs。属于「太阳物理」，底层调用 sunpy.timeseries.GenericTimeSeries.to_table。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "转Table",
+  "orig_params": "kwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_generic_time_series_plot",
+  "target": "sunpy.timeseries.GenericTimeSeries.plot",
+  "desc": "绘制时序曲线。返回类型：matplotlib.axes.Axes。主要参数：axes、columns、plot_args。属于「太阳物理」，底层调用 sunpy.timeseries.GenericTimeSeries.plot。",
+  "params": [
+   {
+    "name": "axes",
+    "type": "Axes",
+    "required": false,
+    "desc": "If provided the image will be plotted on the given axes. Defaults to None, so the current axes will be used.（默认 None）"
+   },
+   {
+    "name": "columns",
+    "type": "object",
+    "required": false,
+    "desc": "If provided, only plot the specified columns.（默认 None）"
+   },
+   {
+    "name": "plot_args",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "绘制时序",
+  "orig_params": "axes[Axes] 可选: If provided the image will be plotted on the given axes. Defaults to None, so the current axes will be used.（默认 None）\ncolumns[object] 可选: If provided, only plot the specified columns.（默认 None）\nplot_args[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_affine_transform",
+  "target": "sunpy.image.transform.affine_transform",
+  "desc": "对图像做仿射变换，可选插值方法。主要参数：image、rmatrix、order、scale。属于「太阳物理」，底层调用 sunpy.image.transform.affine_transform。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "image",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "2D image to be rotated."
+   },
+   {
+    "name": "rmatrix",
+    "type": "object",
+    "required": true,
+    "desc": "Linear transformation rotation matrix."
+   },
+   {
+    "name": "order",
+    "type": "int",
+    "required": false,
+    "desc": "Interpolation order to be used, defaults to 3. The precise meaning depends on the rotation method specified…（默认 3）"
+   },
+   {
+    "name": "scale",
+    "type": "float",
+    "required": false,
+    "desc": "A scale factor for the image with the default being no scaling.（默认 1.0）"
+   },
+   {
+    "name": "image_center",
+    "type": "tuple",
+    "required": false,
+    "desc": "The point in the image to rotate around (axis of rotation). Defaults to the center of the array.（默认 None）"
+   },
+   {
+    "name": "recenter",
+    "type": "bool",
+    "required": false,
+    "desc": "Move the axis of rotation to the center of the array or recenter coords. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "missing",
+    "type": "float",
+    "required": false,
+    "desc": "The value to use for pixels in the output image that are beyond the extent of the input image. Defaults to…（默认 nan）"
+   },
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "Rotation function to use. Defaults to 'scipy'.（默认 'scipy'）"
+   },
+   {
+    "name": "clip",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, clips the pixel values of the output image to the range of the input image (including the value of…（默认 True）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "仿射变换",
+  "orig_params": "image[numpy.ndarray] 必填: 2D image to be rotated.\nrmatrix[object] 必填: Linear transformation rotation matrix.\norder[int] 可选: Interpolation order to be used, defaults to 3. The precise meaning depends on the rotation method specified…（默认 3）\nscale[float] 可选: A scale factor for the image with the default being no scaling.（默认 1.0）\nimage_center[tuple] 可选: The point in the image to rotate around (axis of rotation). Defaults to the center of the array.（默认 None）\nrecenter[bool] 可选: Move the axis of rotation to the center of the array or recenter coords. Defaults to False.（默认 False）\nmissing[float] 可选: The value to use for pixels in the output image that are beyond the extent of the input image. Defaults to…（默认 nan）\nmethod[str] 可选: Rotation function to use. Defaults to 'scipy'.（默认 'scipy'）\nclip[bool] 可选: If True, clips the pixel values of the output image to the range of the input image (including the value of…（默认 True）"
+ },
+ {
+  "name": "sunpy_resample",
+  "target": "sunpy.image.resample.resample",
+  "desc": "按新维度重采样。返回类型：numpy.ndarray。主要参数：orig、dimensions、method、center。属于「太阳物理」，底层调用 sunpy.image.resample.resample。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "orig",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Original input array."
+   },
+   {
+    "name": "dimensions",
+    "type": "tuple",
+    "required": true,
+    "desc": "Dimensions that new numpy.ndarray should have."
+   },
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "Method to use for resampling interpolation. * nearest and linear - Uses \"n x 1D\" interpolations calculated by…（默认 'linear'）"
+   },
+   {
+    "name": "center",
+    "type": "bool",
+    "required": false,
+    "desc": "If False (default) the interpolation points are at the front edge of the bin. If True, interpolation points…（默认 False）"
+   },
+   {
+    "name": "minusone",
+    "type": "bool",
+    "required": false,
+    "desc": "For orig.shape = (i,j) & new dimensions = (x,y), if set to False (default) orig is resampled by factors of…（默认 False）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "图像重采样函数",
+  "orig_params": "orig[numpy.ndarray] 必填: Original input array.\ndimensions[tuple] 必填: Dimensions that new numpy.ndarray should have.\nmethod[str] 可选: Method to use for resampling interpolation. * nearest and linear - Uses \"n x 1D\" interpolations calculated by…（默认 'linear'）\ncenter[bool] 可选: If False (default) the interpolation points are at the front edge of the bin. If True, interpolation points…（默认 False）\nminusone[bool] 可选: For orig.shape = (i,j) & new dimensions = (x,y), if set to False (default) orig is resampled by factors of…（默认 False）"
+ },
+ {
+  "name": "sunpy_reshape_image_to_4d_superpixel",
+  "target": "sunpy.image.resample.reshape_image_to_4d_superpixel",
+  "desc": "把图像重塑成 4D 以便超像素求和。主要参数：img、dimensions、offset。属于「太阳物理」，底层调用 sunpy.image.resample.reshape_image_to_4d_superpixel。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "img",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "A two-dimensional numpy.ndarray of the form (y, x)."
+   },
+   {
+    "name": "dimensions",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "A two element array-like object containing integers that describe the superpixel summation in the (y, x)…"
+   },
+   {
+    "name": "offset",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "A two element array-like object containing integers that describe where in the input image the array…"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "超像素4D重塑",
+  "orig_params": "img[numpy.ndarray] 必填: A two-dimensional numpy.ndarray of the form (y, x).\ndimensions[numpy.ndarray] 必填: A two element array-like object containing integers that describe the superpixel summation in the (y, x)…\noffset[numpy.ndarray] 必填: A two element array-like object containing integers that describe where in the input image the array…"
+ }
+]

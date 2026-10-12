@@ -1,0 +1,640 @@
+[
+ {
+  "name": "astropy_sky_coord_create",
+  "target": "astropy.coordinates.SkyCoord",
+  "desc": "构造 SkyCoord 对象，支持赤经赤纬、银经银纬、笛卡尔等多种输入形式与参考系（icrs、fk5、galactic 等），可附带距离、自行、视向速度。是 astropy 坐标功能的统一入口，返回可继续做转换、分离角计算、星表匹配的 SkyCoord。主要参数：args、copy、kwargs。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "copy",
+    "type": "bool",
+    "required": false,
+    "desc": "If True (default), a copy of any coordinate data is made. This argument can only be passed in as a keyword…（默认 True）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "创建天球坐标对象",
+  "orig_params": "args[tuple] 可选: 额外位置参数\ncopy[bool] 可选: If True (default), a copy of any coordinate data is made. This argument can only be passed in as a keyword…（默认 True）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_sky_coord_transform_to",
+  "target": "astropy.coordinates.SkyCoord.transform_to",
+  "desc": "将天球坐标从一个参考系变换到另一个参考系（如 ICRS→Galactic、FK5→AltAz），自动处理岁差、章动、光行差与观测者位置等依赖。适用于星表坐标系统统一与观测地平坐标计算，返回目标框架下的新 SkyCoord。返回类型：SkyCoord。主要参数：frame、merge_attributes。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord.transform_to。",
+  "params": [
+   {
+    "name": "frame",
+    "type": "str",
+    "required": true,
+    "desc": "The frame to transform this coordinate into. If a |SkyCoord|, the underlying frame is extracted, and all…"
+   },
+   {
+    "name": "merge_attributes",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether the default attributes in the destination frame are allowed to be overridden by explicitly set…（默认 True）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "坐标系转换",
+  "orig_params": "frame[str] 必填: The frame to transform this coordinate into. If a |SkyCoord|, the underlying frame is extracted, and all…\nmerge_attributes[bool] 可选: Whether the default attributes in the destination frame are allowed to be overridden by explicitly set…（默认 True）"
+ },
+ {
+  "name": "astropy_sky_coord_separation",
+  "target": "astropy.coordinates.SkyCoord.separation",
+  "desc": "计算两组天球坐标之间的角分离（大圆距离），使用 Vincenty 公式保证小角度与对径点精度，返回 Angle。适用于判定两颗恒星是否邻近、选取视场内参考星。返回类型：astropy.coordinates.Angle。主要参数：other、origin_mismatch。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord.separation。",
+  "params": [
+   {
+    "name": "other",
+    "type": "BaseCoordinateFrame",
+    "required": true,
+    "desc": "The coordinate to get the separation to."
+   },
+   {
+    "name": "origin_mismatch",
+    "type": "str",
+    "required": false,
+    "desc": "If the other coordinates are in a different frame then they will have to be transformed, and if the…（默认 'warn'）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "角距离计算",
+  "orig_params": "other[BaseCoordinateFrame] 必填: The coordinate to get the separation to.\norigin_mismatch[str] 可选: If the other coordinates are in a different frame then they will have to be transformed, and if the…（默认 'warn'）"
+ },
+ {
+  "name": "astropy_sky_coord_position_angle",
+  "target": "astropy.coordinates.SkyCoord.position_angle",
+  "desc": "计算从当前坐标指向另一坐标的位置角（自北向东度量），用于双星位置角、星系长轴取向、视场方向标注，返回 Angle。返回类型：astropy.coordinates.Angle。主要参数：other。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord.position_angle。",
+  "params": [
+   {
+    "name": "other",
+    "type": "BaseCoordinateFrame",
+    "required": true,
+    "desc": "The other coordinate to compute the position angle to. It is treated as the \"head\" of the vector of the…"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "位置角计算",
+  "orig_params": "other[BaseCoordinateFrame] 必填: The other coordinate to compute the position angle to. It is treated as the \"head\" of the vector of the…"
+ },
+ {
+  "name": "astropy_sky_coord_match_to_catalog_sky",
+  "target": "astropy.coordinates.SkyCoord.match_to_catalog_sky",
+  "desc": "在目标星表中为每个坐标找到天球上最近的对应源，基于 KD-tree 在单位球面上搜索。适用于多波段星表交叉证认，返回索引、角距离与三维距离。返回类型：CoordinateMatchResult。主要参数：catalogcoord、nthneighbor。属于「星表表格与交叉匹配」，底层调用 astropy.coordinates.SkyCoord.match_to_catalog_sky。",
+  "params": [
+   {
+    "name": "catalogcoord",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The base catalog in which to search for matches. Typically this will be a coordinate object that is an array…"
+   },
+   {
+    "name": "nthneighbor",
+    "type": "int",
+    "required": false,
+    "desc": "Which closest neighbor to search for. Typically 1 is desired here, as that is correct for matching one set of…（默认 1）"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "星表二维最近邻匹配",
+  "orig_params": "catalogcoord[SkyCoord] 必填: The base catalog in which to search for matches. Typically this will be a coordinate object that is an array…\nnthneighbor[int] 可选: Which closest neighbor to search for. Typically 1 is desired here, as that is correct for matching one set of…（默认 1）"
+ },
+ {
+  "name": "astropy_sky_coord_from_name",
+  "target": "astropy.coordinates.SkyCoord.from_name",
+  "desc": "通过 CDS Sesame 名称解析服务将天体名称（如 M31、Sirius）解析为 SkyCoord，需要联网。适用于由名称快速获得坐标。返回类型：SkyCoord。主要参数：name、frame、parse、cache。属于「星表查询与数据获取」，底层调用 astropy.coordinates.SkyCoord.from_name。",
+  "params": [
+   {
+    "name": "name",
+    "type": "str",
+    "required": true,
+    "desc": "The name of the object to get coordinates for, e.g. 'M42'."
+   },
+   {
+    "name": "frame",
+    "type": "str",
+    "required": false,
+    "desc": "The frame to transform the object to.（默认 'icrs'）"
+   },
+   {
+    "name": "parse",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether to attempt extracting the coordinates from the name by parsing with a regex. For objects catalog…（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "Determines whether to cache the results or not. To update or overwrite an existing value, pass cache='update'.（默认 True）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "按名称解析坐标",
+  "orig_params": "name[str] 必填: The name of the object to get coordinates for, e.g. 'M42'.\nframe[str] 可选: The frame to transform the object to.（默认 'icrs'）\nparse[bool] 可选: Whether to attempt extracting the coordinates from the name by parsing with a regex. For objects catalog…（默认 False）\ncache[bool] 可选: Determines whether to cache the results or not. To update or overwrite an existing value, pass cache='update'.（默认 True）"
+ },
+ {
+  "name": "astropy_get_body",
+  "target": "astropy.coordinates.get_body",
+  "desc": "使用内置星历计算太阳系大天体（太阳、月亮、行星）在指定时刻和观测地的视位置，返回 SkyCoord。返回类型：astropy.coordinates.SkyCoord。主要参数：body、time、location、ephemeris。属于「星历与轨道」，底层调用 astropy.coordinates.get_body。",
+  "params": [
+   {
+    "name": "body",
+    "type": "str",
+    "required": true,
+    "desc": "The solar system body for which to calculate positions. Can also be a kernel specifier (list of 2-tuples) if…"
+   },
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation."
+   },
+   {
+    "name": "location",
+    "type": "EarthLocation",
+    "required": false,
+    "desc": "Location of observer on the Earth. If not given, will be taken from time (if not present, a geocentric…（默认 None）"
+   },
+   {
+    "name": "ephemeris",
+    "type": "str",
+    "required": false,
+    "desc": "Ephemeris to use. If not given, use the one set with astropy.coordinates.solar_system_ephemeris.set (which is…（默认 None）"
+   }
+  ],
+  "domain": "星历与轨道",
+  "cn": "太阳系天体位置",
+  "orig_params": "body[str] 必填: The solar system body for which to calculate positions. Can also be a kernel specifier (list of 2-tuples) if…\ntime[Time] 必填: Time of observation.\nlocation[EarthLocation] 可选: Location of observer on the Earth. If not given, will be taken from time (if not present, a geocentric…（默认 None）\nephemeris[str] 可选: Ephemeris to use. If not given, use the one set with astropy.coordinates.solar_system_ephemeris.set (which is…（默认 None）"
+ },
+ {
+  "name": "astropy_get_sun",
+  "target": "astropy.coordinates.get_sun",
+  "desc": "计算指定时间的太阳地心视位置，返回 SkyCoord (GCRS)，适用于日出日落、日距角判断。返回类型：astropy.coordinates.SkyCoord。主要参数：time。属于「星历与轨道」，底层调用 astropy.coordinates.get_sun。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "The time(s) at which to compute the location of the sun."
+   }
+  ],
+  "domain": "星历与轨道",
+  "cn": "太阳位置",
+  "orig_params": "time[Time] 必填: The time(s) at which to compute the location of the sun."
+ },
+ {
+  "name": "astropy_time_create",
+  "target": "astropy.time.Time",
+  "desc": "创建高精度 Time，支持 jd、mjd、iso、unix 等格式及 utc/tai/tt/tdb 等时间尺度。主要参数：val、val2、format、scale。属于「坐标与时间系统」，底层调用 astropy.time.Time。",
+  "params": [
+   {
+    "name": "val",
+    "type": "list",
+    "required": true,
+    "desc": "Value(s) to initialize the time or times. Bytes are decoded as ascii."
+   },
+   {
+    "name": "val2",
+    "type": "list",
+    "required": false,
+    "desc": "Value(s) to initialize the time or times. Only used for numerical input, to help preserve precision.（默认 None）"
+   },
+   {
+    "name": "format",
+    "type": "str",
+    "required": false,
+    "desc": "Format of input value(s), specifying how to interpret them (e.g., ISO, JD, or Unix time). By default, the…（默认 None）"
+   },
+   {
+    "name": "scale",
+    "type": "str",
+    "required": false,
+    "desc": "Time scale of input value(s), must be one of the following: ('tai', 'tcb', 'tcg', 'tdb', 'tt', 'ut1', 'utc')（默认 None）"
+   },
+   {
+    "name": "precision",
+    "type": "int",
+    "required": false,
+    "desc": "Digits of precision in string representation of time（默认 None）"
+   },
+   {
+    "name": "in_subfmt",
+    "type": "str",
+    "required": false,
+    "desc": "Unix glob to select subformats for parsing input times（默认 None）"
+   },
+   {
+    "name": "out_subfmt",
+    "type": "str",
+    "required": false,
+    "desc": "Unix glob to select subformat for outputting times（默认 None）"
+   },
+   {
+    "name": "location",
+    "type": "EarthLocation",
+    "required": false,
+    "desc": "If given as an tuple, it should be able to initialize an an EarthLocation instance, i.e., either contain 3…（默认 None）"
+   },
+   {
+    "name": "copy",
+    "type": "bool",
+    "required": false,
+    "desc": "Make a copy of the input values（默认 None）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "创建时间对象",
+  "orig_params": "val[list] 必填: Value(s) to initialize the time or times. Bytes are decoded as ascii.\nval2[list] 可选: Value(s) to initialize the time or times. Only used for numerical input, to help preserve precision.（默认 None）\nformat[str] 可选: Format of input value(s), specifying how to interpret them (e.g., ISO, JD, or Unix time). By default, the…（默认 None）\nscale[str] 可选: Time scale of input value(s), must be one of the following: ('tai', 'tcb', 'tcg', 'tdb', 'tt', 'ut1', 'utc')（默认 None）\nprecision[int] 可选: Digits of precision in string representation of time（默认 None）\nin_subfmt[str] 可选: Unix glob to select subformats for parsing input times（默认 None）\nout_subfmt[str] 可选: Unix glob to select subformat for outputting times（默认 None）\nlocation[EarthLocation] 可选: If given as an tuple, it should be able to initialize an an EarthLocation instance, i.e., either contain 3…（默认 None）\ncopy[bool] 可选: Make a copy of the input values（默认 None）"
+ },
+ {
+  "name": "astropy_time_sidereal_time",
+  "target": "astropy.time.Time.sidereal_time",
+  "desc": "计算给定经度处的平/视恒星时，用于望远镜指向与时角计算。返回类型：astropy.coordinates.Longitude。主要参数：kind、longitude、model。属于「坐标与时间系统」，底层调用 astropy.time.Time.sidereal_time。",
+  "params": [
+   {
+    "name": "kind",
+    "type": "str",
+    "required": true,
+    "desc": "'mean' or 'apparent', i.e., accounting for precession only, or also for nutation."
+   },
+   {
+    "name": "longitude",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The longitude on the Earth at which to compute the Earth rotation angle (taken from a location as needed). If…（默认 None）"
+   },
+   {
+    "name": "model",
+    "type": "str",
+    "required": false,
+    "desc": "Precession (and nutation) model to use. The available ones are: - apparent: ['IAU1994', 'IAU2000A',…（默认 None）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "恒星时计算",
+  "orig_params": "kind[str] 必填: 'mean' or 'apparent', i.e., accounting for precession only, or also for nutation.\nlongitude[astropy.units.Quantity] 可选: The longitude on the Earth at which to compute the Earth rotation angle (taken from a location as needed). If…（默认 None）\nmodel[str] 可选: Precession (and nutation) model to use. The available ones are: - apparent: ['IAU1994', 'IAU2000A',…（默认 None）"
+ },
+ {
+  "name": "astropy_quantity_to",
+  "target": "astropy.units.Quantity.to",
+  "desc": "将 Quantity 转换为兼容单位，可通过 equivalencies 指定光谱、视差等等价关系。主要参数：unit、equivalencies、copy。属于「单位与物理常量」，底层调用 astropy.units.Quantity.to。",
+  "params": [
+   {
+    "name": "unit",
+    "type": "object",
+    "required": true,
+    "desc": "An object that represents the unit to convert to. Must be an ~astropy.units.UnitBase object or a string…"
+   },
+   {
+    "name": "equivalencies",
+    "type": "list",
+    "required": false,
+    "desc": "A list of equivalence pairs to try if the units are not directly convertible. See astropy:unit_equivalencies.…（默认 []）"
+   },
+   {
+    "name": "copy",
+    "type": "bool",
+    "required": false,
+    "desc": "If True (default), then the value is copied. Otherwise, a copy will only be made if necessary.（默认 True）"
+   }
+  ],
+  "domain": "单位与物理常量",
+  "cn": "单位换算",
+  "orig_params": "unit[object] 必填: An object that represents the unit to convert to. Must be an ~astropy.units.UnitBase object or a string…\nequivalencies[list] 可选: A list of equivalence pairs to try if the units are not directly convertible. See astropy:unit_equivalencies.…（默认 []）\ncopy[bool] 可选: If True (default), then the value is copied. Otherwise, a copy will only be made if necessary.（默认 True）"
+ },
+ {
+  "name": "astropy_doppler_optical",
+  "target": "astropy.units.doppler_optical",
+  "desc": "基于静止频率或波长的光学速度定义等价关系。主要参数：rest。属于「单位与物理常量」，底层调用 astropy.units.doppler_optical。",
+  "params": [
+   {
+    "name": "rest",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Any quantity supported by the standard spectral equivalencies (wavelength, energy, frequency, wave number)."
+   }
+  ],
+  "domain": "单位与物理常量",
+  "cn": "光学多普勒等价",
+  "orig_params": "rest[astropy.units.Quantity] 必填: Any quantity supported by the standard spectral equivalencies (wavelength, energy, frequency, wave number)."
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_luminosity_distance",
+  "target": "astropy.cosmology.FlatLambdaCDM.luminosity_distance",
+  "desc": "计算红移 z 的光度距离，用于绝对星等和光度计算，返回 Mpc。主要参数：z。属于「宇宙学计算」，底层调用 astropy.cosmology.FlatLambdaCDM.luminosity_distance。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "z",
+    "type": "object",
+    "required": true,
+    "desc": "Input redshift."
+   }
+  ],
+  "domain": "宇宙学计算",
+  "cn": "光度距离",
+  "orig_params": "z[object] 必填: Input redshift."
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_lookback_time",
+  "target": "astropy.cosmology.FlatLambdaCDM.lookback_time",
+  "desc": "计算给定红移光线的回溯时间。主要参数：z。属于「宇宙学计算」，底层调用 astropy.cosmology.FlatLambdaCDM.lookback_time。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "z",
+    "type": "object",
+    "required": true,
+    "desc": "Input redshift."
+   }
+  ],
+  "domain": "宇宙学计算",
+  "cn": "回溯时间",
+  "orig_params": "z[object] 必填: Input redshift."
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_angular_diameter_distance",
+  "target": "astropy.cosmology.FlatLambdaCDM.angular_diameter_distance",
+  "desc": "计算红移 z 的角直径距离，用于角尺度到物理尺度换算。主要参数：z、z2。属于「宇宙学计算」，底层调用 astropy.cosmology.FlatLambdaCDM.angular_diameter_distance。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "z",
+    "type": "object",
+    "required": true,
+    "desc": "红移"
+   },
+   {
+    "name": "z2",
+    "type": "object",
+    "required": false,
+    "desc": "Input redshifts. If one argument z is given, the distance d_A(0, z) is returned. If two arguments z1, z2 are…（默认 None）"
+   }
+  ],
+  "domain": "宇宙学计算",
+  "cn": "角直径距离",
+  "orig_params": "z[object] 必填: 红移\nz2[object] 可选: Input redshifts. If one argument z is given, the distance d_A(0, z) is returned. If two arguments z1, z2 are…（默认 None）"
+ },
+ {
+  "name": "astropy_skycoord_to_pixel",
+  "target": "astropy.wcs.utils.skycoord_to_pixel",
+  "desc": "便捷函数：用 WCS 把 SkyCoord 转为像素。返回类型：numpy.ndarray。主要参数：coords、wcs、origin、mode。属于「WCS与天球投影」，底层调用 astropy.wcs.utils.skycoord_to_pixel。",
+  "params": [
+   {
+    "name": "coords",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The coordinates to convert."
+   },
+   {
+    "name": "wcs",
+    "type": "WCS",
+    "required": true,
+    "desc": "The WCS transformation to use."
+   },
+   {
+    "name": "origin",
+    "type": "int",
+    "required": false,
+    "desc": "Whether to return 0 or 1-based pixel coordinates.（默认 0）"
+   },
+   {
+    "name": "mode",
+    "type": "str",
+    "required": false,
+    "desc": "Whether to do the transformation including distortions ('all') or only including only the core WCS…（默认 'all'）"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "SkyCoord转像素",
+  "orig_params": "coords[SkyCoord] 必填: The coordinates to convert.\nwcs[WCS] 必填: The WCS transformation to use.\norigin[int] 可选: Whether to return 0 or 1-based pixel coordinates.（默认 0）\nmode[str] 可选: Whether to do the transformation including distortions ('all') or only including only the core WCS…（默认 'all'）"
+ },
+ {
+  "name": "astropy_getheader",
+  "target": "astropy.io.fits.getheader",
+  "desc": "读取指定 HDU 的 Header，用于检索观测参数、WCS 关键字。主要参数：filename、args、kwargs。属于「FITS与图像读写」，底层调用 astropy.io.fits.getheader。",
+  "params": [
+   {
+    "name": "filename",
+    "type": "object",
+    "required": true,
+    "desc": "File to get header from. If an opened file object, its mode must be one of the following rb, rb+, or ab+)."
+   },
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "FITS与图像读写",
+  "cn": "读取FITS头",
+  "orig_params": "filename[object] 必填: File to get header from. If an opened file object, its mode must be one of the following rb, rb+, or ab+).\nargs[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_sigma_clipped_stats",
+  "target": "astropy.stats.sigma_clipped_stats",
+  "desc": "在 sigma 裁剪后计算均值、中位数、标准差，常用于背景估计。返回类型：float。主要参数：data、mask、mask_value、sigma。属于「统计与采样拟合」，底层调用 astropy.stats.sigma_clipped_stats。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Data array or object that can be converted to an array."
+   },
+   {
+    "name": "mask",
+    "type": "object",
+    "required": false,
+    "desc": "A boolean mask with the same shape as data, where a True value indicates the corresponding element of data is…（默认 None）"
+   },
+   {
+    "name": "mask_value",
+    "type": "float",
+    "required": false,
+    "desc": "A data value (e.g., 0.0) that is ignored when computing the statistics. mask_value will be masked in addition…（默认 None）"
+   },
+   {
+    "name": "sigma",
+    "type": "float",
+    "required": false,
+    "desc": "The number of standard deviations to use for both the lower and upper clipping limit. These limits are…（默认 3.0）"
+   },
+   {
+    "name": "sigma_lower",
+    "type": "float",
+    "required": false,
+    "desc": "The number of standard deviations to use as the lower bound for the clipping limit. If None then the value of…（默认 None）"
+   },
+   {
+    "name": "sigma_upper",
+    "type": "float",
+    "required": false,
+    "desc": "The number of standard deviations to use as the upper bound for the clipping limit. If None then the value of…（默认 None）"
+   },
+   {
+    "name": "maxiters",
+    "type": "int",
+    "required": false,
+    "desc": "The maximum number of sigma-clipping iterations to perform or None to clip until convergence is achieved…（默认 5）"
+   },
+   {
+    "name": "cenfunc",
+    "type": "str",
+    "required": false,
+    "desc": "The statistic or callable function/object used to compute the center value for the clipping. If using a…（默认 'median'）"
+   },
+   {
+    "name": "stdfunc",
+    "type": "str",
+    "required": false,
+    "desc": "The statistic or callable function/object used to compute the standard deviation about the center value. If…（默认 'std'）"
+   },
+   {
+    "name": "std_ddof",
+    "type": "int",
+    "required": false,
+    "desc": "The delta degrees of freedom for the standard deviation calculation. The divisor used in the calculation is N…（默认 0）"
+   },
+   {
+    "name": "axis",
+    "type": "object",
+    "required": false,
+    "desc": "The axis or axes along which to sigma clip the data. If None, then the flattened data will be used. axis is…（默认 None）"
+   },
+   {
+    "name": "grow",
+    "type": "float",
+    "required": false,
+    "desc": "Radius within which to mask the neighbouring pixels of those that fall outwith the clipping limits (only…（默认 False）"
+   }
+  ],
+  "domain": "统计与采样拟合",
+  "cn": "裁剪统计量",
+  "orig_params": "data[numpy.ndarray] 必填: Data array or object that can be converted to an array.\nmask[object] 可选: A boolean mask with the same shape as data, where a True value indicates the corresponding element of data is…（默认 None）\nmask_value[float] 可选: A data value (e.g., 0.0) that is ignored when computing the statistics. mask_value will be masked in addition…（默认 None）\nsigma[float] 可选: The number of standard deviations to use for both the lower and upper clipping limit. These limits are…（默认 3.0）\nsigma_lower[float] 可选: The number of standard deviations to use as the lower bound for the clipping limit. If None then the value of…（默认 None）\nsigma_upper[float] 可选: The number of standard deviations to use as the upper bound for the clipping limit. If None then the value of…（默认 None）\nmaxiters[int] 可选: The maximum number of sigma-clipping iterations to perform or None to clip until convergence is achieved…（默认 5）\ncenfunc[str] 可选: The statistic or callable function/object used to compute the center value for the clipping. If using a…（默认 'median'）\nstdfunc[str] 可选: The statistic or callable function/object used to compute the standard deviation about the center value. If…（默认 'std'）\nstd_ddof[int] 可选: The delta degrees of freedom for the standard deviation calculation. The divisor used in the calculation is N…（默认 0）\naxis[object] 可选: The axis or axes along which to sigma clip the data. If None, then the flattened data will be used. axis is…（默认 None）\ngrow[float] 可选: Radius within which to mask the neighbouring pixels of those that fall outwith the clipping limits (only…（默认 False）"
+ },
+ {
+  "name": "astropy_lomb_scargle_autopower",
+  "target": "astropy.timeseries.LombScargle.autopower",
+  "desc": "自动选择频率网格并计算 LS 功率。返回类型：ndarray。主要参数：method、method_kwds、normalization、samples_per_peak。属于「时序与光变曲线」，底层调用 astropy.timeseries.LombScargle.autopower。",
+  "params": [
+   {
+    "name": "method",
+    "type": "str",
+    "required": false,
+    "desc": "specify the lomb scargle implementation to use. Options are: - 'auto': choose the best method based on the…（默认 'auto'）"
+   },
+   {
+    "name": "method_kwds",
+    "type": "dict",
+    "required": false,
+    "desc": "additional keywords to pass to the lomb-scargle method（默认 None）"
+   },
+   {
+    "name": "normalization",
+    "type": "object",
+    "required": false,
+    "desc": "If specified, override the normalization specified at instantiation.（默认 None）"
+   },
+   {
+    "name": "samples_per_peak",
+    "type": "float",
+    "required": false,
+    "desc": "The approximate number of desired samples across the typical peak（默认 5）"
+   },
+   {
+    "name": "nyquist_factor",
+    "type": "float",
+    "required": false,
+    "desc": "The multiple of the average nyquist frequency used to choose the maximum frequency if maximum_frequency is…（默认 5）"
+   },
+   {
+    "name": "minimum_frequency",
+    "type": "float",
+    "required": false,
+    "desc": "If specified, then use this minimum frequency rather than one chosen based on the size of the baseline.…（默认 None）"
+   },
+   {
+    "name": "maximum_frequency",
+    "type": "float",
+    "required": false,
+    "desc": "If specified, then use this maximum frequency rather than one chosen based on the average nyquist frequency.…（默认 None）"
+   }
+  ],
+  "domain": "时序与光变曲线",
+  "cn": "LS自动功率谱",
+  "orig_params": "method[str] 可选: specify the lomb scargle implementation to use. Options are: - 'auto': choose the best method based on the…（默认 'auto'）\nmethod_kwds[dict] 可选: additional keywords to pass to the lomb-scargle method（默认 None）\nnormalization[object] 可选: If specified, override the normalization specified at instantiation.（默认 None）\nsamples_per_peak[float] 可选: The approximate number of desired samples across the typical peak（默认 5）\nnyquist_factor[float] 可选: The multiple of the average nyquist frequency used to choose the maximum frequency if maximum_frequency is…（默认 5）\nminimum_frequency[float] 可选: If specified, then use this minimum frequency rather than one chosen based on the size of the baseline.…（默认 None）\nmaximum_frequency[float] 可选: If specified, then use this maximum frequency rather than one chosen based on the average nyquist frequency.…（默认 None）"
+ },
+ {
+  "name": "astropy_box_least_squares_autopower",
+  "target": "astropy.timeseries.BoxLeastSquares.autopower",
+  "desc": "自动周期网格的 BLS 周期图。主要参数：duration、objective、method、oversample。属于「时序与光变曲线」，底层调用 astropy.timeseries.BoxLeastSquares.autopower。",
+  "params": [
+   {
+    "name": "duration",
+    "type": "object",
+    "required": true,
+    "desc": "duration，详见官方 API 文档"
+   },
+   {
+    "name": "objective",
+    "type": "object",
+    "required": false,
+    "desc": "objective，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "method",
+    "type": "object",
+    "required": false,
+    "desc": "method，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "oversample",
+    "type": "int",
+    "required": false,
+    "desc": "oversample，详见官方 API 文档（默认 10）"
+   },
+   {
+    "name": "minimum_n_transit",
+    "type": "int",
+    "required": false,
+    "desc": "minimum_n_transit，详见官方 API 文档（默认 3）"
+   },
+   {
+    "name": "minimum_period",
+    "type": "object",
+    "required": false,
+    "desc": "minimum_period，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "maximum_period",
+    "type": "object",
+    "required": false,
+    "desc": "maximum_period，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "frequency_factor",
+    "type": "float",
+    "required": false,
+    "desc": "frequency_factor，详见官方 API 文档（默认 1.0）"
+   }
+  ],
+  "domain": "时序与光变曲线",
+  "cn": "BLS自动功率谱",
+  "orig_params": "duration[object] 必填: duration，详见官方 API 文档\nobjective[object] 可选: objective，详见官方 API 文档（默认 None）\nmethod[object] 可选: method，详见官方 API 文档（默认 None）\noversample[int] 可选: oversample，详见官方 API 文档（默认 10）\nminimum_n_transit[int] 可选: minimum_n_transit，详见官方 API 文档（默认 3）\nminimum_period[object] 可选: minimum_period，详见官方 API 文档（默认 None）\nmaximum_period[object] 可选: maximum_period，详见官方 API 文档（默认 None）\nfrequency_factor[float] 可选: frequency_factor，详见官方 API 文档（默认 1.0）"
+ }
+]

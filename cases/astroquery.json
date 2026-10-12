@@ -1,0 +1,173 @@
+[
+ {
+  "name": "astroquery_simbad_query_object",
+  "arguments": {
+   "object_name": "M31"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_objects",
+  "arguments": {
+   "object_names": [
+    "M31",
+    "M42"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_objectids",
+  "arguments": {
+   "object_name": "M31"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_tap",
+  "arguments": {
+   "query": "SELECT TOP 3 main_id, ra, dec FROM basic WHERE main_id = 'M  31'"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_list_votable_fields",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_get_votable_fields",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_list_tables",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_get_field_description",
+  "arguments": {
+   "field_name": "ra"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_list_columns",
+  "arguments": {
+   "_args": [
+    "basic"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_vizier_find_catalogs",
+  "arguments": {
+   "keywords": "Gaia"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_vizier_query_object",
+  "arguments": {
+   "_args": [
+    "M31"
+   ],
+   "catalog": "I/239/hip_main"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_vizier_query_region",
+  "arguments": {
+   "_args": [
+    {
+     "ra": 10.684,
+     "dec": 41.269,
+     "unit": "deg"
+    }
+   ],
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   },
+   "catalog": "I/239/hip_main"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_gaia_cone_search",
+  "arguments": {
+   "coordinate": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.02,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_gaia_launch_job",
+  "arguments": {
+   "query": "SELECT TOP 3 source_id, ra, dec FROM gaiadr3.gaia_source"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_get_observatory_location",
+  "arguments": {
+   "code": "500"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_dust_get_extinction_table",
+  "arguments": {
+   "coordinate": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_heasarc_list_catalogs",
+  "arguments": {
+   "keywords": "swift"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_jpl_spec_get_species_table",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_nasa_exoplanet_archive_query_object",
+  "arguments": {
+   "object_name": "TRAPPIST-1 b"
+  },
+  "skip": null
+ }
+]

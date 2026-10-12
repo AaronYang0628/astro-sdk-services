@@ -1,0 +1,15 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: id, datatype: int64}
+# - {name: ra, unit: deg, datatype: float64}
+# - {name: dec, unit: deg, datatype: float64}
+# - {name: mag, datatype: float64}
+# - {name: name, datatype: string}
+# schema: astropy-2.0
+id ra dec mag name
+1 10.1 41.1 12.1 a
+2 10.2 41.2 13.2 b
+3 10.3 41.3 14.3 c
+4 10.4 41.4 15.4 d
+5 10.5 41.5 16.5 e
