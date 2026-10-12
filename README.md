@@ -56,3 +56,29 @@ placeholder). Not deployed or linted against a cluster; the image must be built 
 ## Authentication
 Set env `API_TOKEN` (Helm: `--set auth.secretName=<secret with key "token">`) to require `Authorization: Bearer <token>` on every endpoint except `/health`.
 Regression against a deployed instance: `BASE_URL=https://astro.example.com API_TOKEN=... python tests/run_cases.py <sdk>`.
+
+## MCP (Streamable HTTP)
+Every SDK service also speaks MCP at `/mcp` (via Ingress: `/<sdk>/mcp`, e.g. `https://astro.example.com/astropy/mcp`).
+Its 20 tools are registered as MCP tools with the same names; `description` is the tool description and `inputSchema`
+is generated from the parameter list (`str/int/float/bool/dict/list` map to JSON Schema types, astro objects such as
+`SkyCoord`/`Time`/`Quantity` accept the codec forms above, required params go into `required`, methods require `_self`).
+Calls share the `/invoke` engine: same whitelist, timeout and encoding; the tool result is a JSON text
+`{"ok", "result", "error", "elapsed_s"}` (`isError=true` on failure). The endpoint is stateless and returns JSON responses.
+The same `Authorization: Bearer <token>` is required (401 otherwise).
+
+Cursor (`~/.cursor/mcp.json`) / Claude Code / other clients that support remote HTTP servers:
+```json
+{
+  "mcpServers": {
+    "astropy":    {"url": "https://astro.example.com/astropy/mcp",    "headers": {"Authorization": "Bearer <YOUR_TOKEN>"}},
+    "astroquery": {"url": "https://astro.example.com/astroquery/mcp", "headers": {"Authorization": "Bearer <YOUR_TOKEN>"}},
+    "photutils":  {"url": "https://astro.example.com/photutils/mcp",  "headers": {"Authorization": "Bearer <YOUR_TOKEN>"}},
+    "astroplan":  {"url": "https://astro.example.com/astroplan/mcp",  "headers": {"Authorization": "Bearer <YOUR_TOKEN>"}},
+    "sunpy":      {"url": "https://astro.example.com/sunpy/mcp",      "headers": {"Authorization": "Bearer <YOUR_TOKEN>"}}
+  }
+}
+```
+Claude Code CLI: `claude mcp add --transport http astropy https://astro.example.com/astropy/mcp --header "Authorization: Bearer <YOUR_TOKEN>"`.
+Clients that only speak stdio (e.g. Claude Desktop) can bridge with `npx mcp-remote https://astro.example.com/astropy/mcp --header "Authorization: Bearer <YOUR_TOKEN>"`.
+
+Smoke test: `BASE=https://astro.example.com API_TOKEN=... [VERIFY_TLS=0] python tests/mcp_check.py` (initialize, list_tools = 20, two tool calls per SDK).

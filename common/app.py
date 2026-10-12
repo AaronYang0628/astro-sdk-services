@@ -2,7 +2,9 @@ import hmac, json, os, resource, warnings, traceback, time
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Any, Optional
-from . import codec, engine
+from . import codec, engine, mcp_server
+import contextlib
+from fastapi.responses import JSONResponse
 
 warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.dirname(__file__))
@@ -15,22 +17,14 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=4):
     resource.setrlimit(resource.RLIMIT_AS, (mem_gb << 30, mem_gb << 30))
     codec.ALLOWED_PREFIXES = tuple(prefixes) + codec.ALLOWED_PREFIXES
     tools = {t["name"]: t for t in json.load(open(os.path.join(HERE, "data", f"{sdk}_tools.json")))}
-    app = FastAPI(title=f"{sdk} tool service")
+    mgr = mcp_server.build(sdk, tools, timeout)
 
-    @app.middleware("http")
-    async def strip_prefix(request, call_next):
-        # Ingress may forward /<sdk>/... unchanged; accept both prefixed and stripped paths.
-        pre = f"/{sdk}"
-        path = request.scope["path"]
-        if path == pre or path.startswith(pre + "/"):
-            request.scope["path"] = path[len(pre):] or "/"
-        tok = os.environ.get("API_TOKEN")
-        if tok and request.scope["path"] != "/health":
-            got = request.headers.get("authorization", "")
-            if not hmac.compare_digest(got, f"Bearer {tok}"):
-                from fastapi.responses import JSONResponse
-                return JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)
-        return await call_next(request)
+    @contextlib.asynccontextmanager
+    async def lifespan(_app):
+        async with mgr.run():
+            yield
+
+    app = FastAPI(title=f"{sdk} tool service", lifespan=lifespan)
 
     @app.get("/health")
     def health():
@@ -55,4 +49,21 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=4):
             if isinstance(e, KeyboardInterrupt):
                 raise
             return {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:500]}", "elapsed_s": round(time.time() - t0, 3)}
-    return app
+    async def outer(scope, receive, send):
+        # Pure ASGI wrapper: prefix strip (Ingress may forward /<sdk>/... unchanged), bearer auth, /mcp routing.
+        if scope["type"] != "http":
+            return await app(scope, receive, send)
+        pre = f"/{sdk}"
+        path = scope["path"]
+        if path == pre or path.startswith(pre + "/"):
+            scope = dict(scope, path=path[len(pre):] or "/")
+        tok = os.environ.get("API_TOKEN")
+        if tok and scope["path"] != "/health":
+            hdr = dict(scope.get("headers") or []).get(b"authorization", b"").decode("latin-1")
+            if not hmac.compare_digest(hdr, f"Bearer {tok}"):
+                return await JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)(scope, receive, send)
+        if scope["path"] in ("/mcp", "/mcp/"):
+            return await mgr.handle_request(dict(scope, path="/mcp"), receive, send)
+        return await app(scope, receive, send)
+    outer.fastapi = app
+    return outer
