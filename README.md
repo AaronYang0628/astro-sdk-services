@@ -50,11 +50,17 @@ and writes `results/<sdk>.json`. `tests/build_xlsx.py` renders the tool table. S
 Candidates in astroquery whose external service timed out (NED, SDSS) were left out of the 20 and are not claimed to work.
 
 ## Helm
-`helm/astro-sdk-services`: one Deployment + Service per SDK and a path-routed Ingress (host `astro.example.com`,
-placeholder). Not deployed or linted against a cluster; the image must be built from `Dockerfile` (`SDK` env selects the service).
+`helm/astro-sdk-services`: by default (`allInOne: true`) one Deployment + Service `astro-all` (SDK=all) and an Ingress
+routing `/astropy`, `/astroquery`, `/photutils`, `/astroplan`, `/sunpy` to it (host `astro.example.com`, placeholder).
+`allInOne: false` deploys one Deployment + Service per SDK instead. See `docs/DEPLOY.md`.
+
+## All-in-one (default)
+The image defaults to `SDK=all`: one process serves all 5 SDKs under `/<sdk>/{health,tools,invoke,mcp}`, plus `/` and
+`/health` listing them. `docker run -p 8000:8000 ghcr.io/aaronyang0628/astro-sdk-services:latest`.
+`SDK=<name>` still runs a single SDK.
 
 ## Authentication
-Set env `API_TOKEN` (Helm: `--set auth.secretName=<secret with key "token">`) to require `Authorization: Bearer <token>` on every endpoint except `/health`.
+Auth is **off by default**. Set a non-empty env `API_TOKEN` (Helm: `--set auth.secretName=<secret with key "token">`) to require `Authorization: Bearer <token>` on every endpoint except `/health`.
 Regression against a deployed instance: `BASE_URL=https://astro.example.com API_TOKEN=... python tests/run_cases.py <sdk>`.
 
 ## MCP (Streamable HTTP)
@@ -64,7 +70,7 @@ is generated from the parameter list (`str/int/float/bool/dict/list` map to JSON
 `SkyCoord`/`Time`/`Quantity` accept the codec forms above, required params go into `required`, methods require `_self`).
 Calls share the `/invoke` engine: same whitelist, timeout and encoding; the tool result is a JSON text
 `{"ok", "result", "error", "elapsed_s"}` (`isError=true` on failure). The endpoint is stateless and returns JSON responses.
-The same `Authorization: Bearer <token>` is required (401 otherwise).
+If `API_TOKEN` is set, the same `Authorization: Bearer <token>` is required (401 otherwise); without it, omit `headers`.
 
 Cursor (`~/.cursor/mcp.json`) / Claude Code / other clients that support remote HTTP servers:
 ```json

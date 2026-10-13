@@ -13,8 +13,10 @@ class Req(BaseModel):
     function_name: str
     arguments: Optional[dict[str, Any]] = None
 
-def make_app(sdk, prefixes, timeout=30, mem_gb=4):
-    resource.setrlimit(resource.RLIMIT_AS, (mem_gb << 30, mem_gb << 30))
+def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
+    if set_limit:
+        mem_gb = int(os.environ.get("MEM_LIMIT_GB") or mem_gb or 4)
+        resource.setrlimit(resource.RLIMIT_AS, (mem_gb << 30, mem_gb << 30))
     codec.ALLOWED_PREFIXES = tuple(prefixes) + codec.ALLOWED_PREFIXES
     tools = {t["name"]: t for t in json.load(open(os.path.join(HERE, "data", f"{sdk}_tools.json")))}
     mgr = mcp_server.build(sdk, tools, timeout)
@@ -57,7 +59,7 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=4):
         path = scope["path"]
         if path == pre or path.startswith(pre + "/"):
             scope = dict(scope, path=path[len(pre):] or "/")
-        tok = os.environ.get("API_TOKEN")
+        tok = (os.environ.get("API_TOKEN") or "").strip()  # auth only when set and non-empty
         if tok and scope["path"] != "/health":
             hdr = dict(scope.get("headers") or []).get(b"authorization", b"").decode("latin-1")
             if not hmac.compare_digest(hdr, f"Bearer {tok}"):
@@ -66,4 +68,5 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=4):
             return await mgr.handle_request(dict(scope, path="/mcp"), receive, send)
         return await app(scope, receive, send)
     outer.fastapi = app
+    outer.mgr = mgr
     return outer

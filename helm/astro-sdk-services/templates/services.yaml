@@ -1,3 +1,43 @@
+{{- if .Values.allInOne }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: astro-all
+  labels: {app: astro-all}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: astro-all}
+  template:
+    metadata:
+      labels: {app: astro-all}
+    spec:
+      containers:
+        - name: all
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - {name: SDK, value: "all"}
+            {{- if .Values.memoryLimitGB }}
+            - {name: MEM_LIMIT_GB, value: {{ .Values.memoryLimitGB | quote }}}
+            {{- end }}
+            {{- if .Values.auth.secretName }}
+            - name: API_TOKEN
+              valueFrom: {secretKeyRef: {name: {{ .Values.auth.secretName }}, key: token}}
+            {{- end }}
+          ports: [{containerPort: 8000}]
+          readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: astro-all
+spec:
+  selector: {app: astro-all}
+  ports: [{port: 80, targetPort: 8000}]
+{{- else }}
 {{- range .Values.services }}
 ---
 apiVersion: apps/v1
@@ -19,6 +59,9 @@ spec:
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           env:
             - {name: SDK, value: {{ .name | quote }}}
+            {{- if $.Values.memoryLimitGB }}
+            - {name: MEM_LIMIT_GB, value: {{ $.Values.memoryLimitGB | quote }}}
+            {{- end }}
             {{- if $.Values.auth.secretName }}
             - name: API_TOKEN
               valueFrom: {secretKeyRef: {name: {{ $.Values.auth.secretName }}, key: token}}
@@ -34,4 +77,5 @@ metadata:
 spec:
   selector: {app: astro-{{ .name }}}
   ports: [{port: 80, targetPort: 8000}]
+{{- end }}
 {{- end }}

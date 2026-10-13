@@ -17,7 +17,7 @@ def factory(headers=None, timeout=None, auth=None):
 
 async def check(i, sdk):
     cases = [c for c in json.load(open(f"{HERE}/cases/{sdk}.json")) if not c.get("skip")]
-    async with streamablehttp_client(url(i, sdk), headers={"Authorization": f"Bearer {TOK}"}, timeout=120,
+    async with streamablehttp_client(url(i, sdk), headers=({"Authorization": f"Bearer {TOK}"} if TOK else {}), timeout=120,
                                      httpx_client_factory=factory) as (r, w, _):
         async with ClientSession(r, w) as s:
             init = await s.initialize()

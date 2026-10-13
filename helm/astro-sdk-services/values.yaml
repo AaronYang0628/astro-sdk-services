@@ -8,7 +8,9 @@ ingress:
   host: astro.example.com
   annotations: {}
   tls: []
-services:            # each entry -> Deployment + Service + Ingress path /<name>
+allInOne: true      # true: ONE Deployment/Service (SDK=all) serving all paths below; false: one Deployment per SDK
+memoryLimitGB: ""   # optional MEM_LIMIT_GB (RLIMIT_AS) override; default 8 in all-in-one, 4 per SDK
+services:            # SDK names -> Ingress paths /<name> (and, if allInOne=false, one Deployment + Service each) -> Deployment + Service + Ingress path /<name>
   - name: astropy
   - name: astroquery
   - name: photutils
@@ -18,4 +20,4 @@ resources:
   requests: {cpu: 100m, memory: 512Mi}
   limits: {cpu: "1", memory: 4Gi}
 auth:
-  secretName: ""   # k8s Secret with key `token` -> API_TOKEN (Bearer auth; /health exempt)
+  secretName: ""   # optional. Empty = no auth. Else k8s Secret with key `token` -> API_TOKEN (Bearer auth; /health exempt)

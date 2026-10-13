@@ -18,6 +18,6 @@ spec:
           {{- range .Values.services }}
           - path: /{{ .name }}
             pathType: Prefix
-            backend: {service: {name: astro-{{ .name }}, port: {number: 80}}}
+            backend: {service: {name: {{ if $.Values.allInOne }}astro-all{{ else }}astro-{{ .name }}{{ end }}, port: {number: 80}}}
           {{- end }}
 {{- end }}
