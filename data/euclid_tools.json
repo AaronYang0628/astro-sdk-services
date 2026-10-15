@@ -1,0 +1,95 @@
+[
+  {
+    "name": "euclid_get_config",
+    "target": "euclid_cutout.get_config",
+    "desc": "查看 Euclid cutout 运行时配置：EUCLID_MER_ROOT、EUCLID_TILE_INDEX、EUCLID_OUTPUT_DIR 及路径是否存在。调用其它工具前应先确认 MER 与 TILE 索引已挂载。",
+    "params": [],
+    "domain": "Euclid本地裁剪",
+    "cn": "查看Euclid数据路径配置"
+  },
+  {
+    "name": "euclid_validate_catalog",
+    "target": "euclid_cutout.validate_catalog",
+    "desc": "校验本地星表（FITS/CSV）：自动探测 RA/DEC/ID 列，返回行数、坐标范围、是否超过 max_rows。批量裁剪前用此工具确认列名。",
+    "params": [
+      {"name": "catalog_path", "type": "str", "required": true, "desc": "星表文件绝对或相对路径（.fits/.csv）"},
+      {"name": "ra_col", "type": "str", "required": false, "desc": "RA 列名；缺省自动探测"},
+      {"name": "dec_col", "type": "str", "required": false, "desc": "DEC 列名；缺省自动探测"},
+      {"name": "id_col", "type": "str", "required": false, "desc": "目标 ID 列名；缺省自动探测"},
+      {"name": "max_rows", "type": "int", "required": false, "desc": "行数上限提示（默认 10000）"}
+    ],
+    "domain": "Euclid本地裁剪",
+    "cn": "校验星表列名与范围"
+  },
+  {
+    "name": "euclid_query_tile_id",
+    "target": "euclid_cutout.query_tile_id",
+    "desc": "根据天球坐标 (ra,dec 度) 在本地 TILE 索引中查询 Euclid Q1 的 TILE_ID。索引由环境变量 EUCLID_TILE_INDEX 指定（或参数 tile_index）。不访问外网。",
+    "params": [
+      {"name": "ra", "type": "float", "required": true, "desc": "赤经，度"},
+      {"name": "dec", "type": "float", "required": true, "desc": "赤纬，度"},
+      {"name": "tile_index", "type": "str", "required": false, "desc": "覆盖 EUCLID_TILE_INDEX 的 FITS 路径"},
+      {"name": "tolerance", "type": "float", "required": false, "desc": "bbox 容差（度，默认 0.01）"}
+    ],
+    "domain": "Euclid本地裁剪",
+    "cn": "坐标查询TILE_ID"
+  },
+  {
+    "name": "euclid_locate_products",
+    "target": "euclid_cutout.locate_products",
+    "desc": "在 EUCLID_MER_ROOT/<TILE_ID>/<仪器>/ 下按 Euclid MER 命名规则定位产品 FITS（BGSUB/SCI/FLAG/WHT/RMS/BGMOD/CATALOG-PSF）。返回 key→路径字典，不裁剪。",
+    "params": [
+      {"name": "tile_id", "type": "str", "required": true, "desc": "TILE_ID，如 102044183"},
+      {"name": "file_type", "type": "str", "required": false, "desc": "产品类型，默认 BGSUB"},
+      {"name": "instruments", "type": "list", "required": false, "desc": "仪器目录名列表，如 [\"VIS\",\"NISP\"]"},
+      {"name": "bands", "type": "list", "required": false, "desc": "完整波段标识，如 [\"VIS\",\"NIR-Y\",\"DES-G\"]"},
+      {"name": "mer_root", "type": "str", "required": false, "desc": "覆盖 EUCLID_MER_ROOT"}
+    ],
+    "domain": "Euclid本地裁剪",
+    "cn": "定位TILE下产品FITS路径"
+  },
+  {
+    "name": "euclid_cutout_single",
+    "target": "euclid_cutout.cutout_single",
+    "desc": "单目标完整流水线：查 TILE → 定位产品 → astropy Cutout2D → 写出多 HDU FITS。需已配置 MER 与 TILE 索引。返回输出路径与元数据（不含像素数组）。",
+    "params": [
+      {"name": "ra", "type": "float", "required": true, "desc": "赤经，度"},
+      {"name": "dec", "type": "float", "required": true, "desc": "赤纬，度"},
+      {"name": "size", "type": "int", "required": false, "desc": "裁剪边长（像素，默认 64）"},
+      {"name": "file_types", "type": "list", "required": false, "desc": "产品类型列表，默认 [\"BGSUB\"]"},
+      {"name": "instruments", "type": "list", "required": false, "desc": "仪器过滤，如 [\"VIS\"]"},
+      {"name": "bands", "type": "list", "required": false, "desc": "波段过滤"},
+      {"name": "obj_id", "type": "str", "required": false, "desc": "输出文件名用的目标 ID"},
+      {"name": "output_dir", "type": "str", "required": false, "desc": "输出根目录"},
+      {"name": "mer_root", "type": "str", "required": false, "desc": "覆盖 EUCLID_MER_ROOT"},
+      {"name": "tile_index", "type": "str", "required": false, "desc": "覆盖 EUCLID_TILE_INDEX"},
+      {"name": "skip_nan", "type": "bool", "required": false, "desc": "含 NaN 则跳过该波段（默认 true）"}
+    ],
+    "domain": "Euclid本地裁剪",
+    "cn": "单坐标完整裁剪并写FITS",
+    "timeout": 60
+  },
+  {
+    "name": "euclid_cutout_batch",
+    "target": "euclid_cutout.cutout_batch",
+    "desc": "对星表批量执行 cutout_single。默认最多处理 max_sources=50 行以防超时。返回每行成功/失败与输出路径。",
+    "params": [
+      {"name": "catalog_path", "type": "str", "required": true, "desc": "星表路径"},
+      {"name": "size", "type": "int", "required": false, "desc": "裁剪边长（像素）"},
+      {"name": "file_types", "type": "list", "required": false, "desc": "产品类型列表"},
+      {"name": "instruments", "type": "list", "required": false, "desc": "仪器过滤"},
+      {"name": "bands", "type": "list", "required": false, "desc": "波段过滤"},
+      {"name": "ra_col", "type": "str", "required": false, "desc": "RA 列名"},
+      {"name": "dec_col", "type": "str", "required": false, "desc": "DEC 列名"},
+      {"name": "id_col", "type": "str", "required": false, "desc": "ID 列名"},
+      {"name": "output_dir", "type": "str", "required": false, "desc": "输出根目录"},
+      {"name": "mer_root", "type": "str", "required": false, "desc": "覆盖 EUCLID_MER_ROOT"},
+      {"name": "tile_index", "type": "str", "required": false, "desc": "覆盖 EUCLID_TILE_INDEX"},
+      {"name": "skip_nan", "type": "bool", "required": false, "desc": "跳过含 NaN 的波段"},
+      {"name": "max_sources", "type": "int", "required": false, "desc": "最多处理行数（默认 50）"}
+    ],
+    "domain": "Euclid本地裁剪",
+    "cn": "星表批量裁剪",
+    "timeout": 120
+  }
+]

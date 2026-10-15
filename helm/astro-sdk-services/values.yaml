@@ -16,6 +16,7 @@ services:            # SDK names -> Ingress paths /<name> (and, if allInOne=fals
   - name: photutils
   - name: astroplan
   - name: sunpy
+  - name: euclid
 resources:
   requests: {cpu: 100m, memory: 512Mi}
   limits: {cpu: "1", memory: 4Gi}

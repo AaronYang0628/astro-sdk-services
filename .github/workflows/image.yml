@@ -2,7 +2,7 @@ name: image
 on:
   push:
     branches: [master]
-    paths: ["Dockerfile", "requirements.txt", "common/**", "sdks/**", "data/**", "fixtures/**", ".github/workflows/image.yml"]
+    paths: ["Dockerfile", "requirements.txt", "common/**", "sdks/**", "data/**", "fixtures/**", "euclid_cutout/**", ".github/workflows/image.yml"]
   workflow_dispatch:
 permissions:
   contents: read

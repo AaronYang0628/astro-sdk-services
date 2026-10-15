@@ -1,10 +1,10 @@
 # astro-sdk-services 部署文档
 
-五个天文 SDK（astropy / astroquery / photutils / astroplan / sunpy），**一个镜像、一个容器、5 个 MCP 端点**。默认**不鉴权**；设置 `API_TOKEN` 后才要求 Bearer token。
+六个服务（astropy / astroquery / photutils / astroplan / sunpy / **euclid**），**一个镜像、一个容器、6 个 MCP 端点**。默认**不鉴权**；设置 `API_TOKEN` 后才要求 Bearer token。
 
-## 一个镜像 = 一个容器 = 5 个 MCP 服务
+## 一个镜像 = 一个容器 = 6 个 MCP 服务
 
-镜像 `ghcr.io/aaronyang0628/astro-sdk-services` 默认 `SDK=all`：一个进程同时提供 5 个 SDK，每个 SDK 是一个**独立的 MCP 服务**（各 20 个工具），按路径区分：
+镜像 `ghcr.io/aaronyang0628/astro-sdk-services` 默认 `SDK=all`：一个进程同时提供 6 个服务，按路径区分（前 5 个各 20 个工具；euclid 为本地 MER 裁剪，6 个工具）：
 
 | SDK | MCP 地址 | HTTP 调用 | 工具列表 | 工具数 | 对应简介文件 |
 |---|---|---|---|---|---|
@@ -13,13 +13,40 @@
 | photutils | `http(s)://<你的域名>/photutils/mcp` | `POST /photutils/invoke` | `GET /photutils/tools` | 20 | `photutils.json` |
 | astroplan | `http(s)://<你的域名>/astroplan/mcp` | `POST /astroplan/invoke` | `GET /astroplan/tools` | 20 | `astroplan.json` |
 | sunpy | `http(s)://<你的域名>/sunpy/mcp` | `POST /sunpy/invoke` | `GET /sunpy/tools` | 20 | `sunpy.json` |
+| euclid | `http(s)://<你的域名>/euclid/mcp` | `POST /euclid/invoke` | `GET /euclid/tools` | 6 | （本地 MER cutout，见下文） |
 
-其他路径：`GET /` 和 `GET /health` 返回 5 个服务的列表；`GET /<sdk>/health` 为单个 SDK 健康检查（始终免鉴权）。
+其他路径：`GET /` 和 `GET /health` 返回 6 个服务的列表；`GET /<sdk>/health` 为单个 SDK 健康检查（始终免鉴权）。
 
 - `/invoke` 请求体：`{"function_name": "...", "arguments": {...}}`
 - `/mcp`：MCP Streamable HTTP（无状态，JSON 响应）
-- **上架到 MCP 平台**：登记 **5 个独立的 MCP 条目**，各填对应的 MCP 地址并使用对应的 `<sdk>.json` 简介；若启用了 `API_TOKEN`，再加请求头 `Authorization: Bearer <你的token>`（5 个服务共用同一个 token）。
+- **上架到 MCP 平台**：登记 **6 个独立的 MCP 条目**（euclid 需另挂 MER 数据卷），各填对应的 MCP 地址并使用对应的 `<sdk>.json` 简介；若启用了 `API_TOKEN`，再加请求头 `Authorization: Bearer <你的token>`（5 个服务共用同一个 token）。
 - 兼容模式：`SDK=astropy` 等单个名字时，容器只提供该 SDK（路径 `/<sdk>/...` 或不带前缀均可）。
+
+
+## Euclid 本地裁剪（`/euclid`）
+
+纯 MCP/HTTP 工具链，**不依赖 Flask**。复现 Euclid Image Cutout 核心流水线：星表校验 → TILE 查询 → 定位 MER 产品 → `Cutout2D` → 写 FITS。
+
+| 环境变量 | 含义 |
+|---|---|
+| `EUCLID_MER_ROOT` | MER 根目录（其下为 `<TILE_ID>/<INSTRUMENT>/EUC_MER_*.fits`） |
+| `EUCLID_TILE_INDEX` | TILE 索引 FITS（列：TILE_ID, RA_MIN/MAX, DEC_MIN/MAX, RA_CENTER, DEC_CENTER） |
+| `EUCLID_OUTPUT_DIR` | 裁剪输出目录（默认 `./euclid_cutouts`） |
+
+工具（6）：`euclid_get_config`、`euclid_validate_catalog`、`euclid_query_tile_id`、`euclid_locate_products`、`euclid_cutout_single`、`euclid_cutout_batch`。
+
+```bash
+docker run -d --name astro-sdk -p 8000:8000 \
+  -e EUCLID_MER_ROOT=/data/MER \
+  -e EUCLID_TILE_INDEX=/data/tile_index.fits \
+  -e EUCLID_OUTPUT_DIR=/data/cutouts \
+  -v /path/to/MER:/data/MER:ro \
+  -v /path/to/tile_index.fits:/data/tile_index.fits:ro \
+  -v /path/to/cutouts:/data/cutouts \
+  ghcr.io/aaronyang0628/astro-sdk-services:latest
+```
+
+冒烟（无真实 Q1 时用仓库内 mock）：`python tests/make_euclid_fixtures.py && EUCLID_MER_ROOT=fixtures/euclid_mock/MER EUCLID_TILE_INDEX=fixtures/euclid_mock/tile_index.fits python tests/test_euclid_smoke.py`
 
 ## 1. 镜像
 
@@ -30,7 +57,7 @@
 | 固定 tag | 提交 SHA，例如 `ghcr.io/aaronyang0628/astro-sdk-services:<commit-sha>` |
 | 构建方式 | GitHub Actions `.github/workflows/image.yml`，push 到 `master` 自动构建，也可手动触发 |
 | 容器端口 | `8000` |
-| 环境变量 | `SDK`（默认 `all`；或 astropy/astroquery/photutils/astroplan/sunpy）；`API_TOKEN`（可选，为空则不鉴权）；`MEM_LIMIT_GB`（可选，进程地址空间上限，all 模式默认 8，单 SDK 默认 4） |
+| 环境变量 | `SDK`（默认 `all`；或 astropy/astroquery/photutils/astroplan/sunpy/euclid）；Euclid 另需 `EUCLID_MER_ROOT` / `EUCLID_TILE_INDEX` / 可选 `EUCLID_OUTPUT_DIR`；`API_TOKEN`（可选，为空则不鉴权）；`MEM_LIMIT_GB`（可选，进程地址空间上限，all 模式默认 8，单 SDK 默认 4） |
 
 生产环境建议使用固定 SHA tag。若无法访问 GHCR，可从源码自行构建：`docker build -t astro-sdk-services .`
 
@@ -39,7 +66,7 @@
 ```bash
 docker run -d --name astro-sdk -p 8000:8000 ghcr.io/aaronyang0628/astro-sdk-services:latest
 
-curl http://127.0.0.1:8000/                       # 5 个服务列表
+curl http://127.0.0.1:8000/                       # 6 个服务列表
 curl http://127.0.0.1:8000/astropy/tools          # astropy 的 20 个工具
 curl -X POST http://127.0.0.1:8000/astropy/invoke -H "Content-Type: application/json" \
   -d '{"function_name":"astropy_quantity_to","arguments":{"unit":"m","_self":{"value":1.5,"unit":"km"}}}'
@@ -51,7 +78,7 @@ curl -X POST http://127.0.0.1:8000/astropy/invoke -H "Content-Type: application/
 
 ## 3. Kubernetes（Helm）部署
 
-Chart 位于 `helm/astro-sdk-services`。默认 `allInOne: true`：一个 Deployment + Service `astro-all`，一个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy` 都转发到它。设 `allInOne: false` 则每个 SDK 各一个 Deployment + Service（`astro-<sdk>`），适合需要隔离或分别扩容时。
+Chart 位于 `helm/astro-sdk-services`。默认 `allInOne: true`：一个 Deployment + Service `astro-all`，一个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 都转发到它。设 `allInOne: false` 则每个 SDK 各一个 Deployment + Service（`astro-<sdk>`），适合需要隔离或分别扩容时。
 
 ### 3.1 （可选）token Secret
 ```bash

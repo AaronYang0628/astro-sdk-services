@@ -1,13 +1,13 @@
-"""All-in-one: serve all 5 SDKs in one process under /<sdk>/{health,tools,invoke,mcp}."""
+"""All-in-one: serve all SDKs in one process under /<sdk>/{health,tools,invoke,mcp}."""
 import contextlib, os, resource
 import sunpy.coordinates  # noqa: F401  registers helioprojective etc frames
 from fastapi.responses import JSONResponse
 from common.app import make_app
 
-SDKS = ["astropy", "astroquery", "photutils", "astroplan", "sunpy"]
+SDKS = ["astropy", "astroquery", "photutils", "astroplan", "sunpy", "euclid"]
 _gb = int(os.environ.get("MEM_LIMIT_GB") or 8)
 resource.setrlimit(resource.RLIMIT_AS, (_gb << 30, _gb << 30))
-APPS = {s: make_app(s, (s,), set_limit=False) for s in SDKS}
+APPS = {s: make_app(s, (s,) if s != "euclid" else ("euclid_cutout",), set_limit=False) for s in SDKS}
 
 
 async def _lifespan(receive, send):

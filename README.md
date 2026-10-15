@@ -10,6 +10,7 @@ One small FastAPI HTTP service per astronomy SDK (prototype). Each service expos
 | photutils | 9103 | 20 |
 | astroplan | 9104 | 20 |
 | sunpy | 9105 | 20 |
+| euclid | (all-in-one `/euclid`) | 6 (local Euclid Q1 MER cutout; needs EUCLID_MER_ROOT + EUCLID_TILE_INDEX) |
 
 Services bind to `127.0.0.1` only. Behind an Ingress (`https://astro.example.com/<sdk>/...`) the services accept the
 path both with and without the `/<sdk>` prefix.
@@ -55,7 +56,7 @@ routing `/astropy`, `/astroquery`, `/photutils`, `/astroplan`, `/sunpy` to it (h
 `allInOne: false` deploys one Deployment + Service per SDK instead. See `docs/DEPLOY.md`.
 
 ## All-in-one (default)
-The image defaults to `SDK=all`: one process serves all 5 SDKs under `/<sdk>/{health,tools,invoke,mcp}`, plus `/` and
+The image defaults to `SDK=all`: one process serves all 6 services under `/<sdk>/{health,tools,invoke,mcp}`, plus `/` and
 `/health` listing them. `docker run -p 8000:8000 ghcr.io/aaronyang0628/astro-sdk-services:latest`.
 `SDK=<name>` still runs a single SDK.
 
