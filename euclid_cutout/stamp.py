@@ -22,7 +22,7 @@ def _parse_size(size: Union[int, float, list, tuple], wcs: WCS) -> Union[int, tu
     {'value': n, 'unit': 'arcsec'|'pixel'} dict is also accepted for LLM clarity.
     """
     if isinstance(size, dict):
-        val = float(size.get("value", size.get("size", 128)))
+        val = float(size.get("value", size.get("size", 1024)))
         unit = str(size.get("unit", "pixel")).lower()
         if unit in ("pixel", "pix", "px", ""):
             return int(round(val))
@@ -47,7 +47,7 @@ def cutout2d(
     path: str,
     ra: float,
     dec: float,
-    size: Union[int, float, list, tuple, dict] = 128,
+    size: Union[int, float, list, tuple, dict] = 1024,
     hdu_index: Optional[int] = None,
     output_path: Optional[str] = None,
     obj_id: Optional[str] = None,
@@ -57,7 +57,7 @@ def cutout2d(
     """Cut out a stamp at catalog/source (ra,dec deg) — NOT the mosaic FOV center.
 
     Matches upstream cutout_image: WCS(header), SkyCoord(ra,dec,unit='deg'),
-    Cutout2D size in **pixels** (default 128). Writes a single PrimaryHDU FITS
+    Cutout2D size in **pixels** (default 1024). Writes a single PrimaryHDU FITS
     (image + WCS) so viewers open the stamp directly.
     """
     obj_id = obj_id or f"cutout_{ra:.5f}_{dec:.5f}"

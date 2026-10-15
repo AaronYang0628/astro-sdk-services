@@ -173,7 +173,7 @@
   {
     "name": "euclid_cutout2d",
     "target": "euclid_cutout.cutout2d",
-    "desc": "按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 128）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。",
+    "desc": "按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 1024）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。",
     "params": [
       {
         "name": "path",
@@ -197,7 +197,7 @@
         "name": "size",
         "type": "int",
         "required": false,
-        "desc": "边长像素（默认 128，与上游一致）；也可 {\"value\":10,\"unit\":\"arcsec\"}"
+        "desc": "边长像素（默认 1024）；也可 {\"value\":10,\"unit\":\"arcsec\"}"
       },
       {
         "name": "hdu_index",

@@ -51,7 +51,7 @@ def test_library_mock():
     f = ec.fetch_fits(fits_path)
     peak = ec.find_peak_sky(f["path"])
     assert peak["ok"], peak
-    cut = ec.cutout2d(f["path"], peak["ra"], peak["dec"], size=128, obj_id="fine_mock")
+    cut = ec.cutout2d(f["path"], peak["ra"], peak["dec"], obj_id="fine_mock")
     assert cut["success"] and cut["inside"] and Path(cut["fits_path"]).is_file(), cut
     prev = ec.write_preview(cut["fits_path"], format="png")
     assert Path(prev["preview_path"]).is_file(), prev
@@ -83,9 +83,9 @@ def test_library_real_url():
     assert peak["ok"] and peak["inside"] if "inside" in peak else True, peak
 
     # BEFORE bug: cutting at FOV centre → flat background
-    bad = ec.cutout2d(f["path"], fov["ra"], fov["dec"], size=128, hdu_index=1, obj_id="casdc_vis_2686_FOVcenter")
+    bad = ec.cutout2d(f["path"], fov["ra"], fov["dec"], hdu_index=1, obj_id="casdc_vis_2686_FOVcenter")
     # AFTER fix: cutting at peak/source
-    good = ec.cutout2d(f["path"], peak["ra"], peak["dec"], size=128, hdu_index=1, obj_id="casdc_vis_2686")
+    good = ec.cutout2d(f["path"], peak["ra"], peak["dec"], hdu_index=1, obj_id="casdc_vis_2686")
     assert good["success"] and good["inside"], good
     assert good["stats"]["max"] > bad["stats"]["max"], (good["stats"], bad["stats"])
 
@@ -154,7 +154,7 @@ def test_http():
                     "path": path,
                     "ra": peak["result"]["ra"],
                     "dec": peak["result"]["dec"],
-                    "size": 128,
+                    "size": 1024,
                     "obj_id": "http_fine",
                 },
             },
