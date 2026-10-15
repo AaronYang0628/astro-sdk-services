@@ -4,7 +4,7 @@
 
 ## 一个镜像 = 一个容器 = 6 个 MCP 服务
 
-镜像 `ghcr.io/aaronyang0628/astro-sdk-services` 默认 `SDK=all`：一个进程同时提供 6 个服务，按路径区分（前 5 个各 20 个工具；euclid 为 FITS URL/本地 MER 裁剪，13 个细粒度工具）：
+镜像 `ghcr.io/aaronyang0628/astro-sdk-services` 默认 `SDK=all`：一个进程同时提供 6 个服务，按路径区分（前 5 个各 20 个工具；euclid 为 FITS URL/本地 MER 裁剪，14 个细粒度工具）：
 
 | SDK | MCP 地址 | HTTP 调用 | 工具列表 | 工具数 | 对应简介文件 |
 |---|---|---|---|---|---|
@@ -13,7 +13,7 @@
 | photutils | `http(s)://<你的域名>/photutils/mcp` | `POST /photutils/invoke` | `GET /photutils/tools` | 20 | `photutils.json` |
 | astroplan | `http(s)://<你的域名>/astroplan/mcp` | `POST /astroplan/invoke` | `GET /astroplan/tools` | 20 | `astroplan.json` |
 | sunpy | `http(s)://<你的域名>/sunpy/mcp` | `POST /sunpy/invoke` | `GET /sunpy/tools` | 20 | `sunpy.json` |
-| euclid | `http(s)://<你的域名>/euclid/mcp` | `POST /euclid/invoke` | `GET /euclid/tools` | 13 | （URL/本地 FITS 细粒度 cutout，见下文） |
+| euclid | `http(s)://<你的域名>/euclid/mcp` | `POST /euclid/invoke` | `GET /euclid/tools` | 14 | （URL/本地 FITS 细粒度 cutout，见下文） |
 
 其他路径：`GET /` 和 `GET /health` 返回 6 个服务的列表；`GET /<sdk>/health` 为单个 SDK 健康检查（始终免鉴权）。
 
@@ -34,10 +34,10 @@
 | `EUCLID_MER_ROOT` | （可选）本地 MER 根目录 |
 | `EUCLID_TILE_INDEX` | （可选）TILE 索引 FITS |
 
-**URL→图像推荐链：** `euclid_fetch_fits` → `euclid_list_hdus` → `euclid_read_wcs_header` → `euclid_sky_to_pixel` → `euclid_cutout2d` → `euclid_write_preview`。  
-多 GB 文件请给 `fetch_fits` 传 `max_bytes`（例如 `25000000`）只拉前缀，避免整包下载。
+**URL→图像推荐链：** `euclid_fetch_fits` → `euclid_list_hdus` → `euclid_find_peak_sky`（或星表 RA/DEC）→ `euclid_sky_to_pixel` → `euclid_cutout2d`（默认 size=128 像素）→ `euclid_write_preview`。  
+**不要**把 `read_wcs_header` 的 `fov_center`/`crval` 当作源坐标（那是视场中心，裁出来往往是一片背景）。多 GB 文件请给 `fetch_fits` 传 `max_bytes`（例如 `25000000`）。Euclid VIS MEF 图像一般在 `hdu_index=1`，不是空的 PRIMARY。
 
-工具（13）：上述 6 步 + `euclid_pixel_to_sky` / `euclid_get_config`，以及本地 MER：`validate_catalog` / `query_tile_id` / `locate_products` / `cutout_single` / `cutout_batch`。
+工具（14）：细粒度 URL 链 + `euclid_find_peak_sky` / `euclid_get_config`，以及本地 MER：`validate_catalog` / `query_tile_id` / `locate_products` / `cutout_single` / `cutout_batch`。
 
 ```bash
 docker run -d --name astro-sdk -p 8000:8000 \

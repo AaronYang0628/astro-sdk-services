@@ -1,7 +1,8 @@
 """Euclid / generic FITS cutout helpers for MCP chaining.
 
-Fine-grained URL→image chain:
-  fetch_fits → list_hdus → read_wcs_header → sky_to_pixel → cutout2d → write_preview
+Fine-grained URL→image chain (use a **source** ra/dec, not FOV centre):
+  fetch_fits → list_hdus → read_wcs_header → find_peak_sky|sky_to_pixel
+  → cutout2d → write_preview
 
 Optional local MER helpers: query_tile_id, locate_products, cutout_single/batch.
 
@@ -13,7 +14,7 @@ Env:
 """
 from .config import get_config
 from .cache import fetch_fits
-from .fitsio import list_hdus, read_wcs_header, sky_to_pixel, pixel_to_sky
+from .fitsio import list_hdus, read_wcs_header, sky_to_pixel, pixel_to_sky, find_peak_sky
 from .stamp import cutout2d
 from .preview import write_preview
 from .catalog import validate_catalog
@@ -28,6 +29,7 @@ __all__ = [
     "read_wcs_header",
     "sky_to_pixel",
     "pixel_to_sky",
+    "find_peak_sky",
     "cutout2d",
     "write_preview",
     "validate_catalog",

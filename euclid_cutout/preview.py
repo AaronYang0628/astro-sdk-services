@@ -11,17 +11,16 @@ import matplotlib.pyplot as plt
 from .config import default_output_dir
 
 
-def _stretch(data: np.ndarray, p_low: float = 1.0, p_high: float = 99.0) -> np.ndarray:
+def _stretch(data: np.ndarray, p_low: float = 1.0, p_high: float = 99.5) -> np.ndarray:
     arr = np.asarray(data, dtype=np.float64)
     mask = np.isfinite(arr)
     if not mask.any():
         return np.zeros_like(arr, dtype=np.float64)
     lo, hi = np.percentile(arr[mask], [p_low, p_high])
     if hi <= lo:
-        hi = lo + 1.0
+        hi = lo + 1e-6
     x = np.clip((arr - lo) / (hi - lo), 0, 1)
-    # soft asinh-ish
-    return np.arcsinh(5 * x) / np.arcsinh(5)
+    return np.arcsinh(10 * x) / np.arcsinh(10)
 
 
 def write_preview(
@@ -30,7 +29,7 @@ def write_preview(
     hdu_index: Optional[int] = None,
     format: str = "png",
     p_low: float = 1.0,
-    p_high: float = 99.0,
+    p_high: float = 99.5,
     dpi: int = 120,
 ) -> dict:
     """Write a quicklook PNG or JPG from an image FITS (cutout or full)."""
@@ -47,6 +46,7 @@ def write_preview(
     with fits.open(str(path), ignore_missing_end=True, memmap=True) as hdul:
         if hdu_index is None:
             hdu = None
+            # Prefer PRIMARY if it already holds the stamp (our cutout2d output)
             for i, cand in enumerate(hdul):
                 if getattr(cand, "data", None) is not None and np.ndim(cand.data) == 2:
                     hdu = cand
@@ -59,8 +59,10 @@ def write_preview(
         data = hdu.data
         if data is None or np.ndim(data) != 2:
             raise ValueError(f"HDU {hdu_index} is not a 2D image")
-
         vis = _stretch(data, p_low=p_low, p_high=p_high)
+        title = path.name
+        if "RA_OBJ" in hdu.header and "DEC_OBJ" in hdu.header:
+            title = f"{path.name}\nRA={hdu.header['RA_OBJ']:.5f} Dec={hdu.header['DEC_OBJ']:.5f}"
 
     if output_path:
         out = Path(output_path)
@@ -68,11 +70,13 @@ def write_preview(
         out = default_output_dir() / "previews" / f"{path.stem}.{fmt}"
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(4, 4))
+    fig, ax = plt.subplots(figsize=(4.2, 4.5))
     ax.imshow(vis, origin="lower", cmap="gray", interpolation="nearest")
     ax.set_xticks([]); ax.set_yticks([])
-    ax.set_title(path.name, fontsize=8)
-    fig.tight_layout(pad=0.2)
+    ax.set_title(title, fontsize=7)
+    # mark stamp centre
+    ax.plot(data.shape[1] / 2 - 0.5, data.shape[0] / 2 - 0.5, "r+", markersize=10, markeredgewidth=1.5)
+    fig.tight_layout(pad=0.3)
     fig.savefig(str(out), dpi=dpi, format="png" if fmt == "png" else "jpeg")
     plt.close(fig)
 

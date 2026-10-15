@@ -10,7 +10,7 @@ One small FastAPI HTTP service per astronomy SDK (prototype). Each service expos
 | photutils | 9103 | 20 |
 | astroplan | 9104 | 20 |
 | sunpy | 9105 | 20 |
-| euclid | (all-in-one `/euclid`) | 13 (HTTPS FITS URL or local MER cutout + PNG preview; EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR) |
+| euclid | (all-in-one `/euclid`) | 14 (HTTPS FITS URL or local MER cutout + PNG preview; EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR) |
 
 Services bind to `127.0.0.1` only. Behind an Ingress (`https://astro.example.com/<sdk>/...`) the services accept the
 path both with and without the `/<sdk>` prefix.

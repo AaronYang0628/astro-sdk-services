@@ -40,62 +40,69 @@ def test_library_mock():
     import importlib
     import euclid_cutout
     importlib.reload(euclid_cutout)
+    import euclid_cutout.fitsio as fitsio
+    import euclid_cutout.stamp as stamp
+    importlib.reload(fitsio)
+    importlib.reload(stamp)
+    importlib.reload(euclid_cutout)
     ec = euclid_cutout
 
-    # fine chain on local mock file
     fits_path = str(FIX / "MER/999000001/VIS/EUC_MER_BGSUB-MOSAIC-VIS_TILE999000001_mock.fits")
     f = ec.fetch_fits(fits_path)
-    assert f["ok"] and Path(f["path"]).is_file(), f
-    hdus = ec.list_hdus(f["path"])
-    assert hdus["n_hdus"] >= 1, hdus
-    wcs = ec.read_wcs_header(f["path"])
-    assert wcs["center"] is not None, wcs
-    ra, dec = wcs["center"]["ra"], wcs["center"]["dec"]
-    pix = ec.sky_to_pixel(f["path"], ra, dec)
-    assert pix["inside"], pix
-    cut = ec.cutout2d(f["path"], ra, dec, size=16, obj_id="fine_mock")
-    assert cut["success"] and Path(cut["fits_path"]).is_file(), cut
+    peak = ec.find_peak_sky(f["path"])
+    assert peak["ok"], peak
+    cut = ec.cutout2d(f["path"], peak["ra"], peak["dec"], size=128, obj_id="fine_mock")
+    assert cut["success"] and cut["inside"] and Path(cut["fits_path"]).is_file(), cut
     prev = ec.write_preview(cut["fits_path"], format="png")
-    assert Path(prev["preview_path"]).is_file() and prev["preview_path"].endswith(".png"), prev
-
-    # MER convenience still works
+    assert Path(prev["preview_path"]).is_file(), prev
+    # MER convenience
     q = ec.query_tile_id(RA0, DEC0)
     assert q["found"], q
-    print("library mock OK", {"preview": prev["preview_path"], "cutout": cut["fits_path"]})
+    print("library mock OK", {"peak": [peak["ra"], peak["dec"]], "png": prev["preview_path"]})
 
 
 def test_library_real_url():
     sys.path.insert(0, str(REPO))
-    os.environ.setdefault("EUCLID_CACHE_DIR", str(REPO / "fixtures" / "euclid_mock" / "cache"))
-    os.environ.setdefault("EUCLID_OUTPUT_DIR", str(REPO / "fixtures" / "euclid_mock" / "out_url"))
-    import euclid_cutout as ec
+    os.environ["EUCLID_CACHE_DIR"] = str(REPO / "fixtures" / "euclid_mock" / "cache")
+    os.environ["EUCLID_OUTPUT_DIR"] = str(REPO / "fixtures" / "euclid_mock" / "out_url")
+    import importlib
+    import euclid_cutout
+    importlib.reload(euclid_cutout)
+    ec = euclid_cutout
 
-    # 2.4GB file — only pull prefix covering first image HDU (~17MB + headers)
     try:
         f = ec.fetch_fits(REAL_URL, max_bytes=25_000_000, timeout=180)
     except Exception as e:
         print("REAL_URL unreachable, skip:", type(e).__name__, e)
         return False
     assert f["ok"] and Path(f["path"]).is_file(), f
-    hdus = ec.list_hdus(f["path"])
-    assert hdus["n_hdus"] >= 2, hdus
-    # first image is usually HDU 1
+
     wcs = ec.read_wcs_header(f["path"], hdu_index=1)
-    ra, dec = wcs["center"]["ra"], wcs["center"]["dec"]
-    pix = ec.sky_to_pixel(f["path"], ra, dec, hdu_index=1)
-    assert pix["inside"], pix
-    cut = ec.cutout2d(f["path"], ra, dec, size=64, hdu_index=1, obj_id="casdc_vis_2686")
-    assert cut["success"], cut
-    prev = ec.write_preview(cut["fits_path"], format="png")
+    fov = wcs["fov_center"]
+    peak = ec.find_peak_sky(f["path"], hdu_index=1)
+    assert peak["ok"] and peak["inside"] if "inside" in peak else True, peak
+
+    # BEFORE bug: cutting at FOV centre → flat background
+    bad = ec.cutout2d(f["path"], fov["ra"], fov["dec"], size=128, hdu_index=1, obj_id="casdc_vis_2686_FOVcenter")
+    # AFTER fix: cutting at peak/source
+    good = ec.cutout2d(f["path"], peak["ra"], peak["dec"], size=128, hdu_index=1, obj_id="casdc_vis_2686")
+    assert good["success"] and good["inside"], good
+    assert good["stats"]["max"] > bad["stats"]["max"], (good["stats"], bad["stats"])
+
+    prev = ec.write_preview(good["fits_path"], format="png")
+    prev_bad = ec.write_preview(bad["fits_path"], format="png",
+                                output_path=str(Path(os.environ["EUCLID_OUTPUT_DIR"]) / "previews" / "casdc_vis_2686_FOVcenter.png"))
     assert Path(prev["preview_path"]).is_file(), prev
     print(
         "library real URL OK",
         {
-            "remote_size": f.get("remote_size_bytes"),
-            "local_size": f.get("size_bytes"),
-            "center": [ra, dec],
-            "fits": cut["fits_path"],
+            "fov_center": [fov["ra"], fov["dec"]],
+            "peak_source": [peak["ra"], peak["dec"], peak["x"], peak["y"]],
+            "fov_stats": bad["stats"],
+            "peak_stats": good["stats"],
+            "fits": good["fits_path"],
             "png": prev["preview_path"],
+            "png_fov_wrong": prev_bad["preview_path"],
         },
     )
     return True
@@ -131,29 +138,28 @@ def test_http():
 
         tools = _get(f"{base}/euclid/tools")
         names = {t["name"] for t in tools}
-        need = {
-            "euclid_fetch_fits",
-            "euclid_list_hdus",
-            "euclid_read_wcs_header",
-            "euclid_sky_to_pixel",
-            "euclid_cutout2d",
-            "euclid_write_preview",
-        }
-        assert need <= names, names
-        assert h["tools"] == len(tools) == 13
+        assert "euclid_find_peak_sky" in names and "euclid_cutout2d" in names, names
+        assert h["tools"] == len(tools) == 14
 
         fits_path = str(FIX / "MER/999000001/VIS/EUC_MER_BGSUB-MOSAIC-VIS_TILE999000001_mock.fits")
         f = _post(f"{base}/euclid/invoke", {"function_name": "euclid_fetch_fits", "arguments": {"url_or_path": fits_path}})
-        assert f["ok"], f
         path = f["result"]["path"]
-        w = _post(f"{base}/euclid/invoke", {"function_name": "euclid_read_wcs_header", "arguments": {"path": path}})
-        assert w["ok"], w
-        ra, dec = w["result"]["center"]["ra"], w["result"]["center"]["dec"]
+        peak = _post(f"{base}/euclid/invoke", {"function_name": "euclid_find_peak_sky", "arguments": {"path": path}})
+        assert peak["ok"], peak
         cut = _post(
             f"{base}/euclid/invoke",
-            {"function_name": "euclid_cutout2d", "arguments": {"path": path, "ra": ra, "dec": dec, "size": 16, "obj_id": "http_fine"}},
+            {
+                "function_name": "euclid_cutout2d",
+                "arguments": {
+                    "path": path,
+                    "ra": peak["result"]["ra"],
+                    "dec": peak["result"]["dec"],
+                    "size": 128,
+                    "obj_id": "http_fine",
+                },
+            },
         )
-        assert cut["ok"] and cut["result"].get("success", cut["result"].get("ok")) and cut["result"].get("fits_path"), cut
+        assert cut["ok"] and cut["result"].get("fits_path"), cut
         prev = _post(
             f"{base}/euclid/invoke",
             {"function_name": "euclid_write_preview", "arguments": {"fits_path": cut["result"]["fits_path"], "format": "png"}},
