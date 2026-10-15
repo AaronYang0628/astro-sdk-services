@@ -237,7 +237,7 @@
   {
     "name": "euclid_write_preview",
     "target": "euclid_cutout.write_preview",
-    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG，便于直接查看。",
+    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。",
     "params": [
       {
         "name": "fits_path",
