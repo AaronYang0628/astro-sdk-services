@@ -4,7 +4,7 @@
 
 ## 一个镜像 = 一个容器 = 6 个 MCP 服务
 
-镜像 `ghcr.io/aaronyang0628/astro-sdk-services` 默认 `SDK=all`：一个进程同时提供 6 个服务，按路径区分（前 5 个各 20 个工具；euclid 为本地 MER 裁剪，6 个工具）：
+镜像 `ghcr.io/aaronyang0628/astro-sdk-services` 默认 `SDK=all`：一个进程同时提供 6 个服务，按路径区分（前 5 个各 20 个工具；euclid 为 FITS URL/本地 MER 裁剪，13 个细粒度工具）：
 
 | SDK | MCP 地址 | HTTP 调用 | 工具列表 | 工具数 | 对应简介文件 |
 |---|---|---|---|---|---|
@@ -13,7 +13,7 @@
 | photutils | `http(s)://<你的域名>/photutils/mcp` | `POST /photutils/invoke` | `GET /photutils/tools` | 20 | `photutils.json` |
 | astroplan | `http(s)://<你的域名>/astroplan/mcp` | `POST /astroplan/invoke` | `GET /astroplan/tools` | 20 | `astroplan.json` |
 | sunpy | `http(s)://<你的域名>/sunpy/mcp` | `POST /sunpy/invoke` | `GET /sunpy/tools` | 20 | `sunpy.json` |
-| euclid | `http(s)://<你的域名>/euclid/mcp` | `POST /euclid/invoke` | `GET /euclid/tools` | 6 | （本地 MER cutout，见下文） |
+| euclid | `http(s)://<你的域名>/euclid/mcp` | `POST /euclid/invoke` | `GET /euclid/tools` | 13 | （URL/本地 FITS 细粒度 cutout，见下文） |
 
 其他路径：`GET /` 和 `GET /health` 返回 6 个服务的列表；`GET /<sdk>/health` 为单个 SDK 健康检查（始终免鉴权）。
 
@@ -23,30 +23,33 @@
 - 兼容模式：`SDK=astropy` 等单个名字时，容器只提供该 SDK（路径 `/<sdk>/...` 或不带前缀均可）。
 
 
-## Euclid 本地裁剪（`/euclid`）
+## Euclid FITS 裁剪（`/euclid`）
 
-纯 MCP/HTTP 工具链，**不依赖 Flask**。复现 Euclid Image Cutout 核心流水线：星表校验 → TILE 查询 → 定位 MER 产品 → `Cutout2D` → 写 FITS。
+纯 MCP/HTTP **细粒度**工具链（无 Flask）。主路径支持 **HTTPS FITS URL**（如下载到 `EUCLID_CACHE_DIR` 再裁剪），并输出 **cutout FITS + quicklook PNG/JPG**。本地 MER（TILE→产品路径）仍保留。
 
 | 环境变量 | 含义 |
 |---|---|
-| `EUCLID_MER_ROOT` | MER 根目录（其下为 `<TILE_ID>/<INSTRUMENT>/EUC_MER_*.fits`） |
-| `EUCLID_TILE_INDEX` | TILE 索引 FITS（列：TILE_ID, RA_MIN/MAX, DEC_MIN/MAX, RA_CENTER, DEC_CENTER） |
-| `EUCLID_OUTPUT_DIR` | 裁剪输出目录（默认 `./euclid_cutouts`） |
+| `EUCLID_CACHE_DIR` | HTTPS FITS 下载缓存（默认 `./euclid_cache`；支持 Range 续传） |
+| `EUCLID_OUTPUT_DIR` | cutout / preview 输出目录（默认 `./euclid_cutouts`） |
+| `EUCLID_MER_ROOT` | （可选）本地 MER 根目录 |
+| `EUCLID_TILE_INDEX` | （可选）TILE 索引 FITS |
 
-工具（6）：`euclid_get_config`、`euclid_validate_catalog`、`euclid_query_tile_id`、`euclid_locate_products`、`euclid_cutout_single`、`euclid_cutout_batch`。
+**URL→图像推荐链：** `euclid_fetch_fits` → `euclid_list_hdus` → `euclid_read_wcs_header` → `euclid_sky_to_pixel` → `euclid_cutout2d` → `euclid_write_preview`。  
+多 GB 文件请给 `fetch_fits` 传 `max_bytes`（例如 `25000000`）只拉前缀，避免整包下载。
+
+工具（13）：上述 6 步 + `euclid_pixel_to_sky` / `euclid_get_config`，以及本地 MER：`validate_catalog` / `query_tile_id` / `locate_products` / `cutout_single` / `cutout_batch`。
 
 ```bash
 docker run -d --name astro-sdk -p 8000:8000 \
-  -e EUCLID_MER_ROOT=/data/MER \
-  -e EUCLID_TILE_INDEX=/data/tile_index.fits \
+  -e EUCLID_CACHE_DIR=/data/cache \
   -e EUCLID_OUTPUT_DIR=/data/cutouts \
-  -v /path/to/MER:/data/MER:ro \
-  -v /path/to/tile_index.fits:/data/tile_index.fits:ro \
+  -v /path/to/cache:/data/cache \
   -v /path/to/cutouts:/data/cutouts \
   ghcr.io/aaronyang0628/astro-sdk-services:latest
 ```
 
-冒烟（无真实 Q1 时用仓库内 mock）：`python tests/make_euclid_fixtures.py && EUCLID_MER_ROOT=fixtures/euclid_mock/MER EUCLID_TILE_INDEX=fixtures/euclid_mock/tile_index.fits python tests/test_euclid_smoke.py`
+冒烟：`python tests/test_euclid_smoke.py`（含 mock + 可选真实 CASDC URL 前缀下载）。
+
 
 ## 1. 镜像
 
@@ -57,7 +60,7 @@ docker run -d --name astro-sdk -p 8000:8000 \
 | 固定 tag | 提交 SHA，例如 `ghcr.io/aaronyang0628/astro-sdk-services:<commit-sha>` |
 | 构建方式 | GitHub Actions `.github/workflows/image.yml`，push 到 `master` 自动构建，也可手动触发 |
 | 容器端口 | `8000` |
-| 环境变量 | `SDK`（默认 `all`；或 astropy/astroquery/photutils/astroplan/sunpy/euclid）；Euclid 另需 `EUCLID_MER_ROOT` / `EUCLID_TILE_INDEX` / 可选 `EUCLID_OUTPUT_DIR`；`API_TOKEN`（可选，为空则不鉴权）；`MEM_LIMIT_GB`（可选，进程地址空间上限，all 模式默认 8，单 SDK 默认 4） |
+| 环境变量 | `SDK`（默认 `all`；或 astropy/astroquery/photutils/astroplan/sunpy/euclid）；Euclid 另需 `EUCLID_CACHE_DIR` / `EUCLID_OUTPUT_DIR`（URL 裁剪）；本地 MER 另需 `EUCLID_MER_ROOT` / `EUCLID_TILE_INDEX`；`API_TOKEN`（可选，为空则不鉴权）；`MEM_LIMIT_GB`（可选，进程地址空间上限，all 模式默认 8，单 SDK 默认 4） |
 
 生产环境建议使用固定 SHA tag。若无法访问 GHCR，可从源码自行构建：`docker build -t astro-sdk-services .`
 

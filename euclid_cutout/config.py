@@ -9,22 +9,31 @@ def _p(name: str, default: str = "") -> str:
     return (os.environ.get(name) or default).strip()
 
 
+def cache_dir() -> Path:
+    p = Path(_p("EUCLID_CACHE_DIR", str(Path.cwd() / "euclid_cache"))).expanduser()
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
 def get_config() -> dict[str, Any]:
     """Return effective Euclid cutout paths and whether they exist on disk."""
     mer = _p("EUCLID_MER_ROOT")
     tile = _p("EUCLID_TILE_INDEX")
     out = _p("EUCLID_OUTPUT_DIR", str(Path.cwd() / "euclid_cutouts"))
+    cache = str(cache_dir())
     mer_p, tile_p, out_p = Path(mer) if mer else None, Path(tile) if tile else None, Path(out)
     return {
         "mer_root": mer or None,
         "tile_index": tile or None,
         "output_dir": str(out_p),
+        "cache_dir": cache,
         "mer_root_exists": bool(mer_p and mer_p.is_dir()),
         "tile_index_exists": bool(tile_p and tile_p.is_file()),
+        "cache_dir_exists": True,
         "hint": (
-            "Set EUCLID_MER_ROOT to the MER directory (parent of <TILE_ID>/) "
-            "and EUCLID_TILE_INDEX to a FITS tile index "
-            "(TILE_ID, RA_MIN, RA_MAX, DEC_MIN, DEC_MAX, RA_CENTER, DEC_CENTER)."
+            "Remote URL cutouts: set EUCLID_CACHE_DIR (download cache) and EUCLID_OUTPUT_DIR. "
+            "Local MER pipeline: set EUCLID_MER_ROOT + EUCLID_TILE_INDEX. "
+            "Auth still optional via API_TOKEN on the HTTP/MCP wrapper."
         ),
     }
 

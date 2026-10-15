@@ -2,3 +2,8 @@ logs/
 __pycache__/
 *.pyc
 results/*.tmp
+euclid_cache/
+fixtures/euclid_mock/cache/
+fixtures/euclid_mock/out/
+fixtures/euclid_mock/out_http/
+fixtures/euclid_mock/out_url/
