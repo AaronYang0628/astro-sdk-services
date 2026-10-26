@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # public; one image, SDK chosen via env (default all)
-  tag: "9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc"   # pinned commit SHA (also :latest)
+  tag: "4bc9e659378a693d31c4cfc138794b39f38fb03d"   # pinned commit SHA (also :latest)
   pullPolicy: IfNotPresent
 ingress:
   enabled: true
@@ -28,17 +28,25 @@ euclid:               # euclid FITS cutout: download cache + cutout/preview outp
   inputRoots: ~                    # EUCLID_INPUT_ROOTS: ':'/',' separated dirs whose files may be passed as local paths.
                                    # unset (~) => code default /home/scientist (or projectStorage.mountPath if changed);
                                    # "" => local paths disabled (http(s) URLs only); "/a:/b" => custom
-  projectStorage:                  # optional READ-ONLY mount of the storage behind 021 project pods' /home/scientist,
-                                   # so agent paths like /home/scientist/project<id>/Data/x.fits work verbatim. Set ONE source:
-    existingClaim: ""              #   PVC name (RWX/ROX, same namespace), mounted readOnly
+  writeRoots: ~                    # EUCLID_WRITE_ROOTS: dirs where tools may write when given an explicit output_path/output_dir
+                                   # (e.g. /home/scientist/project<id>/ResearchSpace/x.png -> 021 科研空间).
+                                   # unset (~) => code default /home/scientist (or projectStorage.mountPath if changed);
+                                   # "" => external writes disabled (only EUCLID_OUTPUT_DIR); "/a:/b" => custom
+  projectStorage:                  # optional mount of the storage behind 021 project pods' /home/scientist, so agent paths
+                                   # like /home/scientist/project<id>/Data/x.fits (input) and .../ResearchSpace/ (output_path) work verbatim. Set ONE source:
+    existingClaim: ""              #   PVC name (RWX, same namespace)
     hostPath: ""                   #   node directory (only if the pod runs on a node that has the data)
     nfs: {server: "", path: ""}    #   NFS export backing /home/scientist
     subPath: ""                    #   optional subPath inside the volume
     mountPath: /home/scientist     #   keep identical to the project pods' path
-    readOnly: true
+    readOnly: false                #   false (default since 0.2.5) = read-write, required for output_path into ResearchSpace;
+                                   #   true = read-only (inputs only; output_path there then fails with "not writable")
   storage:
     existingClaim: ""              # PVC name to keep cache/outputs across restarts; empty = emptyDir
     sizeLimit: 20Gi                # emptyDir size limit
+securityContext: {}   # pod securityContext; {} = image default (runs as root, uid 0). The uid/gid must be able to write the
+                      # project storage for output_path, e.g. {runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000} to match project pods
+                      # (NFS with root_squash maps root to nobody -> set runAsUser/runAsGroup to the owner of /home/scientist/project*)
 extraEnv: []          # extra container env, e.g. [{name: HTTPS_PROXY, value: "http://proxy.example.com:3128"}]
 extraVolumes: []      # extra pod volumes
 extraVolumeMounts: [] # extra container volumeMounts

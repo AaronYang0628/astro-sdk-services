@@ -22,21 +22,26 @@ spec:
     metadata:
       labels: {app: astro-all}
     spec:
+      # uid/gid that can WRITE the project storage (output_path -> ResearchSpace); default = image user (root).
+      # Match the 021 project pods (NFS root_squash turns root into nobody):
+      # securityContext: {runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000}
       containers:
         - name: all
-          image: "ghcr.io/aaronyang0628/astro-sdk-services:9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc"
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:4bc9e659378a693d31c4cfc138794b39f38fb03d"
           imagePullPolicy: IfNotPresent
           env:
             - {name: SDK, value: "all"}
             - {name: EUCLID_CACHE_DIR, value: "/data/euclid/cache"}
             - {name: EUCLID_OUTPUT_DIR, value: "/data/euclid/cutouts"}
-            # 021 project files (/home/scientist/project<id>/Data/*.fits): EUCLID_INPUT_ROOTS defaults to /home/scientist,
-            # so just uncomment the project-storage volumeMount + volume below. To disable local paths:
-            # - {name: EUCLID_INPUT_ROOTS, value: ""}
+            # 021 project files: EUCLID_INPUT_ROOTS (read /home/scientist/project<id>/Data/*.fits) and EUCLID_WRITE_ROOTS
+            # (output_path -> /home/scientist/project<id>/ResearchSpace/) both default to /home/scientist,
+            # so just uncomment the project-storage volumeMount + volume below (read-write). To disable:
+            # - {name: EUCLID_INPUT_ROOTS, value: ""}   # no local inputs
+            # - {name: EUCLID_WRITE_ROOTS, value: ""}   # no writes into project storage
           ports: [{containerPort: 8000}]
           volumeMounts:
             - {name: euclid-data, mountPath: /data/euclid}
-            # - {name: project-storage, mountPath: /home/scientist, readOnly: true}
+            # - {name: project-storage, mountPath: /home/scientist, readOnly: false}   # read-write: needed for output_path
           readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
           resources:
             limits:
@@ -48,10 +53,10 @@ spec:
       volumes:
         - name: euclid-data
           emptyDir: {sizeLimit: 20Gi}
-        # read-only view of the storage that backs /home/scientist in 021 project pods; pick ONE:
+        # the storage that backs /home/scientist in 021 project pods (read-write, RWX); pick ONE:
         # - name: project-storage
-        #   persistentVolumeClaim: {claimName: <project-pvc>, readOnly: true}
-        #   # nfs: {server: nfs.example.com, path: /export/scientist, readOnly: true}
+        #   persistentVolumeClaim: {claimName: <project-pvc>}
+        #   # nfs: {server: nfs.example.com, path: /export/scientist}
         #   # hostPath: {path: /data/scientist, type: Directory}
 ---
 apiVersion: networking.k8s.io/v1

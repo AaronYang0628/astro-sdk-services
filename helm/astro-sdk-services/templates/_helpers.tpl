@@ -19,11 +19,25 @@
 - {name: EUCLID_INPUT_ROOTS, value: {{ $mp | quote }}}
 {{- end }}
 {{- end }}
+{{- /* writeRoots (explicit output_path/output_dir targets): same rules -> EUCLID_WRITE_ROOTS */}}
+{{- $w := .Values.euclid.writeRoots }}
+{{- if kindIs "string" $w }}
+- {name: EUCLID_WRITE_ROOTS, value: {{ $w | quote }}}
+{{- else if include "astro.projectStorageOn" . }}
+{{- $mp := .Values.euclid.projectStorage.mountPath | default "/home/scientist" }}
+{{- if ne $mp "/home/scientist" }}
+- {name: EUCLID_WRITE_ROOTS, value: {{ $mp | quote }}}
+{{- end }}
+{{- end }}
 {{- end }}
 {{/* "true" when a project-storage source (existingClaim / hostPath / nfs) is configured */}}
 {{- define "astro.projectStorageOn" -}}
 {{- $ps := .Values.euclid.projectStorage | default dict }}
 {{- if or $ps.existingClaim $ps.hostPath (and $ps.nfs $ps.nfs.server) }}true{{ end }}
+{{- end }}
+{{/* project storage read-only? default false (read-write, needed for output_path into ResearchSpace) */}}
+{{- define "astro.projectStorageRO" -}}
+{{- if eq (toString .Values.euclid.projectStorage.readOnly) "true" }}true{{ else }}false{{ end }}
 {{- end }}
 {{- define "astro.euclidMounts" -}}
 - {name: euclid-data, mountPath: /data/euclid}
@@ -31,7 +45,7 @@
 {{- $ps := .Values.euclid.projectStorage }}
 - name: project-storage
   mountPath: {{ $ps.mountPath | default "/home/scientist" | quote }}
-  readOnly: {{ if eq (toString $ps.readOnly) "false" }}false{{ else }}true{{ end }}
+  readOnly: {{ include "astro.projectStorageRO" . }}
   {{- with $ps.subPath }}
   subPath: {{ . | quote }}
   {{- end }}
@@ -48,11 +62,11 @@
 {{- $ps := .Values.euclid.projectStorage }}
 - name: project-storage
 {{- if $ps.existingClaim }}
-  persistentVolumeClaim: {claimName: {{ $ps.existingClaim | quote }}, readOnly: true}
+  persistentVolumeClaim: {claimName: {{ $ps.existingClaim | quote }}, readOnly: {{ include "astro.projectStorageRO" . }}}
 {{- else if $ps.hostPath }}
   hostPath: {path: {{ $ps.hostPath | quote }}, type: Directory}
 {{- else }}
-  nfs: {server: {{ $ps.nfs.server | quote }}, path: {{ $ps.nfs.path | default "/" | quote }}, readOnly: true}
+  nfs: {server: {{ $ps.nfs.server | quote }}, path: {{ $ps.nfs.path | default "/" | quote }}, readOnly: {{ include "astro.projectStorageRO" . }}}
 {{- end }}
 {{- end }}
 {{- end }}

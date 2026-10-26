@@ -13,6 +13,9 @@ spec:
     metadata:
       labels: {app: astro-all}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: all
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -67,6 +70,9 @@ spec:
     metadata:
       labels: {app: astro-{{ .name }}}
     spec:
+      {{- with $.Values.securityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .name }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
