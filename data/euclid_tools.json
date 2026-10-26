@@ -237,7 +237,7 @@
   {
     "name": "euclid_write_preview",
     "target": "euclid_cutout.write_preview",
-    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。",
+    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。MCP 调用会把预览缩略图作为图片内容块直接返回，可直接展示给用户（inline_image=false 可关闭）；完整裁剪 FITS 保留在服务端。",
     "params": [
       {
         "name": "fits_path",
@@ -280,6 +280,18 @@
         "type": "int",
         "required": false,
         "desc": "输出 DPI，默认 120"
+      },
+      {
+        "name": "max_side",
+        "type": "int",
+        "required": false,
+        "desc": "预览图最长边像素上限，默认 1024"
+      },
+      {
+        "name": "inline_image",
+        "type": "bool",
+        "required": false,
+        "desc": "是否在 MCP 结果中内嵌图片块，默认 true"
       }
     ],
     "domain": "Euclid裁剪",

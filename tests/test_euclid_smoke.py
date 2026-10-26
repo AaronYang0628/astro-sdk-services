@@ -1,6 +1,6 @@
 """Smoke: fine-grained URL→cutout→preview chain + local MER mock."""
 from __future__ import annotations
-import json, os, subprocess, sys, time, urllib.request
+import base64, json, os, subprocess, sys, time, urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -165,7 +165,20 @@ def test_http():
             {"function_name": "euclid_write_preview", "arguments": {"fits_path": cut["result"]["fits_path"], "format": "png"}},
         )
         assert prev["ok"] and Path(prev["result"]["preview_path"]).is_file(), prev
-        print("http OK", {"tools": len(names), "png": prev["result"]["preview_path"]})
+        assert "_mcp_images" not in prev["result"], "/invoke must stay plain JSON"
+        # MCP tools/call: same tool returns text JSON + an inline image content block
+        rpc = urllib.request.Request(
+            f"{base}/euclid/mcp",
+            data=json.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
+                "name": "euclid_write_preview", "arguments": {"fits_path": cut["result"]["fits_path"]}}}).encode(),
+            headers={"content-type": "application/json", "accept": "application/json, text/event-stream"}, method="POST")
+        with urllib.request.urlopen(rpc, timeout=120) as r:
+            content = json.loads(r.read().decode())["result"]["content"]
+        assert [c["type"] for c in content] == ["text", "image"], [c["type"] for c in content]
+        assert content[1]["mimeType"] == "image/png" and "_mcp_images" not in content[0]["text"]
+        png = base64.b64decode(content[1]["data"])
+        assert png[:8] == b"\x89PNG\r\n\x1a\n" and len(png) < 2_000_000, len(png)
+        print("http OK", {"tools": len(names), "png": prev["result"]["preview_path"], "mcp_image_bytes": len(png)})
     finally:
         proc.terminate()
         try:

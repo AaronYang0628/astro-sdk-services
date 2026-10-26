@@ -8,6 +8,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+import os
 from .config import default_output_dir
 
 
@@ -81,11 +82,17 @@ def write_preview(
     p_low: float = 1.0,
     p_high: float = 99.0,
     dpi: int = 120,
+    max_side: int = 1024,
+    inline_image: Optional[bool] = None,
 ) -> dict:
     """Write a quicklook PNG or JPG from an image FITS (cutout or full).
 
     Scaling: ignore NaN/inf; ignore zero-pad from partial cutouts when it would
     collapse the stretch; use percentiles (default 1–99) + asinh, then clip.
+
+    The PNG/JPG is capped at `max_side` pixels (default 1024). Over MCP the image is also
+    returned inline as an image content block unless inline_image=False (or env
+    EUCLID_INLINE_IMAGE=0).
     """
     fmt = (format or "png").lower().lstrip(".")
     if fmt in ("jpg", "jpeg"):
@@ -125,7 +132,10 @@ def write_preview(
         out = default_output_dir() / "previews" / f"{path.stem}.{fmt}"
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(4.2, 4.5))
+    figsize = (4.2, 4.5)
+    max_side = int(max_side or 1024)
+    dpi = max(20, min(int(dpi or 120), int(max_side / max(figsize))))  # keep longest side <= max_side
+    fig, ax = plt.subplots(figsize=figsize)
     ax.imshow(vis, origin="lower", cmap="gray", interpolation="nearest", vmin=0, vmax=1)
     ax.set_xticks([]); ax.set_yticks([])
     ax.set_title(title, fontsize=7)
@@ -134,13 +144,21 @@ def write_preview(
     fig.savefig(str(out), dpi=dpi, format="png" if fmt == "png" else "jpeg")
     plt.close(fig)
 
-    return {
+    if inline_image is None:
+        inline_image = (os.environ.get("EUCLID_INLINE_IMAGE") or "1").strip().lower() not in ("0", "false", "no", "off")
+    mime = "image/png" if fmt == "png" else "image/jpeg"
+    res = {
         "ok": True,
         "fits_path": str(path),
         "hdu_index": int(hdu_index),
         "preview_path": str(out.resolve()),
+        "mime_type": mime,
+        "inline_image": bool(inline_image),
         "format": fmt,
         "shape": list(data.shape),
         "size_bytes": out.stat().st_size,
         "stretch": stretch_meta,
     }
+    if inline_image:
+        res["_mcp_images"] = [{"path": str(out), "mimeType": mime}]  # MCP layer -> image content block
+    return res
