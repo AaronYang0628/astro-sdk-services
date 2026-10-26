@@ -97,11 +97,26 @@ def library():
                lambda: ec.read_wcs_header(m["path"], hdu_index=1), lambda: ec.cutout2d(m["path"], 150, 2),
                lambda: ec.write_preview(m["path"]), lambda: ec.sky_to_pixel(m["path"], 150, 2)):
         _raises(fn, ValueError, "no image HDU (this looks like a MOC")
-    # roots unset -> local inputs disabled (as before)
+    # explicitly empty -> local inputs disabled (ops kill switch)
     os.environ["EUCLID_INPUT_ROOTS"] = ""
-    _raises(lambda: ec.fetch_fits(str(img)), ValueError, "EUCLID_INPUT_ROOTS not set", "http(s)")
+    assert ec.get_config()["input_roots"] == []
+    _raises(lambda: ec.fetch_fits(str(img)), ValueError, 'EUCLID_INPUT_ROOTS=""', "disabled", "http(s)")
     _raises(lambda: ec.list_hdus(str(img)), PermissionError, "not allowed")
+    os.environ["EUCLID_INPUT_ROOTS"] = "  "
+    assert ec.get_config()["input_roots"] == []
+    # unset -> default /home/scientist (may not exist here: clear error, no crash)
+    del os.environ["EUCLID_INPUT_ROOTS"]
+    from euclid_cutout import safety
+    assert safety.DEFAULT_INPUT_ROOTS == "/home/scientist"
+    assert ec.get_config()["input_roots"] == [str(Path("/home/scientist").resolve())], ec.get_config()["input_roots"]
+    _raises(lambda: ec.fetch_fits(str(img)), PermissionError, "outside the input roots", "/home/scientist")
+    _raises(lambda: ec.fetch_fits("/etc/passwd"), PermissionError, "outside", "/home/scientist")
+    if not Path("/home/scientist/project0/Data/none.fits").exists():
+        _raises(lambda: ec.fetch_fits("/home/scientist/project0/Data/none.fits"), FileNotFoundError, "not found", "/home/scientist")
+        _raises(lambda: ec.fetch_fits("file:///home/scientist/project0/Data/none.fits"), FileNotFoundError, "not found")
+    # custom roots again
     os.environ["EUCLID_INPUT_ROOTS"] = f"{SCI},/nonexistent-root"
+    assert ec.get_config()["input_roots"][0] == str(SCI)
     print("library local inputs OK", {"roots": roots, "peak": [pk["ra"], pk["dec"]]})
     return img, moc
 
@@ -127,6 +142,7 @@ def over_http(img, moc):
         inv = lambda n, a: _post(f"{base}/invoke", {"function_name": n, "arguments": a})
         f = inv("euclid_fetch_fits", {"url": str(img)}); assert f["ok"] and f["result"]["path"] == str(img), f
         bad = inv("euclid_fetch_fits", {"url": "/etc/passwd"}); assert not bad["ok"] and str(SCI) in bad["error"], bad
+        cfg = inv("euclid_get_config", {}); assert cfg["result"]["input_roots"][0] == str(SCI), cfg
         m = inv("euclid_find_peak_sky", {"path": str(moc)}); assert not m["ok"] and "MOC" in m["error"], m
 
         def mcp(name, args):
@@ -143,10 +159,36 @@ def over_http(img, moc):
         proc.terminate(); proc.wait(timeout=10)
 
 
+def server_default():
+    """Server started WITHOUT EUCLID_INPUT_ROOTS reports the /home/scientist default; with "" it is disabled."""
+    for val, want in ((None, ["/home/scientist"]), ("", [])):
+        env = dict(os.environ, SDK="euclid"); env.pop("EUCLID_INPUT_ROOTS", None)
+        if val is not None:
+            env["EUCLID_INPUT_ROOTS"] = val
+        proc = subprocess.Popen([sys.executable, "-m", "uvicorn", "sdks.euclid:app", "--host", "127.0.0.1", "--port", "9199"],
+                                cwd=str(REPO), env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        base = "http://127.0.0.1:9199/euclid"
+        try:
+            for _ in range(80):
+                try:
+                    urllib.request.urlopen(f"{base}/health", timeout=2); break
+                except Exception:
+                    time.sleep(0.25)
+            cfg = _post(f"{base}/invoke", {"function_name": "euclid_get_config", "arguments": {}})
+            got = cfg["result"]["input_roots"]
+            assert got == [str(Path(w).resolve()) for w in want], (val, got)
+            r = _post(f"{base}/invoke", {"function_name": "euclid_fetch_fits", "arguments": {"url": "/home/scientist/project0/Data/none.fits"}})
+            assert not r["ok"] and ("not found" in r["error"] or "disabled" in r["error"]), r
+        finally:
+            proc.terminate(); proc.wait(timeout=10)
+    print("server default roots OK")
+
+
 if __name__ == "__main__":
     try:
         img, moc = library()
         over_http(img, moc)
+        server_default()
         print("LOCAL INPUT TESTS PASSED")
     finally:
         shutil.rmtree(TMP, ignore_errors=True)

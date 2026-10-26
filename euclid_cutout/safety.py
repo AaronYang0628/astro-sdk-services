@@ -2,7 +2,7 @@
 
 Tools only read files inside: EUCLID_CACHE_DIR (downloads from fetch_fits), EUCLID_OUTPUT_DIR
 (cutouts/previews), EUCLID_INPUT_ROOTS (operator-allowlisted input dirs, e.g. a read-only mount of
-021 project storage /home/scientist), EUCLID_MER_ROOT / EUCLID_TILE_INDEX (server-configured local
+021 project storage; default /home/scientist when unset, "" disables), EUCLID_MER_ROOT / EUCLID_TILE_INDEX (server-configured local
 MER data, if set) and the bundled mock fixtures (fixtures/euclid_mock).
 Writes only go inside EUCLID_OUTPUT_DIR.
 Symlinks are resolved before the check, so links pointing outside are rejected.
@@ -19,10 +19,20 @@ def _env(name: str) -> str:
     return (os.environ.get(name) or "").strip()
 
 
+DEFAULT_INPUT_ROOTS = "/home/scientist"  # 021 project pods' storage path (mount it read-only at the same path)
+
+
+def _input_roots_raw() -> str:
+    """EUCLID_INPUT_ROOTS; unset => DEFAULT_INPUT_ROOTS, explicitly set to "" => local inputs disabled."""
+    raw = os.environ.get("EUCLID_INPUT_ROOTS")
+    return DEFAULT_INPUT_ROOTS if raw is None else raw.strip()
+
+
 def input_roots() -> list[Path]:
-    """EUCLID_INPUT_ROOTS: ':' or ',' separated absolute dirs (empty = no local inputs)."""
+    """EUCLID_INPUT_ROOTS: ':' or ',' separated absolute dirs. Unset = /home/scientist (default);
+    set to "" = no local inputs. Roots need not exist (a missing root just yields "file not found")."""
     out = []
-    for part in re.split(r"[:,]", _env("EUCLID_INPUT_ROOTS")):
+    for part in re.split(r"[:,]", _input_roots_raw()):
         part = part.strip()
         if part and os.path.isabs(part):
             out.append(Path(part).resolve())
@@ -34,7 +44,7 @@ def _roots_hint() -> str:
     if roots:
         return ("allowed input roots (EUCLID_INPUT_ROOTS): " + ", ".join(str(r) for r in roots)
                 + "; e.g. /home/scientist/project<id>/Data/<file>.fits. Alternatively pass an http(s) URL")
-    return "local input files are disabled on this server (EUCLID_INPUT_ROOTS not set); pass an http(s) URL instead"
+    return 'local input files are disabled on this server (EUCLID_INPUT_ROOTS=""); pass an http(s) URL instead'
 
 
 def strip_file_scheme(raw: str) -> str:

@@ -11,7 +11,7 @@
   {
     "name": "euclid_fetch_fits",
     "target": "euclid_cutout.fetch_fits",
-    "desc": "准备 FITS 输入，返回后续工具使用的 path。输入二选一：(1) 021 项目文件的绝对路径，如 /home/scientist/project<项目ID>/Data/xxx.fits（用户上传到项目 Data/ 的文件；服务端只读挂载，原地读取不复制，必须在服务端 EUCLID_INPUT_ROOTS 允许的目录内，也接受 file://）；(2) http(s) FITS URL（公开链接或带签名参数的临时 OSS 地址，原样完整传入）。多 GB 的远程文件请设 max_bytes（如 25000000）只取前缀。按文件内容（SIMPLE 头）识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。注意：只有含 2D 图像 HDU 的 FITS 才能切图；MOC/星表类 FITS（只有表格 HDU）会报 no image HDU。",
+    "desc": "准备 FITS 输入，返回后续工具使用的 path。输入二选一：(1) 021 项目文件的绝对路径，如 /home/scientist/project<项目ID>/Data/xxx.fits（用户上传到项目 Data/ 的文件；服务端只读挂载，原地读取不复制，必须在服务端 EUCLID_INPUT_ROOTS 允许的目录内（未设置时默认 /home/scientist），也接受 file://）；(2) http(s) FITS URL（公开链接或带签名参数的临时 OSS 地址，原样完整传入）。多 GB 的远程文件请设 max_bytes（如 25000000）只取前缀。按文件内容（SIMPLE 头）识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。注意：只有含 2D 图像 HDU 的 FITS 才能切图；MOC/星表类 FITS（只有表格 HDU）会报 no image HDU。",
     "params": [
       {
         "name": "url",

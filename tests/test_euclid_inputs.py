@@ -92,8 +92,8 @@ def main():
         finally:
             srv2.shutdown()
         # 10) sandbox
-        _raises(lambda: ec.fetch_fits("/etc/passwd"), ValueError, "http")
-        _raises(lambda: ec.fetch_fits("file:///etc/passwd"), ValueError, "http")
+        _raises(lambda: ec.fetch_fits("/etc/passwd"), PermissionError, "outside the input roots")  # unset roots -> default /home/scientist
+        _raises(lambda: ec.fetch_fits("file:///etc/passwd"), PermissionError, "outside")
         for fn in (ec.list_hdus, ec.read_wcs_header, ec.find_peak_sky, ec.validate_catalog):
             _raises(lambda fn=fn: fn("/etc/passwd"), PermissionError, "not allowed")
         _raises(lambda: ec.list_hdus(os.environ["EUCLID_CACHE_DIR"] + "/../../../../../../etc/passwd"), PermissionError)

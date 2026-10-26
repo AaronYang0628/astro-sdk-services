@@ -15,7 +15,8 @@ All other tools only read files inside EUCLID_INPUT_ROOTS / EUCLID_CACHE_DIR / E
 Optional local MER helpers: query_tile_id, locate_products, cutout_single/batch.
 
 Env:
-  EUCLID_INPUT_ROOTS    ':'/',' separated dirs allowed as local inputs (default empty = none)
+  EUCLID_INPUT_ROOTS    ':'/',' separated dirs allowed as local inputs
+                        (unset = /home/scientist; "" = local inputs disabled)
   EUCLID_CACHE_DIR      HTTP(S) download cache (default ./euclid_cache)
   EUCLID_OUTPUT_DIR     cutout / preview output (default ./euclid_cutouts)
   EUCLID_MER_ROOT       local MER root for tile/locate pipeline
