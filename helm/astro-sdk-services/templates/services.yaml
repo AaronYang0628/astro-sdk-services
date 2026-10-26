@@ -32,7 +32,7 @@ spec:
             {{- end }}
           ports: [{containerPort: 8000}]
           volumeMounts:
-            - {name: euclid-data, mountPath: /data/euclid}
+            {{- include "astro.euclidMounts" . | nindent 12 }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -89,7 +89,7 @@ spec:
           ports: [{containerPort: 8000}]
           {{- if eq .name "euclid" }}
           volumeMounts:
-            - {name: euclid-data, mountPath: /data/euclid}
+            {{- include "astro.euclidMounts" $ | nindent 12 }}
           {{- end }}
           readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
           resources: {{- toYaml $.Values.resources | nindent 12 }}

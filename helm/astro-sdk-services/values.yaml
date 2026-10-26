@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # public; one image, SDK chosen via env (default all)
-  tag: "74d91484391af5a37500fba061789b8f6d791f7e"   # pinned commit SHA (also :latest)
+  tag: "a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1"   # pinned commit SHA (also :latest)
   pullPolicy: IfNotPresent
 ingress:
   enabled: true
@@ -25,6 +25,16 @@ euclid:               # euclid FITS cutout: download cache + cutout/preview outp
   outputDir: /data/euclid/cutouts  # -> EUCLID_OUTPUT_DIR
   merRoot: ""                      # optional EUCLID_MER_ROOT (local MER tree; mount it via extraVolumes)
   tileIndex: ""                    # optional EUCLID_TILE_INDEX
+  inputRoots: ""                   # EUCLID_INPUT_ROOTS: ':'/',' separated dirs whose files may be passed as local paths
+                                   # (e.g. /home/scientist). Empty + projectStorage set => projectStorage.mountPath
+  projectStorage:                  # optional READ-ONLY mount of the storage behind 021 project pods' /home/scientist,
+                                   # so agent paths like /home/scientist/project<id>/Data/x.fits work verbatim. Set ONE source:
+    existingClaim: ""              #   PVC name (RWX/ROX, same namespace), mounted readOnly
+    hostPath: ""                   #   node directory (only if the pod runs on a node that has the data)
+    nfs: {server: "", path: ""}    #   NFS export backing /home/scientist
+    subPath: ""                    #   optional subPath inside the volume
+    mountPath: /home/scientist     #   keep identical to the project pods' path
+    readOnly: true
   storage:
     existingClaim: ""              # PVC name to keep cache/outputs across restarts; empty = emptyDir
     sizeLimit: 20Gi                # emptyDir size limit

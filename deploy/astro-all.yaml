@@ -24,15 +24,18 @@ spec:
     spec:
       containers:
         - name: all
-          image: "ghcr.io/aaronyang0628/astro-sdk-services:74d91484391af5a37500fba061789b8f6d791f7e"
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1"
           imagePullPolicy: IfNotPresent
           env:
             - {name: SDK, value: "all"}
             - {name: EUCLID_CACHE_DIR, value: "/data/euclid/cache"}
             - {name: EUCLID_OUTPUT_DIR, value: "/data/euclid/cutouts"}
+            # 021 project files (/home/scientist/project<id>/Data/*.fits): uncomment + the two blocks below
+            # - {name: EUCLID_INPUT_ROOTS, value: "/home/scientist"}
           ports: [{containerPort: 8000}]
           volumeMounts:
             - {name: euclid-data, mountPath: /data/euclid}
+            # - {name: project-storage, mountPath: /home/scientist, readOnly: true}
           readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
           resources:
             limits:
@@ -44,6 +47,11 @@ spec:
       volumes:
         - name: euclid-data
           emptyDir: {sizeLimit: 20Gi}
+        # read-only view of the storage that backs /home/scientist in 021 project pods; pick ONE:
+        # - name: project-storage
+        #   persistentVolumeClaim: {claimName: <project-pvc>, readOnly: true}
+        #   # nfs: {server: nfs.example.com, path: /export/scientist, readOnly: true}
+        #   # hostPath: {path: /data/scientist, type: Directory}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
