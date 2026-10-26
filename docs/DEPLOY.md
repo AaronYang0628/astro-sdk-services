@@ -2,7 +2,7 @@
 
 **一个镜像 = 一个容器 = 6 个 MCP 服务**：astropy / astroquery / photutils / astroplan / sunpy / **euclid**。
 
-- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:938e4d5255ad3ec709c7db75ebe7502e32e8cdb3`（公开，免登录拉取；与 `:latest` 是同一 digest `sha256:5c596222…b957`）
+- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:456d6483c36ab2e1575861ed74f5587ce60f660e`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
 - 容器端口 `8000`，默认 `SDK=all`：一个进程按路径同时提供 6 个服务 `/<sdk>/{health,tools,invoke,mcp}`
 - **默认不鉴权**（只有设置了非空 `API_TOKEN` 才要求 `Authorization: Bearer <token>`）
 - 部署完成后，在 021 平台登记 **6 个连接器**（每个 SDK 一个 MCP 地址 `https://<你的域名>/<sdk>/mcp`，传输方式 Streamable），见第 7 节
@@ -27,8 +27,8 @@
 | 项 | 值 |
 |---|---|
 | 镜像 | `ghcr.io/aaronyang0628/astro-sdk-services` |
-| 推荐 tag | `938e4d5255ad3ec709c7db75ebe7502e32e8cdb3`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
-| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 938e4d5 && docker build -t astro-sdk-services:938e4d5 .`，然后推到内部镜像仓库 |
+| 推荐 tag | `456d6483c36ab2e1575861ed74f5587ce60f660e`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
+| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 456d648 && docker build -t astro-sdk-services:456d648 .`，然后推到内部镜像仓库 |
 | 端口 | `8000`（HTTP） |
 | 启动时间 | 约 10–20 秒（加载 6 个库）；空闲 RSS 约 350 MB |
 
@@ -41,6 +41,8 @@
 | `EUCLID_OUTPUT_DIR` | `<工作目录>/euclid_cutouts` | 裁剪 FITS（`cutouts/`）与预览图（`previews/`）输出目录 |
 | `EUCLID_MER_ROOT` | 空（可选） | 本地 Euclid MER 数据根目录，只有用本地 MER 工具时才需要 |
 | `EUCLID_TILE_INDEX` | 空（可选） | 本地 MER 的 TILE 索引 FITS |
+| `EUCLID_INLINE_IMAGE` | `1` | `0` = `euclid_write_preview` 不在 MCP 结果里内嵌缩略图 |
+| `MCP_MAX_INLINE_IMAGE_BYTES` | `2000000` | 内嵌图片大小上限，超过则不内嵌 |
 
 Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/data/euclid/cutouts` 设好，并在 `/data/euclid` 挂一个卷（默认 emptyDir 20Gi）。
 
@@ -62,7 +64,7 @@ Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/da
 docker run -d --name astro-sdk -p 8000:8000 \
   -e EUCLID_CACHE_DIR=/data/euclid/cache -e EUCLID_OUTPUT_DIR=/data/euclid/cutouts \
   -v /srv/astro-euclid:/data/euclid --memory 8g \
-  ghcr.io/aaronyang0628/astro-sdk-services:938e4d5255ad3ec709c7db75ebe7502e32e8cdb3
+  ghcr.io/aaronyang0628/astro-sdk-services:456d6483c36ab2e1575861ed74f5587ce60f660e
 ```
 
 需要鉴权时加 `-e API_TOKEN=$(openssl rand -hex 24)`（不要把 token 写进仓库或公开配置）。需要代理时加 `-e HTTPS_PROXY=... -e NO_PROXY=...`。
@@ -75,7 +77,7 @@ Chart 在仓库 `helm/astro-sdk-services`（0.2.1）。默认 `allInOne: true`�
 ```yaml
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # 用内部仓库时改这里
-  tag: "938e4d5255ad3ec709c7db75ebe7502e32e8cdb3"
+  tag: "456d6483c36ab2e1575861ed74f5587ce60f660e"
   pullPolicy: IfNotPresent
 allInOne: true
 services:              # 6 个 SDK，对应 Ingress 路径 /<name>
@@ -186,10 +188,14 @@ call euclid_find_peak_sky "{\"path\":\"$P\",\"hdu_index\":1}"
 # 4) 按 RA/DEC 切 1024x1024
 call euclid_cutout2d "{\"path\":\"$P\",\"ra\":<ra>,\"dec\":<dec>,\"hdu_index\":1,\"size\":1024,\"obj_id\":\"vis2686_peak\"}"
 # 5) 写预览 PNG
-call euclid_write_preview "{\"fits_path\":\"<上一步 result.fits_path>\"}"
+call euclid_write_preview "{\"fits_path\":\"<上一步 result.fits_path>\"}"   # call() 只打印 text；完整响应里还有 content[1] 图片块
+
+# 或用仓库自带的 MCP 自测（6 个 SDK 全测；euclid 断言返回可解码的 PNG 图片块，SAVE_IMAGE 把图片存下来）
+pip install mcp httpx
+BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_check.py
 ```
 
-参考结果（938e4d5 镜像同版本代码实测）：
+参考结果（456d648 同版本代码实测，MCP tools/call）：
 
 | 步骤 | 关键返回 | 耗时 |
 |---|---|---|
@@ -197,11 +203,11 @@ call euclid_write_preview "{\"fits_path\":\"<上一步 result.fits_path>\"}"
 | list_hdus | 3 个 HDU，HDU 1 `shape=[2066,2048]` 带 WCS | <0.1 s |
 | find_peak_sky | `ra≈267.47864, dec≈66.72683`（x=431, y=343） | <0.1 s |
 | cutout2d | `shape=[1024,1024]`，`inside=true`，`fits_path=/data/euclid/cutouts/cutouts/vis2686_peak.fits` | <0.1 s |
-| write_preview | `preview_path=/data/euclid/cutouts/previews/vis2686_peak.png`（约 13 KB） | ≈0.2 s |
+| write_preview | MCP 返回 `content=[text, image]`：text 为 JSON（`preview_path`、`stretch` 等），image 为 `image/png` 缩略图（约 13 KB，最长边 ≤ 1024） | ≈0.2 s |
 
 > 峰值点靠近图像边缘，1024 切图是 `mode=partial`，图像外部分用 0 填充（预览中为黑边），这是正常现象。
 
-**重要：切图结果目前只以服务端本地文件路径返回**（`fits_path` / `preview_path`），MCP 返回里没有图片内容、也没有可下载的 URL。验证时可用 `kubectl -n astro-tools cp <pod>:/data/euclid/cutouts/previews/vis2686_peak.png ./vis2686_peak.png` 取回查看。让 021 对话里直接显示图片需要后续版本支持（见第 8 节）。
+**切图结果如何展示**：`euclid_write_preview` 通过 MCP 调用时，返回内容里除了 JSON 文本外还带一个 **MCP 图片内容块**（`{"type":"image","mimeType":"image/png","data":"<base64>"}`），021 对话里直接显示为**内嵌缩略图**。缩略图最长边默认 ≤ 1024 像素（参数 `max_side` 可调小），通常几十 KB 以内；超过 2 MB 的图片不会内嵌（`MCP_MAX_INLINE_IMAGE_BYTES` 可调）。不想内嵌时调用参数传 `inline_image=false`，或全局设环境变量 `EUCLID_INLINE_IMAGE=0`。**完整的裁剪 FITS（以及 PNG 原文件）只保存在服务端** `/data/euclid/cutouts/` 下，不提供下载链接；运维需要时可 `kubectl -n astro-tools cp <pod>:/data/euclid/cutouts/cutouts/<名字>.fits ./` 取回。HTTP `POST /euclid/invoke` 只返回 JSON（不含图片）。
 
 ## 7. 在 021 登记连接器（创建者：02xlab，平台托管）
 
@@ -220,11 +226,11 @@ call euclid_write_preview "{\"fits_path\":\"<上一步 result.fits_path>\"}"
 | Photutils 天文测光 | 让AI直接调用 photutils：源检测、孔径测光、质心定位、背景估计与 PSF 宽度拟合，无需自己写代码。 | `https://<你的域名>/photutils/mcp` | 60 |
 | Astroplan 观测规划 | 让AI直接调用 astroplan：目标升落、可观测性、晨昏蒙影与月相，几句话排好观测计划。 | `https://<你的域名>/astroplan/mcp` | 60 |
 | SunPy 太阳物理工具 | 让AI直接调用 sunpy：日面坐标参数、卡林顿自转、较差自转与太阳图像处理，无需自己写代码。 | `https://<你的域名>/sunpy/mcp` | 60 |
-| Euclid 图像裁剪 | 让AI直接处理 Euclid 等天文 FITS：给一个 FITS 文件 URL 或本地路径，自动下载、找 HDU、按 RA/DEC 切出 1024 像素小图并生成预览。 | `https://<你的域名>/euclid/mcp` | 300 |
+| Euclid 图像裁剪 | 让AI直接处理 Euclid 等天文 FITS：给一个 FITS 文件 URL 或本地路径，自动下载、找 HDU、按 RA/DEC 切出 1024 像素小图，并在对话中直接显示缩略图。 | `https://<你的域名>/euclid/mcp` | 300 |
 
 超时说明：Euclid 的耗时主要在 `euclid_fetch_fits` 下载（带 `max_bytes=25000000` 实测约 37 秒），切图和预览都在 1 秒内；300 秒给慢网络留余量。若不传 `max_bytes` 会尝试下载完整的 2.4 GB 文件，必然超时，工具描述里已经提示模型对大文件传 `max_bytes`。astroquery 依赖外部数据库，给 120 秒。因为 6 个服务在同一进程内串行执行（第 8 节），并发时排队也会占用超时时间。
 
-登记后在 021 项目对话里勾选 Euclid 连接器，给模型一句话即可验证：
+登记后在 021 项目对话里勾选 Euclid 连接器，给模型一句话即可验证（对话里应直接出现切图的缩略图）：
 > 这是一个 Euclid VIS 的 FITS 文件：https://casdc.china-vo.org/mirror/Euclid-Q1/VIS/2686/EUC_VIS_SWL-BKG-002686-01-1-0000000__20241017T042432.874944Z.fits ，请下载前 25MB，找到科学图像 HDU，在最亮的源处切一张 1024 像素的图并生成预览。
 
 ## 8. 注意事项
@@ -232,7 +238,7 @@ call euclid_write_preview "{\"fits_path\":\"<上一步 result.fits_path>\"}"
 - **安全**：默认不鉴权，只适合内网 / 可信网络。部分工具可读取容器内文件（FITS、numpy 文件），`euclid_fetch_fits` 会按调用方给的 URL 发起出站下载。对公网开放时请设 `API_TOKEN`，或在网关层限制来源（只允许 021 服务端访问）。
 - **并发**：all 模式下 6 个服务在一个进程里，工具调用在主线程同步执行，一次慢调用（Euclid 下载、Gaia 查询）会让其它请求排队，期间 `/health` 也会等待。并发高时可加副本（注意 emptyDir 缓存每个 Pod 各自一份；不同副本之间 `path` 不通用，见下条），或设 `allInOne: false` 每个 SDK 单独一个 Deployment。
 - **多副本与 Euclid**：工具链前后步骤之间传的是服务端本地路径，所以 **Euclid 必须保证同一条链路落在同一个 Pod 上**：保持 1 个副本，或用 RWX 的 PVC 共享 `/data/euclid`。
-- **切图结果的返回方式**：`euclid_cutout2d` / `euclid_write_preview` 只返回服务端文件路径和统计信息，不返回图片本身；021 用户在对话里看不到图片，需后续版本加「返回图片内容 / 下载 URL」。
+- **切图结果的返回方式**：`euclid_write_preview` 在 MCP 结果里内嵌 PNG/JPG 缩略图（图片内容块），021 对话里直接可见；`euclid_cutout2d` 只返回服务端 `fits_path` 和统计信息。完整 FITS 留在服务端，不对外提供下载。
 - **缓存清理**：`/data/euclid/cache` 与 `/data/euclid/cutouts` 不会自动清理；emptyDir 在 Pod 重建时清空，PVC 需要定期清理。
 - **样例数据说明**：`EUC_VIS_SWL-BKG-*` 是 VIS 背景（BKG）产品，切出来是平滑背景图，主要用于验证链路；真实科学用途请换成 VIS/NIR 科学图像或 MER 拼接图，并用星表 RA/DEC 而不是最亮像素。
 - **HTTPS**：021 等 MCP 客户端通常要求有效证书。若集群外 80/443 未转发到 Ingress，cert-manager HTTP-01 无法签发，可改用 DNS-01 或内部 CA。

@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: all
-          image: "ghcr.io/aaronyang0628/astro-sdk-services:938e4d5255ad3ec709c7db75ebe7502e32e8cdb3"
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:456d6483c36ab2e1575861ed74f5587ce60f660e"
           imagePullPolicy: IfNotPresent
           env:
             - {name: SDK, value: "all"}

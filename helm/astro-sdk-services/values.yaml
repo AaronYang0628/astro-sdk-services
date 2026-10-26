@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # public; one image, SDK chosen via env (default all)
-  tag: "938e4d5255ad3ec709c7db75ebe7502e32e8cdb3"   # pinned commit SHA (also :latest)
+  tag: "456d6483c36ab2e1575861ed74f5587ce60f660e"   # pinned commit SHA (also :latest)
   pullPolicy: IfNotPresent
 ingress:
   enabled: true
