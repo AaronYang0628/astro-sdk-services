@@ -15,7 +15,7 @@ import astropy.units as u
 
 from .config import default_output_dir
 from .fitsio import _pick_image_hdu, _open
-from .safety import check_write
+from .safety import resolve_output, atomic_write, describe_output, FITS_EXTS
 
 
 def _parse_size(size: Union[int, float, list, tuple], wcs: WCS) -> Union[int, tuple]:
@@ -54,12 +54,19 @@ def cutout2d(
     obj_id: Optional[str] = None,
     mode: str = "partial",
     fill_value: float = 0.0,
+    overwrite: bool = False,
 ) -> dict:
     """Cut out a stamp at catalog/source (ra,dec deg) — NOT the mosaic FOV center.
 
     Matches upstream cutout_image: WCS(header), SkyCoord(ra,dec,unit='deg'),
     Cutout2D size in **pixels** (default 1024). Writes a single PrimaryHDU FITS
     (image + WCS) so viewers open the stamp directly.
+
+    output_path (optional): absolute file (.fits/.fit/.fits.gz) or directory (ends with '/' or exists;
+    default name <obj_id>.fits) under EUCLID_WRITE_ROOTS (default /home/scientist, e.g. a 021 project's
+    ResearchSpace) or EUCLID_OUTPUT_DIR. Existing files are not overwritten unless overwrite=True:
+    a _1, _2, ... suffix is added and the actual path returned as saved_path / fits_path.
+    Omitted: EUCLID_OUTPUT_DIR/cutouts/<obj_id>.fits (overwritten, as before).
     """
     obj_id = obj_id or f"cutout_{ra:.5f}_{dec:.5f}"
     with _open(path, memmap=True) as hdul:
@@ -86,12 +93,13 @@ def cutout2d(
         cut_data = np.asarray(cut.data)
         cut_wcs = cut.wcs
 
-    if output_path:
-        out = check_write(output_path)
+    safe = "".join(c if c.isalnum() or c in "._-" else "_" for c in str(obj_id))[:100] or "cutout"
+    explicit = bool(output_path and str(output_path).strip())
+    if explicit:
+        out = resolve_output(str(output_path), f"{safe}.fits", FITS_EXTS)
     else:
-        safe = "".join(c if c.isalnum() or c in "._-" else "_" for c in str(obj_id))[:100] or "cutout"
         out = default_output_dir() / "cutouts" / f"{safe}.fits"
-    out.parent.mkdir(parents=True, exist_ok=True)
+        out.parent.mkdir(parents=True, exist_ok=True)
 
     # Single PrimaryHDU with image+WCS (better than empty PRIMARY + ImageHDU
     # which many viewers open as a blank frame).
@@ -106,7 +114,10 @@ def cutout2d(
     img.header["X_OBJ"] = float(x)
     img.header["Y_OBJ"] = float(y)
     img.header["SIZEPIX"] = int(size_px) if isinstance(size_px, int) else int(size_px[0])
-    img.writeto(str(out), overwrite=True)
+    if explicit:
+        out = atomic_write(out, lambda t: img.writeto(str(t)), overwrite=bool(overwrite))
+    else:
+        img.writeto(str(out), overwrite=True)
 
     finite = cut_data[np.isfinite(cut_data)]
     if finite.size:
@@ -133,6 +144,7 @@ def cutout2d(
         "size_pixels": size_px if isinstance(size_px, int) else list(size_px),
         "obj_id": obj_id,
         "fits_path": str(out.resolve()),
+        **describe_output(out),
         "shape": list(cut_data.shape),
         "stats": stats,
         "warning": None

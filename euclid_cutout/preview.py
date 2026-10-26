@@ -78,12 +78,13 @@ def write_preview(
     fits_path: str,
     output_path: Optional[str] = None,
     hdu_index: Optional[int] = None,
-    format: str = "png",
+    format: Optional[str] = None,
     p_low: float = 1.0,
     p_high: float = 99.0,
     dpi: int = 120,
     max_side: int = 1024,
     inline_image: Optional[bool] = None,
+    overwrite: bool = False,
 ) -> dict:
     """Write a quicklook PNG or JPG from an image FITS (cutout or full).
 
@@ -93,14 +94,23 @@ def write_preview(
     The PNG/JPG is capped at `max_side` pixels (default 1024). Over MCP the image is also
     returned inline as an image content block unless inline_image=False (or env
     EUCLID_INLINE_IMAGE=0).
+
+    output_path (optional): absolute file (.png/.jpg/.jpeg) or directory (ends with '/' or exists; default
+    name <fits stem>.<format>) under EUCLID_WRITE_ROOTS (default /home/scientist, e.g. a 021 project's
+    ResearchSpace) or EUCLID_OUTPUT_DIR. format defaults to the output_path extension, else png.
+    Existing files are not overwritten unless overwrite=True (a _1, _2, ... suffix is added; the actual
+    path is returned as saved_path / preview_path). Omitted: EUCLID_OUTPUT_DIR/previews/<stem>.<format>.
     """
+    explicit = bool(output_path and str(output_path).strip())
+    if not format and explicit and str(output_path).lower().endswith((".jpg", ".jpeg")):
+        format = "jpg"
     fmt = (format or "png").lower().lstrip(".")
     if fmt in ("jpg", "jpeg"):
         fmt = "jpg"
     elif fmt != "png":
         raise ValueError("format must be png or jpg")
 
-    from .safety import check_read, check_write
+    from .safety import check_read, resolve_output, atomic_write, describe_output, IMAGE_EXTS
     path = check_read(fits_path)
 
     with fits.open(str(path), ignore_missing_end=True, memmap=True) as hdul:
@@ -126,11 +136,14 @@ def write_preview(
         if "RA_OBJ" in hdu.header and "DEC_OBJ" in hdu.header:
             title = f"{path.name}\nRA={hdu.header['RA_OBJ']:.5f} DEC={hdu.header['DEC_OBJ']:.5f}"
 
-    if output_path:
-        out = check_write(output_path)
+    if explicit:
+        out = resolve_output(str(output_path), f"{path.stem}.{fmt}", IMAGE_EXTS)
+        want = (".png",) if fmt == "png" else (".jpg", ".jpeg")
+        if not out.name.lower().endswith(want):
+            raise ValueError(f"output_path extension {out.suffix} does not match format={fmt}")
     else:
         out = default_output_dir() / "previews" / f"{path.stem}.{fmt}"
-    out.parent.mkdir(parents=True, exist_ok=True)
+        out.parent.mkdir(parents=True, exist_ok=True)
 
     figsize = (4.2, 4.5)
     max_side = int(max_side or 1024)
@@ -141,8 +154,14 @@ def write_preview(
     ax.set_title(title, fontsize=7)
     ax.plot(data.shape[1] / 2 - 0.5, data.shape[0] / 2 - 0.5, "r+", markersize=10, markeredgewidth=1.5)
     fig.tight_layout(pad=0.3)
-    fig.savefig(str(out), dpi=dpi, format="png" if fmt == "png" else "jpeg")
-    plt.close(fig)
+    try:
+        if explicit:
+            out = atomic_write(out, lambda t: fig.savefig(str(t), dpi=dpi, format="png" if fmt == "png" else "jpeg"),
+                               overwrite=bool(overwrite))
+        else:
+            fig.savefig(str(out), dpi=dpi, format="png" if fmt == "png" else "jpeg")
+    finally:
+        plt.close(fig)
 
     if inline_image is None:
         inline_image = (os.environ.get("EUCLID_INLINE_IMAGE") or "1").strip().lower() not in ("0", "false", "no", "off")
@@ -152,6 +171,7 @@ def write_preview(
         "fits_path": str(path),
         "hdu_index": int(hdu_index),
         "preview_path": str(out.resolve()),
+        **describe_output(out),
         "mime_type": mime,
         "inline_image": bool(inline_image),
         "format": fmt,

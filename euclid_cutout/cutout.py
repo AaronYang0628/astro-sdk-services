@@ -33,7 +33,7 @@ def _cutout_image(fits_path: str, ra: float, dec: float, size: int, hdu_index: i
         }
 
 
-def _write_multi(path: Path, obj_id: str, pieces: dict[str, dict]) -> str:
+def _write_multi(path: Path, obj_id: str, pieces: dict[str, dict], explicit: bool = False, overwrite: bool = False) -> str:
     primary = fits.PrimaryHDU()
     primary.header["OBJID"] = str(obj_id)
     hdul = fits.HDUList([primary])
@@ -47,6 +47,10 @@ def _write_multi(path: Path, obj_id: str, pieces: dict[str, dict]) -> str:
         hdu.header["PRODUCT"] = info.get("file_type", "")
         primary.header[f"HDU{i}"] = key
         hdul.append(hdu)
+    if explicit:  # external output_dir: atomic, 0644, no clobber unless overwrite
+        from .safety import atomic_write
+        path.parent.mkdir(parents=True, exist_ok=True)
+        return str(atomic_write(path, lambda t: hdul.writeto(str(t)), overwrite=overwrite))
     path.parent.mkdir(parents=True, exist_ok=True)
     hdul.writeto(str(path), overwrite=True)
     return str(path)
@@ -64,14 +68,24 @@ def cutout_single(
     mer_root: Optional[str] = None,
     tile_index: Optional[str] = None,
     skip_nan: bool = True,
+    overwrite: bool = False,
 ) -> dict:
     """Full chain for one sky position: query tile → locate → Cutout2D → write FITS.
 
     Returns JSON-safe metadata and output paths (no raw arrays).
+    output_dir: omitted -> EUCLID_OUTPUT_DIR; relative -> sub-dir of it; absolute -> a dir under
+    EUCLID_WRITE_ROOTS (e.g. /home/scientist/project<id>/ResearchSpace/cutouts/) or EUCLID_OUTPUT_DIR.
+    Files go to <output_dir>/<file_type>/<obj_id>.fits; with an explicit output_dir existing files are kept
+    (auto-suffix _1, _2, ...) unless overwrite=True.
     """
     file_types = file_types or ["BGSUB"]
     obj_id = obj_id or f"obj_{ra:.5f}_{dec:.5f}"
-    out_root = default_output_dir(output_dir)
+    explicit = bool(output_dir and str(output_dir).strip())
+    if explicit:
+        from .safety import resolve_output_dir
+        out_root = resolve_output_dir(str(output_dir))
+    else:
+        out_root = default_output_dir()
     # ensure mer configured early
     require_mer_root(mer_root)
 
@@ -125,13 +139,19 @@ def cutout_single(
             continue
         safe_id = "".join(c if c.isalnum() or c in "._-" else "_" for c in str(obj_id))[:100] or "obj"
         out_path = out_root / "".join(c if c.isalnum() or c in "._-" else "_" for c in str(ft)) / f"{safe_id}.fits"
-        written = _write_multi(out_path, obj_id, pieces)
+        if explicit:
+            from .safety import resolve_output_dir
+            resolve_output_dir(str(out_path.parent))  # validates + creates the <file_type> sub-dir
+        written = _write_multi(out_path, obj_id, pieces, explicit=explicit, overwrite=bool(overwrite))
+        from .safety import describe_output
+        saved = describe_output(Path(written))
         for key, info in pieces.items():
             files_meta.append(
                 {
                     "key": key,
                     "file_type": ft,
                     "path": written,
+                    **saved,
                     "source": info["source"],
                     "shape": list(info["data"].shape),
                 }
@@ -165,8 +185,10 @@ def cutout_batch(
     tile_index: Optional[str] = None,
     skip_nan: bool = True,
     max_sources: int = 50,
+    overwrite: bool = False,
 ) -> dict:
-    """Batch cutouts from a catalog file. Caps at max_sources (default 50) for safety."""
+    """Batch cutouts from a catalog file. Caps at max_sources (default 50) for safety.
+    output_dir: same rules as cutout_single (absolute dir under EUCLID_WRITE_ROOTS allowed)."""
     cat, ra_c, dec_c, id_c = load_catalog_table(catalog_path, ra_col, dec_col, id_col)
     n = min(len(cat), int(max_sources))
     results = []
@@ -188,6 +210,7 @@ def cutout_batch(
             mer_root=mer_root,
             tile_index=tile_index,
             skip_nan=skip_nan,
+            overwrite=overwrite,
         )
         results.append(
             {

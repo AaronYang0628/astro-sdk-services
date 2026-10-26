@@ -10,13 +10,17 @@ Input: fetch_fits(url) takes
   * any http(s) FITS URL — public or presigned; query sent verbatim and redacted in outputs/errors;
     cache names use host+path only.
 All other tools only read files inside EUCLID_INPUT_ROOTS / EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR
-(+ MER root / bundled fixtures) and only write inside EUCLID_OUTPUT_DIR (see safety.py).
+(+ MER root / bundled fixtures / EUCLID_WRITE_ROOTS) and write inside EUCLID_OUTPUT_DIR by default, or —
+with an explicit output_path/output_dir — inside EUCLID_WRITE_ROOTS (e.g. a 021 project's ResearchSpace on a
+read-write mount; atomic, 0644, auto-suffix unless overwrite=True). See safety.py.
 
 Optional local MER helpers: query_tile_id, locate_products, cutout_single/batch.
 
 Env:
   EUCLID_INPUT_ROOTS    ':'/',' separated dirs allowed as local inputs
                         (unset = /home/scientist; "" = local inputs disabled)
+  EUCLID_WRITE_ROOTS    ':'/',' separated dirs allowed for explicit output_path/output_dir
+                        (unset = /home/scientist; "" = only EUCLID_OUTPUT_DIR)
   EUCLID_CACHE_DIR      HTTP(S) download cache (default ./euclid_cache)
   EUCLID_OUTPUT_DIR     cutout / preview output (default ./euclid_cutouts)
   EUCLID_MER_ROOT       local MER root for tile/locate pipeline

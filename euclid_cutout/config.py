@@ -31,10 +31,14 @@ def get_config() -> dict[str, Any]:
         "tile_index_exists": bool(tile_p and tile_p.is_file()),
         "cache_dir_exists": True,
         "input_roots": [str(r) for r in __import__("euclid_cutout.safety", fromlist=["x"]).input_roots()],
+        "write_roots": [str(r) for r in __import__("euclid_cutout.safety", fromlist=["x"]).write_roots()],
         "hint": (
             "Input to euclid_fetch_fits: an absolute project file path under input_roots "
             "(e.g. /home/scientist/project<id>/Data/x.fits) or an http(s) FITS URL; other tools only read "
             "paths inside input_roots / EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR. "
+            "Outputs: omit output_path to write under EUCLID_OUTPUT_DIR; pass output_path under write_roots "
+            "(e.g. /home/scientist/project<id>/ResearchSpace/x.png|.fits) to save into the 021 科研空间 "
+            "(needs a read-write mount). "
             "Local MER pipeline: set EUCLID_MER_ROOT + EUCLID_TILE_INDEX. "
             "Auth still optional via API_TOKEN on the HTTP/MCP wrapper."
         ),

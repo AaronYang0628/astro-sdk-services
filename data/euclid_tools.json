@@ -180,7 +180,7 @@
   {
     "name": "euclid_cutout2d",
     "target": "euclid_cutout.cutout2d",
-    "desc": "按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 1024）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。",
+    "desc": "按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 1024）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。 默认写到 MCP 服务端 EUCLID_OUTPUT_DIR（021 科研空间看不到）；要保存到 021 科研空间，传 output_path=/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits。返回 saved_path（实际写入路径）、fits_path（同 saved_path，可直接传给 euclid_write_preview），在项目目录下时还返回 project_relpath（如 ResearchSpace/xxx.fits）。",
     "params": [
       {
         "name": "path",
@@ -216,7 +216,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（可选）输出文件名或 EUCLID_OUTPUT_DIR 内的相对路径；一般省略"
+        "desc": "（可选）保存位置。要保存到 021 科研空间：/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits（也可 .fit/.fits.gz）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <obj_id>.fits），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录（科研空间看不到）。"
       },
       {
         "name": "obj_id",
@@ -235,6 +235,12 @@
         "type": "float",
         "required": false,
         "desc": "越界填充值"
+      },
+      {
+        "name": "overwrite",
+        "type": "bool",
+        "required": false,
+        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -245,7 +251,7 @@
   {
     "name": "euclid_write_preview",
     "target": "euclid_cutout.write_preview",
-    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。MCP 调用会把预览缩略图作为图片内容块直接返回，可直接展示给用户（inline_image=false 可关闭）；完整裁剪 FITS 保留在服务端。",
+    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。MCP 调用会把预览缩略图作为图片内容块直接返回，可直接展示给用户（inline_image=false 可关闭）；默认 PNG 写在 MCP 服务端 EUCLID_OUTPUT_DIR；要保存到 021 科研空间，传 output_path=/home/scientist/project<项目ID>/ResearchSpace/<名称>.png（或 .jpg）。返回 saved_path（实际写入路径），在项目目录下时还返回 project_relpath（如 ResearchSpace/xxx.png）。",
     "params": [
       {
         "name": "fits_path",
@@ -257,7 +263,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（可选）输出文件名或 EUCLID_OUTPUT_DIR 内的相对路径；一般省略"
+        "desc": "（可选）保存位置。要保存到 021 科研空间：/home/scientist/project<项目ID>/ResearchSpace/<名称>.png 或 .jpg/.jpeg（扩展名决定格式）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <FITS 文件名>.png），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录（科研空间看不到）。"
       },
       {
         "name": "hdu_index",
@@ -269,7 +275,7 @@
         "name": "format",
         "type": "str",
         "required": false,
-        "desc": "png 或 jpg，默认 png"
+        "desc": "png 或 jpg；默认按 output_path 扩展名，否则 png"
       },
       {
         "name": "p_low",
@@ -300,6 +306,12 @@
         "type": "bool",
         "required": false,
         "desc": "是否在 MCP 结果中内嵌图片块，默认 true"
+      },
+      {
+        "name": "overwrite",
+        "type": "bool",
+        "required": false,
+        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -471,7 +483,7 @@
         "name": "output_dir",
         "type": "str",
         "required": false,
-        "desc": "（可选）EUCLID_OUTPUT_DIR 下的子目录；一般省略"
+        "desc": "（可选）输出目录：省略=服务端 EUCLID_OUTPUT_DIR；相对路径=其下子目录；绝对路径须在 EUCLID_WRITE_ROOTS（默认 /home/scientist）内，例如 /home/scientist/project<项目ID>/ResearchSpace/cutouts/ 即保存到 021 科研空间。文件写到 <output_dir>/<file_type>/<obj_id>.fits，返回的 files[].saved_path / project_relpath 为实际路径"
       },
       {
         "name": "mer_root",
@@ -490,6 +502,12 @@
         "type": "bool",
         "required": false,
         "desc": "跳过 NaN"
+      },
+      {
+        "name": "overwrite",
+        "type": "bool",
+        "required": false,
+        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -554,7 +572,7 @@
         "name": "output_dir",
         "type": "str",
         "required": false,
-        "desc": "（可选）EUCLID_OUTPUT_DIR 下的子目录；一般省略"
+        "desc": "（可选）输出目录：省略=服务端 EUCLID_OUTPUT_DIR；相对路径=其下子目录；绝对路径须在 EUCLID_WRITE_ROOTS（默认 /home/scientist）内，例如 /home/scientist/project<项目ID>/ResearchSpace/cutouts/ 即保存到 021 科研空间。文件写到 <output_dir>/<file_type>/<obj_id>.fits，返回的 files[].saved_path / project_relpath 为实际路径"
       },
       {
         "name": "mer_root",
@@ -579,6 +597,12 @@
         "type": "int",
         "required": false,
         "desc": "最多源数"
+      },
+      {
+        "name": "overwrite",
+        "type": "bool",
+        "required": false,
+        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
       }
     ],
     "domain": "Euclid裁剪",
