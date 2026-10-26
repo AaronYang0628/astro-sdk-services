@@ -4,15 +4,18 @@ Fine-grained URL→image chain (use a **source** ra/dec, not FOV centre):
   fetch_fits → list_hdus → read_wcs_header → find_peak_sky|sky_to_pixel
   → cutout2d → write_preview
 
-Input: fetch_fits(url) takes any http(s) FITS URL — public, or a temporary presigned object-storage
-URL (e.g. what 021 generates for an uploaded file). The query string is sent verbatim and redacted in
-all outputs/errors; cache names use host+path only. Local paths are not accepted. All other tools only
-read files inside EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR (+ MER root / bundled fixtures) and only write
-inside EUCLID_OUTPUT_DIR (see safety.py).
+Input: fetch_fits(url) takes
+  * an absolute local path or file:// inside EUCLID_INPUT_ROOTS (e.g. a 021 project file
+    /home/scientist/project<id>/Data/x.fits on a read-only mount) — validated, used in place, no copy;
+  * any http(s) FITS URL — public or presigned; query sent verbatim and redacted in outputs/errors;
+    cache names use host+path only.
+All other tools only read files inside EUCLID_INPUT_ROOTS / EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR
+(+ MER root / bundled fixtures) and only write inside EUCLID_OUTPUT_DIR (see safety.py).
 
 Optional local MER helpers: query_tile_id, locate_products, cutout_single/batch.
 
 Env:
+  EUCLID_INPUT_ROOTS    ':'/',' separated dirs allowed as local inputs (default empty = none)
   EUCLID_CACHE_DIR      HTTP(S) download cache (default ./euclid_cache)
   EUCLID_OUTPUT_DIR     cutout / preview output (default ./euclid_cutouts)
   EUCLID_MER_ROOT       local MER root for tile/locate pipeline

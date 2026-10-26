@@ -30,9 +30,11 @@ def get_config() -> dict[str, Any]:
         "mer_root_exists": bool(mer_p and mer_p.is_dir()),
         "tile_index_exists": bool(tile_p and tile_p.is_file()),
         "cache_dir_exists": True,
+        "input_roots": [str(r) for r in __import__("euclid_cutout.safety", fromlist=["x"]).input_roots()],
         "hint": (
-            "Input: an http(s) FITS URL (public, or the temporary signed URL 021 gives for an uploaded file) "
-            "via euclid_fetch_fits; other tools only read paths inside EUCLID_CACHE_DIR/EUCLID_OUTPUT_DIR. "
+            "Input to euclid_fetch_fits: an absolute project file path under input_roots "
+            "(e.g. /home/scientist/project<id>/Data/x.fits) or an http(s) FITS URL; other tools only read "
+            "paths inside input_roots / EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR. "
             "Local MER pipeline: set EUCLID_MER_ROOT + EUCLID_TILE_INDEX. "
             "Auth still optional via API_TOKEN on the HTTP/MCP wrapper."
         ),

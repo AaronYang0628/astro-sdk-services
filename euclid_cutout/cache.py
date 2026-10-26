@@ -130,6 +130,23 @@ def _sniff(path: Path) -> str:
     return "unknown"
 
 
+def _local_input(raw: str) -> dict:
+    """Local project file under EUCLID_INPUT_ROOTS: no copy, read in place (read-only memmap downstream)."""
+    from .safety import resolve_input
+    t0 = time.time()
+    p = resolve_input(raw)
+    kind = _sniff(p)
+    if kind == "unknown":
+        raise FetchError(f"not a FITS file (no 'SIMPLE  =' header card): {raw}")
+    size = p.stat().st_size
+    return {
+        "ok": True, "source": str(p), "path": str(p), "local": True, "cached": False,
+        "complete": True, "prefix_ok": True, "size_bytes": size, "remote_size_bytes": size, "max_bytes": None,
+        "from_cache": False, "format": kind, "elapsed_s": round(time.time() - t0, 3),
+        "note": "local file opened in place (read-only); pass `path` to the other euclid_* tools",
+    }
+
+
 def fetch_fits(
     url: Optional[str] = None,
     force: bool = False,
@@ -137,17 +154,20 @@ def fetch_fits(
     timeout: int = 600,
     url_or_path: Optional[str] = None,  # deprecated alias of `url` (local paths are no longer accepted)
 ) -> dict:
-    """Download an http(s) FITS URL (public or presigned/temporary) into EUCLID_CACHE_DIR.
+    """Fetch a FITS input: an http(s) URL (public or presigned/temporary) is downloaded into EUCLID_CACHE_DIR;
+    an absolute local path / file:// inside EUCLID_INPUT_ROOTS (e.g. /home/scientist/project<id>/Data/x.fits)
+    is validated and used in place (no copy).
 
     max_bytes: fetch only the first N bytes (multi-GB multi-extension files: early HDUs suffice).
     Returns the server cache `path` to pass to the other euclid_* tools.
     """
     raw = (url or url_or_path or "").strip()
     if not raw:
-        raise ValueError("url is required: an http(s) FITS URL (public, or the temporary URL 021 gives for an uploaded file)")
+        raise ValueError("url is required: a project file path (e.g. /home/scientist/project<id>/Data/x.fits) or an http(s) FITS URL")
     if not is_url(raw):
-        raise ValueError("only http(s):// URLs are accepted (public FITS link or a presigned/temporary OSS/S3 URL); "
-                         "local paths and other schemes are not allowed")
+        if "://" in raw and not raw.lower().startswith("file://"):
+            raise ValueError("unsupported URL scheme: use http(s)://, or an absolute local path / file:// under EUCLID_INPUT_ROOTS")
+        return _local_input(raw)
     safe = redact(raw)
     if max_bytes is not None:
         max_bytes = int(max_bytes)

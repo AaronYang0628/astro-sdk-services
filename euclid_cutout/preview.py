@@ -112,7 +112,8 @@ def write_preview(
                     hdu_index = i
                     break
             if hdu is None:
-                raise ValueError("no 2D image HDU in FITS")
+                from .fitsio import no_image_message
+                raise ValueError(no_image_message(hdul))
         else:
             hdu = hdul[hdu_index]
         data = hdu.data

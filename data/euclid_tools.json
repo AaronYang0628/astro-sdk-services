@@ -11,13 +11,13 @@
   {
     "name": "euclid_fetch_fits",
     "target": "euclid_cutout.fetch_fits",
-    "desc": "下载一个 http(s) FITS URL 到服务端缓存，返回后续工具使用的 path。URL 可以是公开的 FITS 链接，也可以是 021 为上传文件生成的临时（预签名）OSS 地址——请原样传入完整 URL（含 ? 后的签名参数）。不接受本地路径。多 GB 文件请设 max_bytes（如 25000000）只取前缀（HTTP Range；服务器不支持 Range 时自动流式截断）。临时 URL 过期会返回明确错误，请让用户重新获取链接。按文件内容（SIMPLE 头）识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。",
+    "desc": "准备 FITS 输入，返回后续工具使用的 path。输入二选一：(1) 021 项目文件的绝对路径，如 /home/scientist/project<项目ID>/Data/xxx.fits（用户上传到项目 Data/ 的文件；服务端只读挂载，原地读取不复制，必须在服务端 EUCLID_INPUT_ROOTS 允许的目录内，也接受 file://）；(2) http(s) FITS URL（公开链接或带签名参数的临时 OSS 地址，原样完整传入）。多 GB 的远程文件请设 max_bytes（如 25000000）只取前缀。按文件内容（SIMPLE 头）识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。注意：只有含 2D 图像 HDU 的 FITS 才能切图；MOC/星表类 FITS（只有表格 HDU）会报 no image HDU。",
     "params": [
       {
         "name": "url",
         "type": "str",
         "required": true,
-        "desc": "http(s) FITS URL：公开链接，或 021 上传文件的临时 OSS/S3 预签名地址（完整传入，含查询参数）"
+        "desc": "项目文件绝对路径（/home/scientist/project<项目ID>/Data/xxx.fits）或 http(s) FITS URL"
       },
       {
         "name": "force",
@@ -46,13 +46,13 @@
   {
     "name": "euclid_list_hdus",
     "target": "euclid_cutout.list_hdus",
-    "desc": "列出已下载 FITS（euclid_fetch_fits 返回的 path）的 HDU（index/name/shape/是否含 WCS）。前缀下载的文件可能只有前面若干完整 HDU。",
+    "desc": "列出 FITS 的 HDU（index/name/type/shape/是否含 WCS），image_hdus 给出可切图的 2D 图像 HDU；没有图像时 note 说明原因（如 MOC/表格文件）。path 用 euclid_fetch_fits 返回的 path。",
     "params": [
       {
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
+        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -68,7 +68,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
+        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
       },
       {
         "name": "hdu_index",
@@ -90,7 +90,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
+        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
       },
       {
         "name": "ra",
@@ -124,7 +124,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
+        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
       },
       {
         "name": "hdu_index",
@@ -152,7 +152,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
+        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
       },
       {
         "name": "x",
@@ -186,7 +186,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
+        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
       },
       {
         "name": "ra",

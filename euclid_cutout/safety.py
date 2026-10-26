@@ -1,13 +1,16 @@
 """Path sandbox for the unauthenticated public service.
 
 Tools only read files inside: EUCLID_CACHE_DIR (downloads from fetch_fits), EUCLID_OUTPUT_DIR
-(cutouts/previews), EUCLID_MER_ROOT / EUCLID_TILE_INDEX (server-configured local MER data, if set)
-and the bundled mock fixtures (fixtures/euclid_mock). Writes only go inside EUCLID_OUTPUT_DIR.
+(cutouts/previews), EUCLID_INPUT_ROOTS (operator-allowlisted input dirs, e.g. a read-only mount of
+021 project storage /home/scientist), EUCLID_MER_ROOT / EUCLID_TILE_INDEX (server-configured local
+MER data, if set) and the bundled mock fixtures (fixtures/euclid_mock).
+Writes only go inside EUCLID_OUTPUT_DIR.
 Symlinks are resolved before the check, so links pointing outside are rejected.
 """
 from __future__ import annotations
-import os
+import os, re
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 FIXTURES = (Path(__file__).resolve().parent.parent / "fixtures" / "euclid_mock")
 
@@ -16,9 +19,52 @@ def _env(name: str) -> str:
     return (os.environ.get(name) or "").strip()
 
 
+def input_roots() -> list[Path]:
+    """EUCLID_INPUT_ROOTS: ':' or ',' separated absolute dirs (empty = no local inputs)."""
+    out = []
+    for part in re.split(r"[:,]", _env("EUCLID_INPUT_ROOTS")):
+        part = part.strip()
+        if part and os.path.isabs(part):
+            out.append(Path(part).resolve())
+    return out
+
+
+def _roots_hint() -> str:
+    roots = input_roots()
+    if roots:
+        return ("allowed input roots (EUCLID_INPUT_ROOTS): " + ", ".join(str(r) for r in roots)
+                + "; e.g. /home/scientist/project<id>/Data/<file>.fits. Alternatively pass an http(s) URL")
+    return "local input files are disabled on this server (EUCLID_INPUT_ROOTS not set); pass an http(s) URL instead"
+
+
+def strip_file_scheme(raw: str) -> str:
+    if raw.lower().startswith("file://"):
+        u = urlsplit(raw)
+        if u.netloc not in ("", "localhost"):
+            raise ValueError("file:// URLs must refer to a local path (file:///abs/path)")
+        return unquote(u.path)
+    return raw
+
+
+def resolve_input(raw: str) -> Path:
+    """Local input file (absolute path or file://) that must lie inside EUCLID_INPUT_ROOTS."""
+    raw = strip_file_scheme(raw.strip())
+    roots = input_roots()
+    if not roots:
+        raise ValueError("local paths are not accepted: " + _roots_hint())
+    if not os.path.isabs(raw):
+        raise ValueError(f"local input must be an absolute path; {_roots_hint()}")
+    p = Path(raw).resolve()  # resolves symlinks and '..'
+    if not any(_inside(p, r) for r in roots):
+        raise PermissionError(f"path not allowed (outside the input roots): {raw}; {_roots_hint()}")
+    if not p.is_file():
+        raise FileNotFoundError(f"file not found: {raw} (check the project file path; {_roots_hint()})")
+    return p
+
+
 def read_roots() -> list[Path]:
     from .config import cache_dir, default_output_dir
-    roots = [cache_dir(), default_output_dir(), FIXTURES]
+    roots = [cache_dir(), default_output_dir(), FIXTURES] + input_roots()
     if _env("EUCLID_MER_ROOT"):
         roots.append(Path(_env("EUCLID_MER_ROOT")))
     if _env("EUCLID_TILE_INDEX"):
@@ -35,13 +81,14 @@ def check_read(path: str | os.PathLike) -> Path:
     raw = str(path or "").strip()
     if not raw:
         raise ValueError("path is required (use the `path` returned by euclid_fetch_fits)")
+    raw = strip_file_scheme(raw)
     if "://" in raw:
-        raise ValueError("this tool takes the server cache `path` returned by euclid_fetch_fits, not a URL")
+        raise ValueError("this tool takes the `path` returned by euclid_fetch_fits, not a URL; call euclid_fetch_fits first")
     p = Path(raw).expanduser().resolve()
     if not any(_inside(p, r) for r in read_roots()):
         raise PermissionError(
-            "path not allowed: only files downloaded by euclid_fetch_fits (EUCLID_CACHE_DIR) or produced by "
-            "cutout/preview tools (EUCLID_OUTPUT_DIR) can be read; call euclid_fetch_fits with an http(s) URL first"
+            f"path not allowed: {raw}. Readable: files under EUCLID_INPUT_ROOTS, files downloaded by euclid_fetch_fits "
+            f"or produced by cutout/preview tools; {_roots_hint()} (to euclid_fetch_fits)"
         )
     if not p.is_file():
         raise FileNotFoundError(f"file not found: {raw}")

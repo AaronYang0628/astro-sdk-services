@@ -24,8 +24,15 @@ def _json(res):
 
 async def check_euclid(s):
     src = os.environ.get("EUCLID_URL") or MOCK
-    hdu = {"hdu_index": 1} if os.environ.get("EUCLID_URL") else {}
-    f = _json(await s.call_tool("euclid_fetch_fits", {"url": src, "max_bytes": 25_000_000})) if src.startswith("http") else {"path": src}
+    h = os.environ.get("EUCLID_HDU") or ("1" if src.startswith("http") else "")
+    hdu = {"hdu_index": int(h)} if h else {}
+    if src.startswith("http"):
+        f = _json(await s.call_tool("euclid_fetch_fits", {"url": src, "max_bytes": 25_000_000}))
+    elif src.startswith("/"):  # project file under EUCLID_INPUT_ROOTS, e.g. /home/scientist/project<id>/Data/x.fits
+        f = _json(await s.call_tool("euclid_fetch_fits", {"url": src}))
+        assert f.get("local"), f
+    else:
+        f = {"path": src}
     bad = await s.call_tool("euclid_list_hdus", {"path": "/etc/passwd"})
     assert bad.isError or '"ok": false' in bad.content[0].text, "sandbox must reject /etc/passwd"
     pk = _json(await s.call_tool("euclid_find_peak_sky", {"path": f["path"], **hdu}))

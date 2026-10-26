@@ -43,15 +43,32 @@ def list_hdus(path: str) -> dict:
                     "has_wcs": ("CTYPE1" in hdr) or ("CD1_1" in hdr) or ("PC1_1" in hdr) or ("CRVAL1" in hdr),
                 }
             )
-    return {"ok": True, "path": str(p), "n_hdus": len(rows), "hdus": rows}
+        image = [r["index"] for r in rows if r["naxis"] >= 2 and r["type"] not in ("BinTableHDU", "TableHDU")]
+        note = None if image else no_image_message(hdul)
+    out = {"ok": True, "path": str(p), "n_hdus": len(rows), "hdus": rows, "image_hdus": image}
+    if note:
+        out["note"] = note
+    return out
+
+
+def no_image_message(hdul) -> str:
+    kinds = [f"{i}:{h.name}({type(h).__name__})" for i, h in enumerate(hdul)]
+    tables = [h for h in hdul if isinstance(h, (fits.BinTableHDU, fits.TableHDU))]
+    moc = any(str(h.header.get("ORDERING", "")).upper() == "NUNIQ" or "MOCORDER" in h.header
+              or str(h.header.get("PIXTYPE", "")).upper() == "HEALPIX" for h in hdul)
+    what = "this looks like a MOC (HEALPix coverage) table" if moc else ("this looks like a table" if tables else "no image data")
+    return (f"no image HDU ({what}; HDUs: {', '.join(kinds)}). Cutouts need a FITS with a 2D image HDU "
+            f"(e.g. a Euclid VIS/NISP or MER mosaic image)")
 
 
 def _pick_image_hdu(hdul, hdu_index: Optional[int] = None):
     """Pick a 2D image HDU. Skip empty PRIMARY (NAXIS=0) — common in Euclid VIS MEF."""
     if hdu_index is not None:
+        if not any(int(h.header.get("NAXIS", 0) or 0) >= 2 and not isinstance(h, (fits.BinTableHDU, fits.TableHDU)) for h in hdul):
+            raise ValueError(no_image_message(hdul))
         hdu = hdul[hdu_index]
         naxis = int(hdu.header.get("NAXIS", 0) or 0)
-        if naxis < 2:
+        if naxis < 2 or isinstance(hdu, (fits.BinTableHDU, fits.TableHDU)):
             raise ValueError(
                 f"HDU {hdu_index} is not a 2D image (NAXIS={naxis}). "
                 f"For Euclid VIS MEF files use hdu_index=1 (e.g. EXTNAME 1-1.E), not 0."
@@ -60,9 +77,9 @@ def _pick_image_hdu(hdul, hdu_index: Optional[int] = None):
     # Prefer first extension with 2D data + WCS (skip empty primary)
     for i, hdu in enumerate(hdul):
         naxis = int(hdu.header.get("NAXIS", 0) or 0)
-        if naxis >= 2 and hdu.header.get("NAXIS1") and hdu.header.get("NAXIS2"):
+        if naxis >= 2 and hdu.header.get("NAXIS1") and hdu.header.get("NAXIS2") and not isinstance(hdu, (fits.BinTableHDU, fits.TableHDU)):
             return i, hdu
-    raise ValueError("no 2D image HDU found")
+    raise ValueError(no_image_message(hdul))
 
 
 def read_wcs_header(path: str, hdu_index: Optional[int] = None) -> dict:
