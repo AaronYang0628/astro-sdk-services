@@ -1,0 +1,79 @@
+# Rendered from helm/astro-sdk-services (allInOne, no auth). Replace astro.example.com with your host.
+# kubectl create namespace astro-tools && kubectl -n astro-tools apply -f deploy/astro-all.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: astro-all
+spec:
+  selector: {app: astro-all}
+  ports: [{port: 80, targetPort: 8000}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: astro-all
+  labels: {app: astro-all}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: astro-all}
+  template:
+    metadata:
+      labels: {app: astro-all}
+    spec:
+      containers:
+        - name: all
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:938e4d5255ad3ec709c7db75ebe7502e32e8cdb3"
+          imagePullPolicy: IfNotPresent
+          env:
+            - {name: SDK, value: "all"}
+            - {name: EUCLID_CACHE_DIR, value: "/data/euclid/cache"}
+            - {name: EUCLID_OUTPUT_DIR, value: "/data/euclid/cutouts"}
+          ports: [{containerPort: 8000}]
+          volumeMounts:
+            - {name: euclid-data, mountPath: /data/euclid}
+          readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
+          resources:
+            limits:
+              cpu: "2"
+              memory: 8Gi
+            requests:
+              cpu: 200m
+              memory: 1Gi
+      volumes:
+        - name: euclid-data
+          emptyDir: {sizeLimit: 20Gi}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: astro-sdk-services
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: astro.example.com
+      http:
+        paths:
+          - path: /astropy
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          - path: /astroquery
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          - path: /photutils
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          - path: /astroplan
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          - path: /sunpy
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          - path: /euclid
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}

@@ -1,6 +1,6 @@
 image:
-  repository: ghcr.io/example/astro-sdk-services   # placeholder; one image, SDK chosen via env
-  tag: "0.1.0"
+  repository: ghcr.io/aaronyang0628/astro-sdk-services   # public; one image, SDK chosen via env (default all)
+  tag: "938e4d5255ad3ec709c7db75ebe7502e32e8cdb3"   # pinned commit SHA (also :latest)
   pullPolicy: IfNotPresent
 ingress:
   enabled: true
@@ -17,8 +17,19 @@ services:            # SDK names -> Ingress paths /<name> (and, if allInOne=fals
   - name: astroplan
   - name: sunpy
   - name: euclid
-resources:
-  requests: {cpu: 100m, memory: 512Mi}
-  limits: {cpu: "1", memory: 4Gi}
+resources:            # all-in-one: MEM_LIMIT_GB defaults to 8 (address-space cap), so give the pod up to 8Gi
+  requests: {cpu: 200m, memory: 1Gi}
+  limits: {cpu: "2", memory: 8Gi}
+euclid:               # euclid FITS cutout: download cache + cutout/preview output, mounted at /data/euclid
+  cacheDir: /data/euclid/cache     # -> EUCLID_CACHE_DIR
+  outputDir: /data/euclid/cutouts  # -> EUCLID_OUTPUT_DIR
+  merRoot: ""                      # optional EUCLID_MER_ROOT (local MER tree; mount it via extraVolumes)
+  tileIndex: ""                    # optional EUCLID_TILE_INDEX
+  storage:
+    existingClaim: ""              # PVC name to keep cache/outputs across restarts; empty = emptyDir
+    sizeLimit: 20Gi                # emptyDir size limit
+extraEnv: []          # extra container env, e.g. [{name: HTTPS_PROXY, value: "http://proxy.example.com:3128"}]
+extraVolumes: []      # extra pod volumes
+extraVolumeMounts: [] # extra container volumeMounts
 auth:
   secretName: ""   # optional. Empty = no auth. Else k8s Secret with key `token` -> API_TOKEN (Bearer auth; /health exempt)

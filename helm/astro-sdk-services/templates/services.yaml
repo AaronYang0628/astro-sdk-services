@@ -19,6 +19,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - {name: SDK, value: "all"}
+            {{- include "astro.euclidEnv" . | nindent 12 }}
             {{- if .Values.memoryLimitGB }}
             - {name: MEM_LIMIT_GB, value: {{ .Values.memoryLimitGB | quote }}}
             {{- end }}
@@ -26,9 +27,22 @@ spec:
             - name: API_TOKEN
               valueFrom: {secretKeyRef: {name: {{ .Values.auth.secretName }}, key: token}}
             {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports: [{containerPort: 8000}]
+          volumeMounts:
+            - {name: euclid-data, mountPath: /data/euclid}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
           resources: {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        {{- include "astro.euclidVolume" . | nindent 8 }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -59,6 +73,9 @@ spec:
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           env:
             - {name: SDK, value: {{ .name | quote }}}
+            {{- if eq .name "euclid" }}
+            {{- include "astro.euclidEnv" $ | nindent 12 }}
+            {{- end }}
             {{- if $.Values.memoryLimitGB }}
             - {name: MEM_LIMIT_GB, value: {{ $.Values.memoryLimitGB | quote }}}
             {{- end }}
@@ -66,9 +83,20 @@ spec:
             - name: API_TOKEN
               valueFrom: {secretKeyRef: {name: {{ $.Values.auth.secretName }}, key: token}}
             {{- end }}
+            {{- with $.Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports: [{containerPort: 8000}]
+          {{- if eq .name "euclid" }}
+          volumeMounts:
+            - {name: euclid-data, mountPath: /data/euclid}
+          {{- end }}
           readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 15, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 30}  # /health can block while a sync-bound tool call runs
           resources: {{- toYaml $.Values.resources | nindent 12 }}
+      {{- if eq .name "euclid" }}
+      volumes:
+        {{- include "astro.euclidVolume" $ | nindent 8 }}
+      {{- end }}
 ---
 apiVersion: v1
 kind: Service

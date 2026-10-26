@@ -52,12 +52,14 @@ Candidates in astroquery whose external service timed out (NED, SDSS) were left 
 
 ## Helm
 `helm/astro-sdk-services`: by default (`allInOne: true`) one Deployment + Service `astro-all` (SDK=all) and an Ingress
-routing `/astropy`, `/astroquery`, `/photutils`, `/astroplan`, `/sunpy` to it (host `astro.example.com`, placeholder).
+routing `/astropy`, `/astroquery`, `/photutils`, `/astroplan`, `/sunpy`, `/euclid` to it (host `astro.example.com`, placeholder),
+with an emptyDir (or PVC) at `/data/euclid` for the Euclid cache/outputs. Raw manifest: `deploy/astro-all.yaml`.
 `allInOne: false` deploys one Deployment + Service per SDK instead. See `docs/DEPLOY.md`.
 
 ## All-in-one (default)
 The image defaults to `SDK=all`: one process serves all 6 services under `/<sdk>/{health,tools,invoke,mcp}`, plus `/` and
 `/health` listing them. `docker run -p 8000:8000 ghcr.io/aaronyang0628/astro-sdk-services:latest`.
+Deployment handoff (Chinese, incl. 021 connector table): `docs/DEPLOY.md`.
 `SDK=<name>` still runs a single SDK.
 
 ## Authentication
