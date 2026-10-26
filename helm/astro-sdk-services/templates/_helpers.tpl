@@ -8,10 +8,16 @@
 {{- with .Values.euclid.tileIndex }}
 - {name: EUCLID_TILE_INDEX, value: {{ . | quote }}}
 {{- end }}
-{{- $roots := .Values.euclid.inputRoots | default "" }}
-{{- if and (not $roots) (include "astro.projectStorageOn" .) }}{{ $roots = .Values.euclid.projectStorage.mountPath }}{{ end }}
-{{- with $roots }}
-- {name: EUCLID_INPUT_ROOTS, value: {{ . | quote }}}
+{{- /* inputRoots: null/unset -> env omitted, code default /home/scientist (or projectStorage.mountPath if that differs);
+       "" -> EUCLID_INPUT_ROOTS="" (local inputs disabled); "a:b" -> as given */}}
+{{- $roots := .Values.euclid.inputRoots }}
+{{- if kindIs "string" $roots }}
+- {name: EUCLID_INPUT_ROOTS, value: {{ $roots | quote }}}
+{{- else if include "astro.projectStorageOn" . }}
+{{- $mp := .Values.euclid.projectStorage.mountPath | default "/home/scientist" }}
+{{- if ne $mp "/home/scientist" }}
+- {name: EUCLID_INPUT_ROOTS, value: {{ $mp | quote }}}
+{{- end }}
 {{- end }}
 {{- end }}
 {{/* "true" when a project-storage source (existingClaim / hostPath / nfs) is configured */}}

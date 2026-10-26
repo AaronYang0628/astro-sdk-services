@@ -2,7 +2,7 @@
 
 **一个镜像 = 一个容器 = 6 个 MCP 服务**：astropy / astroquery / photutils / astroplan / sunpy / **euclid**。
 
-- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
+- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
 - 容器端口 `8000`，默认 `SDK=all`：一个进程按路径同时提供 6 个服务 `/<sdk>/{health,tools,invoke,mcp}`
 - **默认不鉴权**（只有设置了非空 `API_TOKEN` 才要求 `Authorization: Bearer <token>`）
 - 部署完成后，在 021 平台登记 **6 个连接器**（每个 SDK 一个 MCP 地址 `https://<你的域名>/<sdk>/mcp`，传输方式 Streamable），见第 7 节
@@ -27,8 +27,8 @@
 | 项 | 值 |
 |---|---|
 | 镜像 | `ghcr.io/aaronyang0628/astro-sdk-services` |
-| 推荐 tag | `a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
-| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout a5ff7cf && docker build -t astro-sdk-services:a5ff7cf .`，然后推到内部镜像仓库 |
+| 推荐 tag | `9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
+| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 9c1fd78 && docker build -t astro-sdk-services:9c1fd78 .`，然后推到内部镜像仓库 |
 | 端口 | `8000`（HTTP） |
 | 启动时间 | 约 10–20 秒（加载 6 个库）；空闲 RSS 约 350 MB |
 
@@ -39,7 +39,7 @@
 | `MEM_LIMIT_GB` | all 模式 8，单 SDK 4 | 进程地址空间上限（RLIMIT_AS），超出时该次调用报 MemoryError 而不是整个容器被杀 |
 | `EUCLID_CACHE_DIR` | `<工作目录>/euclid_cache`（容器内 `/workspace/astro_services/euclid_cache`） | `euclid_fetch_fits` 下载缓存（文件名只由 URL 的主机+路径生成，不含签名） |
 | `EUCLID_OUTPUT_DIR` | `<工作目录>/euclid_cutouts` | 裁剪 FITS（`cutouts/`）与预览图（`previews/`）输出目录 |
-| `EUCLID_INPUT_ROOTS` | 空 | 允许作为输入的本地目录（绝对路径，`:` 或 `,` 分隔），例如 `/home/scientist`。空 = 不接受本地路径，只接受 http(s) URL。见 6.3 |
+| `EUCLID_INPUT_ROOTS` | `/home/scientist`（不设置时） | 允许作为输入的本地目录（绝对路径，`:` 或 `,` 分隔）。**不设置时默认 `/home/scientist`**，运维只需把项目存储只读挂到这个路径；目录不存在也不影响启动，只是本地路径会报“文件不存在”。显式设为空字符串 `EUCLID_INPUT_ROOTS=""` = 关闭本地路径，只接受 http(s) URL。见 6.3 |
 | `EUCLID_MER_ROOT` | 空（可选） | 本地 Euclid MER 数据根目录，只有用本地 MER 工具时才需要 |
 | `EUCLID_TILE_INDEX` | 空（可选） | 本地 MER 的 TILE 索引 FITS |
 | `EUCLID_INLINE_IMAGE` | `1` | `0` = `euclid_write_preview` 不在 MCP 结果里内嵌缩略图 |
@@ -66,7 +66,7 @@ Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/da
 docker run -d --name astro-sdk -p 8000:8000 \
   -e EUCLID_CACHE_DIR=/data/euclid/cache -e EUCLID_OUTPUT_DIR=/data/euclid/cutouts \
   -v /srv/astro-euclid:/data/euclid --memory 8g \
-  ghcr.io/aaronyang0628/astro-sdk-services:a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1
+  ghcr.io/aaronyang0628/astro-sdk-services:9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc
 ```
 
 需要鉴权时加 `-e API_TOKEN=$(openssl rand -hex 24)`（不要把 token 写进仓库或公开配置）。需要代理时加 `-e HTTPS_PROXY=... -e NO_PROXY=...`。
@@ -79,7 +79,7 @@ Chart 在仓库 `helm/astro-sdk-services`（0.2.3）。默认 `allInOne: true`�
 ```yaml
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # 用内部仓库时改这里
-  tag: "a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1"
+  tag: "9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc"
   pullPolicy: IfNotPresent
 allInOne: true
 services:              # 6 个 SDK，对应 Ingress 路径 /<name>
@@ -111,7 +111,7 @@ euclid:
   storage:
     existingClaim: ""                      # 填 PVC 名可跨重启保留缓存/输出；空 = emptyDir
     sizeLimit: 20Gi
-  inputRoots: ""                           # EUCLID_INPUT_ROOTS；空且配置了 projectStorage 时自动取 mountPath（/home/scientist）
+  inputRoots: ~                            # EUCLID_INPUT_ROOTS；不写 = 默认 /home/scientist；"" = 关闭本地路径；也可写 /a:/b
   projectStorage:                          # 只读挂载 021 项目存储（见 6.3），三选一，不填则不挂载
     existingClaim: ""                      #   PVC 名（同命名空间，RWX/ROX）
     hostPath: ""                           #   节点目录
@@ -205,7 +205,7 @@ pip install mcp httpx
 BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_check.py
 ```
 
-参考结果（a5ff7cf 同版本代码实测，MCP tools/call）：
+参考结果（9c1fd78 同版本代码实测，MCP tools/call）：
 
 | 步骤 | 关键返回 | 耗时 |
 |---|---|---|
@@ -225,10 +225,10 @@ BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_ch
 
 | 输入 | 说明 |
 |---|---|
-| **021 项目文件的绝对路径**（主要用法） | 用户把 FITS 上传到项目的 `Data/` 目录后，文件在 `/home/scientist/project<项目ID>/Data/<文件名>`，例如 `/home/scientist/project2114525713776963586/Data/x.fits`。021 智能体直接把这个路径传给 `euclid_fetch_fits`（也接受 `file:///home/scientist/...`）。**前提**：本服务 Pod 以只读方式在同一路径挂载了这份存储，并设置 `EUCLID_INPUT_ROOTS=/home/scientist`（见 6.3）。文件**原地只读打开（memmap），不复制**，返回的 `path` 就是这个路径。 |
+| **021 项目文件的绝对路径**（主要用法） | 用户把 FITS 上传到项目的 `Data/` 目录后，文件在 `/home/scientist/project<项目ID>/Data/<文件名>`，例如 `/home/scientist/project2114525713776963586/Data/x.fits`。021 智能体直接把这个路径传给 `euclid_fetch_fits`（也接受 `file:///home/scientist/...`）。**前提**：本服务 Pod 以只读方式在同一路径挂载了这份存储，（`EUCLID_INPUT_ROOTS` 默认就是 `/home/scientist`，无需设置，见 6.3）。文件**原地只读打开（memmap），不复制**，返回的 `path` 就是这个路径。 |
 | **http(s) FITS URL** | 公开链接（如 6.1 的 CASDC 镜像），或带签名参数的临时 OSS/S3 地址（查询串原样发送、在结果与错误里显示为 `?<redacted>`）。多 GB 文件传 `max_bytes`（如 `25000000`）只取前缀（HTTP Range；服务器不支持 Range 时边下边截断）；签名过期会返回 `temporary (presigned) URL has expired` 错误。 |
 
-- **本地路径的限制**：路径先做 realpath（解析 `..` 和符号链接）再检查，必须落在 `EUCLID_INPUT_ROOTS` 某个目录内；目录外、`..` 越界、指向外部的符号链接都会被拒绝。错误信息会列出允许的目录并提示可改用 http(s) URL，例如：`PermissionError: path not allowed (outside the input roots): /etc/passwd; allowed input roots (EUCLID_INPUT_ROOTS): /home/scientist; e.g. /home/scientist/project<id>/Data/<file>.fits. Alternatively pass an http(s) URL`。`EUCLID_INPUT_ROOTS` 为空时一律拒绝本地路径。输入目录只读：输出只会写到 `EUCLID_OUTPUT_DIR`。
+- **本地路径的限制**：路径先做 realpath（解析 `..` 和符号链接）再检查，必须落在 `EUCLID_INPUT_ROOTS` 某个目录内；目录外、`..` 越界、指向外部的符号链接都会被拒绝。错误信息会列出允许的目录并提示可改用 http(s) URL，例如：`PermissionError: path not allowed (outside the input roots): /etc/passwd; allowed input roots (EUCLID_INPUT_ROOTS): /home/scientist; e.g. /home/scientist/project<id>/Data/<file>.fits. Alternatively pass an http(s) URL`。`EUCLID_INPUT_ROOTS` 不设置时允许目录默认是 `/home/scientist`；显式设为空字符串 `""` 时一律拒绝本地路径。输入目录只读：输出只会写到 `EUCLID_OUTPUT_DIR`。
 - **文件类型**：按内容识别 FITS（开头 `SIMPLE  =`，也支持 gzip），不看扩展名：`.fits/.fit/.fts/.fz`、无扩展名都可以；非 FITS 文件会被拒绝。
 - **必须含 2D 图像**：切图需要图像 HDU。**示例上传文件 `euclid-…moc.fits` 是 MOC（HEALPix 覆盖范围）表格，没有图像 HDU**：`euclid_list_hdus` 会返回 `image_hdus: []` 和说明，`find_peak_sky` / `cutout2d` / `write_preview` 等返回 `no image HDU (this looks like a MOC (HEALPix coverage) table; HDUs: …)`。请上传 VIS/NISP 图像或 MER 拼接图来验证切图。
 - **其余工具**：`path` / `fits_path` / `catalog_path` 只能是 `EUCLID_INPUT_ROOTS`、`EUCLID_CACHE_DIR`、`EUCLID_OUTPUT_DIR`（以及配置了的 `EUCLID_MER_ROOT` / `EUCLID_TILE_INDEX`、镜像内置测试样例）里的文件；`output_path` / `output_dir` 只能在 `EUCLID_OUTPUT_DIR` 内；`mer_root` 覆盖值只能是 `EUCLID_MER_ROOT` 的子目录。Euclid 工具参数按原样 JSON 传入，不支持 `/invoke` 的 `__call__` 对象构造。
@@ -239,7 +239,7 @@ BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_ch
 
 1. 找到 021 项目 Pod 中 `/home/scientist` 背后的存储（PVC / NFS / 节点目录）。
 2. 把它**只读**挂到本服务 Pod 的**同一路径** `/home/scientist`（路径一致，智能体给的路径才能原样使用）。PVC 需要与本服务在同一命名空间且支持多 Pod 挂载（RWX/ROX）；不在同一命名空间时可用同一 NFS 导出再建一个只读 PV/PVC，或直接用 `nfs`。
-3. 设置 `EUCLID_INPUT_ROOTS=/home/scientist`（Helm 配了 `projectStorage` 时自动设置）。
+3. **不需要设置环境变量**：`EUCLID_INPUT_ROOTS` 不设置时默认就是 `/home/scientist`，运维只需完成第 2 步的挂载。没挂存储时服务照常启动，本地路径只会返回“file not found”错误。如需关闭本地路径（只接受 http(s) URL），设 `EUCLID_INPUT_ROOTS=""`（Helm：`euclid.inputRoots: ""`）；如需改成其他目录，设 `EUCLID_INPUT_ROOTS=/a:/b`。
 
 Helm 示例（三选一）：
 ```yaml
@@ -248,9 +248,9 @@ euclid:
     existingClaim: scientist-home          # 或：nfs: {server: nfs.example.com, path: /export/scientist}；或：hostPath: /data/scientist
     mountPath: /home/scientist
     readOnly: true
-  # inputRoots: /home/scientist            # 不写则自动等于 mountPath
+  # inputRoots: ""                         # 不写 = 默认 /home/scientist（mountPath 改了则跟随 mountPath）；"" = 关闭本地路径
 ```
-原生 YAML 见 `deploy/astro-all.yaml` 中被注释的 `project-storage` 示例（env、volumeMounts、volumes 三处取消注释）。
+原生 YAML 见 `deploy/astro-all.yaml` 中被注释的 `project-storage` 示例（volumeMounts、volumes 两处取消注释即可；env 不用改）。
 
 验证：
 ```bash
@@ -259,7 +259,7 @@ kubectl -n astro-tools exec deploy/astro-all -- ls /home/scientist/project<项�
 BASE=$BASE SDKS=euclid EUCLID_URL=/home/scientist/project<项目ID>/Data/<图像>.fits python3 tests/mcp_check.py
 ```
 
-**无法挂载时的替代方案**：不配置 `EUCLID_INPUT_ROOTS`，让智能体传 http(s) URL（公开 FITS 链接，或能直接读取的临时签名地址）。
+**无法挂载时的替代方案**：让智能体传 http(s) URL（公开 FITS 链接，或能直接读取的临时签名地址）；不挂载时也可设 `EUCLID_INPUT_ROOTS=""` 明确关闭本地路径。
 
 ## 7. 在 021 登记连接器（创建者：02xlab，平台托管）
 
@@ -287,7 +287,7 @@ BASE=$BASE SDKS=euclid EUCLID_URL=/home/scientist/project<项目ID>/Data/<图像
 
 ## 8. 注意事项
 
-- **安全**：默认不鉴权，只适合内网 / 可信网络。Euclid 工具只能读 `EUCLID_INPUT_ROOTS`（只读）与自己的缓存/输出目录、只能写输出目录（6.2），但其他 5 个 SDK 的部分工具仍可读取容器内文件（FITS、numpy 文件）；`euclid_fetch_fits` 会按调用方给的 URL 发起出站下载（任意 http(s) 地址，含内网地址）。对公网开放时请设 `API_TOKEN`，或在网关层限制来源（只允许 021 服务端访问）。
+- **安全**：默认不鉴权，只适合内网 / 可信网络。Euclid 工具只能读 `EUCLID_INPUT_ROOTS`（默认 `/home/scientist`，只读）与自己的缓存/输出目录、只能写输出目录（6.2），但其他 5 个 SDK 的部分工具仍可读取容器内文件（FITS、numpy 文件）；`euclid_fetch_fits` 会按调用方给的 URL 发起出站下载（任意 http(s) 地址，含内网地址）。对公网开放时请设 `API_TOKEN`，或在网关层限制来源（只允许 021 服务端访问）。
 - **并发**：all 模式下 6 个服务在一个进程里，工具调用在主线程同步执行，一次慢调用（Euclid 下载、Gaia 查询）会让其它请求排队，期间 `/health` 也会等待。并发高时可加副本（注意 emptyDir 缓存每个 Pod 各自一份；不同副本之间 `path` 不通用，见下条），或设 `allInOne: false` 每个 SDK 单独一个 Deployment。
 - **多副本与 Euclid**：工具链前后步骤之间传的是服务端路径（缓存/输出目录），所以 **Euclid 必须保证同一条链路落在同一个 Pod 上**：保持 1 个副本，或用 RWX 的 PVC 共享 `/data/euclid`。
 - **切图结果的返回方式**：`euclid_write_preview` 在 MCP 结果里内嵌 PNG/JPG 缩略图（图片内容块），021 对话里直接可见；`euclid_cutout2d` 只返回服务端 `fits_path` 和统计信息。完整 FITS 留在服务端，不对外提供下载。

@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # public; one image, SDK chosen via env (default all)
-  tag: "a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1"   # pinned commit SHA (also :latest)
+  tag: "9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc"   # pinned commit SHA (also :latest)
   pullPolicy: IfNotPresent
 ingress:
   enabled: true
@@ -25,8 +25,9 @@ euclid:               # euclid FITS cutout: download cache + cutout/preview outp
   outputDir: /data/euclid/cutouts  # -> EUCLID_OUTPUT_DIR
   merRoot: ""                      # optional EUCLID_MER_ROOT (local MER tree; mount it via extraVolumes)
   tileIndex: ""                    # optional EUCLID_TILE_INDEX
-  inputRoots: ""                   # EUCLID_INPUT_ROOTS: ':'/',' separated dirs whose files may be passed as local paths
-                                   # (e.g. /home/scientist). Empty + projectStorage set => projectStorage.mountPath
+  inputRoots: ~                    # EUCLID_INPUT_ROOTS: ':'/',' separated dirs whose files may be passed as local paths.
+                                   # unset (~) => code default /home/scientist (or projectStorage.mountPath if changed);
+                                   # "" => local paths disabled (http(s) URLs only); "/a:/b" => custom
   projectStorage:                  # optional READ-ONLY mount of the storage behind 021 project pods' /home/scientist,
                                    # so agent paths like /home/scientist/project<id>/Data/x.fits work verbatim. Set ONE source:
     existingClaim: ""              #   PVC name (RWX/ROX, same namespace), mounted readOnly

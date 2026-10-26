@@ -24,14 +24,15 @@ spec:
     spec:
       containers:
         - name: all
-          image: "ghcr.io/aaronyang0628/astro-sdk-services:a5ff7cf7b2769308fe1676e0f4a17f8ecee251c1"
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:9c1fd78e136621c49ff0cd5aa787a0bbdef9d2bc"
           imagePullPolicy: IfNotPresent
           env:
             - {name: SDK, value: "all"}
             - {name: EUCLID_CACHE_DIR, value: "/data/euclid/cache"}
             - {name: EUCLID_OUTPUT_DIR, value: "/data/euclid/cutouts"}
-            # 021 project files (/home/scientist/project<id>/Data/*.fits): uncomment + the two blocks below
-            # - {name: EUCLID_INPUT_ROOTS, value: "/home/scientist"}
+            # 021 project files (/home/scientist/project<id>/Data/*.fits): EUCLID_INPUT_ROOTS defaults to /home/scientist,
+            # so just uncomment the project-storage volumeMount + volume below. To disable local paths:
+            # - {name: EUCLID_INPUT_ROOTS, value: ""}
           ports: [{containerPort: 8000}]
           volumeMounts:
             - {name: euclid-data, mountPath: /data/euclid}
