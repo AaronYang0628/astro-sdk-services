@@ -100,9 +100,8 @@ def write_preview(
     elif fmt != "png":
         raise ValueError("format must be png or jpg")
 
-    path = Path(fits_path)
-    if not path.is_file():
-        raise FileNotFoundError(fits_path)
+    from .safety import check_read, check_write
+    path = check_read(fits_path)
 
     with fits.open(str(path), ignore_missing_end=True, memmap=True) as hdul:
         if hdu_index is None:
@@ -127,7 +126,7 @@ def write_preview(
             title = f"{path.name}\nRA={hdu.header['RA_OBJ']:.5f} DEC={hdu.header['DEC_OBJ']:.5f}"
 
     if output_path:
-        out = Path(output_path)
+        out = check_write(output_path)
     else:
         out = default_output_dir() / "previews" / f"{path.stem}.{fmt}"
     out.parent.mkdir(parents=True, exist_ok=True)

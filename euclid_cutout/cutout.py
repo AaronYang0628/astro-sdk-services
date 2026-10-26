@@ -15,7 +15,8 @@ from .catalog import load_catalog_table
 
 
 def _cutout_image(fits_path: str, ra: float, dec: float, size: int, hdu_index: int = 0) -> dict:
-    with fits.open(fits_path) as hdul:
+    from .safety import check_read
+    with fits.open(str(check_read(fits_path))) as hdul:
         data = hdul[hdu_index].data
         header = hdul[hdu_index].header
         if data is None:
@@ -122,7 +123,8 @@ def cutout_single(
             }
         if not pieces:
             continue
-        out_path = out_root / ft / f"{obj_id}.fits"
+        safe_id = "".join(c if c.isalnum() or c in "._-" else "_" for c in str(obj_id))[:100] or "obj"
+        out_path = out_root / "".join(c if c.isalnum() or c in "._-" else "_" for c in str(ft)) / f"{safe_id}.fits"
         written = _write_multi(out_path, obj_id, pieces)
         for key, info in pieces.items():
             files_meta.append(

@@ -4,10 +4,16 @@ Fine-grained URL→image chain (use a **source** ra/dec, not FOV centre):
   fetch_fits → list_hdus → read_wcs_header → find_peak_sky|sky_to_pixel
   → cutout2d → write_preview
 
+Input: fetch_fits(url) takes any http(s) FITS URL — public, or a temporary presigned object-storage
+URL (e.g. what 021 generates for an uploaded file). The query string is sent verbatim and redacted in
+all outputs/errors; cache names use host+path only. Local paths are not accepted. All other tools only
+read files inside EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR (+ MER root / bundled fixtures) and only write
+inside EUCLID_OUTPUT_DIR (see safety.py).
+
 Optional local MER helpers: query_tile_id, locate_products, cutout_single/batch.
 
 Env:
-  EUCLID_CACHE_DIR      HTTPS download cache (default ./euclid_cache)
+  EUCLID_CACHE_DIR      HTTP(S) download cache (default ./euclid_cache)
   EUCLID_OUTPUT_DIR     cutout / preview output (default ./euclid_cutouts)
   EUCLID_MER_ROOT       local MER root for tile/locate pipeline
   EUCLID_TILE_INDEX     tile index FITS for local MER

@@ -48,7 +48,7 @@ def test_library_mock():
     ec = euclid_cutout
 
     fits_path = str(FIX / "MER/999000001/VIS/EUC_MER_BGSUB-MOSAIC-VIS_TILE999000001_mock.fits")
-    f = ec.fetch_fits(fits_path)
+    f = {"path": fits_path}  # bundled fixture is inside the read sandbox; URL inputs: tests/test_euclid_inputs.py
     peak = ec.find_peak_sky(f["path"])
     assert peak["ok"], peak
     cut = ec.cutout2d(f["path"], peak["ra"], peak["dec"], obj_id="fine_mock")
@@ -141,9 +141,18 @@ def test_http():
         assert "euclid_find_peak_sky" in names and "euclid_cutout2d" in names, names
         assert h["tools"] == len(tools) == 14
 
-        fits_path = str(FIX / "MER/999000001/VIS/EUC_MER_BGSUB-MOSAIC-VIS_TILE999000001_mock.fits")
-        f = _post(f"{base}/euclid/invoke", {"function_name": "euclid_fetch_fits", "arguments": {"url_or_path": fits_path}})
+        fits_path = FIX / "MER/999000001/VIS/EUC_MER_BGSUB-MOSAIC-VIS_TILE999000001_mock.fits"
+        sys.path.insert(0, str(HERE))
+        import fits_http_server
+        srv, fbase, query, _ = fits_http_server.start(fits_path.read_bytes())
+        f = _post(f"{base}/euclid/invoke", {"function_name": "euclid_fetch_fits", "arguments": {"url": f"{fbase}/signed/upl0?{query}"}})
+        srv.shutdown()
+        assert f["ok"] and "Signature" not in json.dumps(f), f
         path = f["result"]["path"]
+        bad = _post(f"{base}/euclid/invoke", {"function_name": "euclid_list_hdus", "arguments": {"path": "/etc/passwd"}})
+        assert not bad["ok"] and "not allowed" in json.dumps(bad), bad
+        bad = _post(f"{base}/euclid/invoke", {"function_name": "euclid_fetch_fits", "arguments": {"url": "/etc/passwd"}})
+        assert not bad["ok"], bad
         peak = _post(f"{base}/euclid/invoke", {"function_name": "euclid_find_peak_sky", "arguments": {"path": path}})
         assert peak["ok"], peak
         cut = _post(

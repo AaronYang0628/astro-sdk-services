@@ -12,15 +12,19 @@ warnings.filterwarnings("ignore", category=fits.verify.VerifyWarning)
 
 
 def _open(path: str, **kw):
-    # ignore_missing_end: allow prefix downloads of multi-ext mirrors
-    return fits.open(path, ignore_missing_end=True, **kw)
+    # sandbox: only cache/output/MER/fixture files; ignore_missing_end: allow prefix downloads of multi-ext mirrors
+    from .safety import check_read
+    p = check_read(path)
+    with open(p, "rb") as f:
+        if f.read(2) == b"\x1f\x8b":
+            kw.pop("memmap", None)  # gzip-compressed FITS cannot be memory-mapped
+    return fits.open(str(p), ignore_missing_end=True, **kw)
 
 
 def list_hdus(path: str) -> dict:
     """Summarize HDUs in a local FITS file (path from fetch_fits)."""
-    p = Path(path)
-    if not p.is_file():
-        raise FileNotFoundError(path)
+    from .safety import check_read
+    p = check_read(path)
     rows = []
     with _open(str(p), memmap=True) as hdul:
         for i, hdu in enumerate(hdul):

@@ -43,7 +43,7 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
             return {"ok": False, "result": None, "error": f"unknown function_name (not in whitelist): {req.function_name}"}
         t0 = time.time()
         try:
-            res = engine.invoke(t["target"], req.arguments, t.get("timeout", timeout))
+            res = engine.invoke(t["target"], req.arguments, t.get("timeout", timeout), t.get("raw_args", False))
             if isinstance(res, dict):
                 res.pop("_mcp_images", None)  # MCP-only inline images; /invoke stays plain JSON
             out = codec.encode(res)

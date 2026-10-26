@@ -31,7 +31,8 @@ def get_config() -> dict[str, Any]:
         "tile_index_exists": bool(tile_p and tile_p.is_file()),
         "cache_dir_exists": True,
         "hint": (
-            "Remote URL cutouts: set EUCLID_CACHE_DIR (download cache) and EUCLID_OUTPUT_DIR. "
+            "Input: an http(s) FITS URL (public, or the temporary signed URL 021 gives for an uploaded file) "
+            "via euclid_fetch_fits; other tools only read paths inside EUCLID_CACHE_DIR/EUCLID_OUTPUT_DIR. "
             "Local MER pipeline: set EUCLID_MER_ROOT + EUCLID_TILE_INDEX. "
             "Auth still optional via API_TOKEN on the HTTP/MCP wrapper."
         ),
@@ -39,10 +40,13 @@ def get_config() -> dict[str, Any]:
 
 
 def require_mer_root(override: str | None = None) -> Path:
-    root = (override or _p("EUCLID_MER_ROOT") or "").strip()
-    if not root:
-        raise ValueError("EUCLID_MER_ROOT is not set (and mer_root was not passed)")
-    p = Path(root)
+    env = _p("EUCLID_MER_ROOT")
+    if not env:
+        raise ValueError("EUCLID_MER_ROOT is not set on the server (local MER tools are disabled)")
+    p = Path(env)
+    if override and override.strip():
+        from .safety import check_under
+        p = check_under(override.strip(), Path(env), "mer_root")
     if not p.is_dir():
         raise FileNotFoundError(f"EUCLID_MER_ROOT does not exist or is not a directory: {p}")
     return p
@@ -51,7 +55,10 @@ def require_mer_root(override: str | None = None) -> Path:
 def require_tile_index(override: str | None = None) -> Path:
     path = (override or _p("EUCLID_TILE_INDEX") or "").strip()
     if not path:
-        raise ValueError("EUCLID_TILE_INDEX is not set (and tile_index was not passed)")
+        raise ValueError("EUCLID_TILE_INDEX is not set on the server")
+    if override and override.strip():
+        from .safety import check_read
+        return check_read(override.strip())
     p = Path(path)
     if not p.is_file():
         raise FileNotFoundError(f"EUCLID_TILE_INDEX not found: {p}")
@@ -59,6 +66,12 @@ def require_tile_index(override: str | None = None) -> Path:
 
 
 def default_output_dir(override: str | None = None) -> Path:
-    p = Path((override or _p("EUCLID_OUTPUT_DIR") or str(Path.cwd() / "euclid_cutouts")).strip())
+    p = Path((_p("EUCLID_OUTPUT_DIR") or str(Path.cwd() / "euclid_cutouts")).strip())
     p.mkdir(parents=True, exist_ok=True)
+    if override and override.strip():  # sub-directory of EUCLID_OUTPUT_DIR only
+        from .safety import check_under
+        q = Path(override.strip())
+        q = check_under(q if q.is_absolute() else p / q, p, "output_dir")
+        q.mkdir(parents=True, exist_ok=True)
+        return q
     return p

@@ -5,30 +5,31 @@
     "desc": "查看 EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR / EUCLID_MER_ROOT / EUCLID_TILE_INDEX 等路径是否就绪。",
     "params": [],
     "domain": "Euclid裁剪",
-    "cn": "查看配置"
+    "cn": "查看配置",
+    "raw_args": true
   },
   {
     "name": "euclid_fetch_fits",
     "target": "euclid_cutout.fetch_fits",
-    "desc": "打开本地 FITS 路径，或将 HTTPS FITS URL 下载到 EUCLID_CACHE_DIR（支持 Range 断点续传）。对多 GB 镜像可设 max_bytes 只拉文件前缀（早期扩展足够做 cutout 时）。返回本地 path。",
+    "desc": "下载一个 http(s) FITS URL 到服务端缓存，返回后续工具使用的 path。URL 可以是公开的 FITS 链接，也可以是 021 为上传文件生成的临时（预签名）OSS 地址——请原样传入完整 URL（含 ? 后的签名参数）。不接受本地路径。多 GB 文件请设 max_bytes（如 25000000）只取前缀（HTTP Range；服务器不支持 Range 时自动流式截断）。临时 URL 过期会返回明确错误，请让用户重新获取链接。按文件内容（SIMPLE 头）识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。",
     "params": [
       {
-        "name": "url_or_path",
+        "name": "url",
         "type": "str",
         "required": true,
-        "desc": "本地路径或 https://...fits"
+        "desc": "http(s) FITS URL：公开链接，或 021 上传文件的临时 OSS/S3 预签名地址（完整传入，含查询参数）"
       },
       {
         "name": "force",
         "type": "bool",
         "required": false,
-        "desc": "强制重新下载"
+        "desc": "忽略缓存重新下载"
       },
       {
         "name": "max_bytes",
         "type": "int",
         "required": false,
-        "desc": "最多下载字节数（前缀）；大文件 cutout 常用 20–50MB"
+        "desc": "只下载前 N 字节（多 GB 文件建议 25000000）"
       },
       {
         "name": "timeout",
@@ -39,22 +40,24 @@
     ],
     "domain": "Euclid裁剪",
     "cn": "获取FITS到本地缓存",
-    "timeout": 600
+    "timeout": 600,
+    "raw_args": true
   },
   {
     "name": "euclid_list_hdus",
     "target": "euclid_cutout.list_hdus",
-    "desc": "列出本地 FITS 的 HDU（index/name/shape/是否含 WCS）。前缀下载的文件可能只有前面若干完整 HDU。",
+    "desc": "列出已下载 FITS（euclid_fetch_fits 返回的 path）的 HDU（index/name/shape/是否含 WCS）。前缀下载的文件可能只有前面若干完整 HDU。",
     "params": [
       {
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "fetch_fits 返回的本地路径"
+        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "列出FITS扩展"
+    "cn": "列出FITS扩展",
+    "raw_args": true
   },
   {
     "name": "euclid_read_wcs_header",
@@ -65,7 +68,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "本地 FITS 路径"
+        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
       },
       {
         "name": "hdu_index",
@@ -75,7 +78,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "读取WCS头"
+    "cn": "读取WCS头",
+    "raw_args": true
   },
   {
     "name": "euclid_sky_to_pixel",
@@ -86,7 +90,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "本地 FITS"
+        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
       },
       {
         "name": "ra",
@@ -108,7 +112,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "天球到像素"
+    "cn": "天球到像素",
+    "raw_args": true
   },
   {
     "name": "euclid_find_peak_sky",
@@ -119,7 +124,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "本地 FITS"
+        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
       },
       {
         "name": "hdu_index",
@@ -135,7 +140,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "找峰值天球坐标"
+    "cn": "找峰值天球坐标",
+    "raw_args": true
   },
   {
     "name": "euclid_pixel_to_sky",
@@ -146,7 +152,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "本地 FITS"
+        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
       },
       {
         "name": "x",
@@ -168,7 +174,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "像素到天球"
+    "cn": "像素到天球",
+    "raw_args": true
   },
   {
     "name": "euclid_cutout2d",
@@ -179,7 +186,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "源 FITS 本地路径"
+        "desc": "euclid_fetch_fits 返回的服务端缓存 path（仅允许缓存/输出目录内的文件）"
       },
       {
         "name": "ra",
@@ -209,7 +216,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "输出 FITS 路径"
+        "desc": "（可选）输出文件名或 EUCLID_OUTPUT_DIR 内的相对路径；一般省略"
       },
       {
         "name": "obj_id",
@@ -232,7 +239,8 @@
     ],
     "domain": "Euclid裁剪",
     "cn": "Cutout2D写FITS",
-    "timeout": 120
+    "timeout": 120,
+    "raw_args": true
   },
   {
     "name": "euclid_write_preview",
@@ -243,13 +251,13 @@
         "name": "fits_path",
         "type": "str",
         "required": true,
-        "desc": "cutout2d 输出的 FITS"
+        "desc": "euclid_cutout2d 返回的 fits_path"
       },
       {
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "预览图路径"
+        "desc": "（可选）输出文件名或 EUCLID_OUTPUT_DIR 内的相对路径；一般省略"
       },
       {
         "name": "hdu_index",
@@ -295,7 +303,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "写预览PNG/JPG"
+    "cn": "写预览PNG/JPG",
+    "raw_args": true
   },
   {
     "name": "euclid_validate_catalog",
@@ -306,7 +315,7 @@
         "name": "catalog_path",
         "type": "str",
         "required": true,
-        "desc": "星表路径"
+        "desc": "星表文件的服务端 path（先用 euclid_fetch_fits 下载 FITS 星表；或服务端 MER 目录内的星表）"
       },
       {
         "name": "ra_col",
@@ -334,7 +343,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "校验星表"
+    "cn": "校验星表",
+    "raw_args": true
   },
   {
     "name": "euclid_query_tile_id",
@@ -357,7 +367,7 @@
         "name": "tile_index",
         "type": "str",
         "required": false,
-        "desc": "覆盖默认索引路径"
+        "desc": "（可选）一般省略，使用服务端 EUCLID_TILE_INDEX"
       },
       {
         "name": "tolerance",
@@ -367,7 +377,8 @@
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "查询TILE"
+    "cn": "查询TILE",
+    "raw_args": true
   },
   {
     "name": "euclid_locate_products",
@@ -402,11 +413,12 @@
         "name": "mer_root",
         "type": "str",
         "required": false,
-        "desc": "覆盖 MER 根"
+        "desc": "（可选）服务端 EUCLID_MER_ROOT 下的子目录；一般省略"
       }
     ],
     "domain": "Euclid裁剪",
-    "cn": "定位MER产品"
+    "cn": "定位MER产品",
+    "raw_args": true
   },
   {
     "name": "euclid_cutout_single",
@@ -459,19 +471,19 @@
         "name": "output_dir",
         "type": "str",
         "required": false,
-        "desc": "输出目录"
+        "desc": "（可选）EUCLID_OUTPUT_DIR 下的子目录；一般省略"
       },
       {
         "name": "mer_root",
         "type": "str",
         "required": false,
-        "desc": "MER 根"
+        "desc": "（可选）服务端 EUCLID_MER_ROOT 下的子目录；一般省略"
       },
       {
         "name": "tile_index",
         "type": "str",
         "required": false,
-        "desc": "TILE 索引"
+        "desc": "（可选）一般省略，使用服务端 EUCLID_TILE_INDEX"
       },
       {
         "name": "skip_nan",
@@ -482,7 +494,8 @@
     ],
     "domain": "Euclid裁剪",
     "cn": "本地MER单目标裁剪",
-    "timeout": 60
+    "timeout": 60,
+    "raw_args": true
   },
   {
     "name": "euclid_cutout_batch",
@@ -493,7 +506,7 @@
         "name": "catalog_path",
         "type": "str",
         "required": true,
-        "desc": "星表"
+        "desc": "星表文件的服务端 path（先用 euclid_fetch_fits 下载 FITS 星表；或服务端 MER 目录内的星表）"
       },
       {
         "name": "size",
@@ -541,19 +554,19 @@
         "name": "output_dir",
         "type": "str",
         "required": false,
-        "desc": "输出目录"
+        "desc": "（可选）EUCLID_OUTPUT_DIR 下的子目录；一般省略"
       },
       {
         "name": "mer_root",
         "type": "str",
         "required": false,
-        "desc": "MER 根"
+        "desc": "（可选）服务端 EUCLID_MER_ROOT 下的子目录；一般省略"
       },
       {
         "name": "tile_index",
         "type": "str",
         "required": false,
-        "desc": "TILE 索引"
+        "desc": "（可选）一般省略，使用服务端 EUCLID_TILE_INDEX"
       },
       {
         "name": "skip_nan",
@@ -570,6 +583,7 @@
     ],
     "domain": "Euclid裁剪",
     "cn": "本地MER批量裁剪",
-    "timeout": 120
+    "timeout": 120,
+    "raw_args": true
   }
 ]

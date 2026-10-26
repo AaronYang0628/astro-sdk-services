@@ -1,7 +1,7 @@
 """MCP smoke test: initialize + list_tools + call N tools per SDK, plus the euclid chain
 (fetch -> peak -> cutout2d -> write_preview) asserting an inline MCP image block (decodable PNG).
 Usage: BASE=http://127.0.0.1 API_TOKEN=... [VERIFY_TLS=0] [NCALL=2] [EUCLID_URL=<https FITS>] [SDKS=euclid] python tests/mcp_check.py
-EUCLID_URL defaults to the in-image mock FITS; set it to e.g. the CASDC VIS URL for a real-data check (hdu_index=1).
+Without EUCLID_URL the in-image mock FITS is used directly (no fetch); set it to e.g. the CASDC VIS URL for a real-data check (hdu_index=1).
 BASE may be e.g. https://astro.example.com (then URL = BASE/<sdk>/mcp) or local ports via PORTS=1."""
 import asyncio, base64, json, os, sys, httpx
 from mcp import ClientSession
@@ -25,7 +25,9 @@ def _json(res):
 async def check_euclid(s):
     src = os.environ.get("EUCLID_URL") or MOCK
     hdu = {"hdu_index": 1} if os.environ.get("EUCLID_URL") else {}
-    f = _json(await s.call_tool("euclid_fetch_fits", {"url_or_path": src, "max_bytes": 25_000_000} if src.startswith("http") else {"url_or_path": src}))
+    f = _json(await s.call_tool("euclid_fetch_fits", {"url": src, "max_bytes": 25_000_000})) if src.startswith("http") else {"path": src}
+    bad = await s.call_tool("euclid_list_hdus", {"path": "/etc/passwd"})
+    assert bad.isError or '"ok": false' in bad.content[0].text, "sandbox must reject /etc/passwd"
     pk = _json(await s.call_tool("euclid_find_peak_sky", {"path": f["path"], **hdu}))
     c = _json(await s.call_tool("euclid_cutout2d", {"path": f["path"], "ra": pk["ra"], "dec": pk["dec"], "size": 1024, "obj_id": "mcp_check", **hdu}))
     res = await s.call_tool("euclid_write_preview", {"fits_path": c["fits_path"]})

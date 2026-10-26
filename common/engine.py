@@ -29,14 +29,16 @@ def resolve_target(path):
             raise
     return o, owner
 
-def invoke(target, arguments, timeout=30):
-    """Call target (dotted path) with decoded arguments. Methods require `_self`."""
+def invoke(target, arguments, timeout=30, raw_args=False):
+    """Call target (dotted path) with decoded arguments. Methods require `_self`.
+    raw_args=True: pass JSON values as-is (no codec `__call__` object construction) — used by euclid tools."""
     args = dict(arguments or {})
     self_spec = args.pop("_self", None)
     pos = args.pop("_args", None)
     fn, owner = resolve_target(target)
-    dec = {k: codec.decode(v) for k, v in args.items()}
-    dpos = [codec.decode(v) for v in (pos or [])]
+    _d = (lambda v: v) if raw_args else codec.decode
+    dec = {k: _d(v) for k, v in args.items()}
+    dpos = [_d(v) for v in (pos or [])]
     is_method = False
     if owner is not None and inspect.isclass(owner):
         st = inspect.getattr_static(owner, target.split(".")[-1], None)

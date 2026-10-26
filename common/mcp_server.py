@@ -88,7 +88,7 @@ def build(sdk, tools, timeout):
         else:
             t0 = time.time()
             try:  # runs on the event-loop (main) thread so the SIGALRM timeout works, like /invoke
-                raw = engine.invoke(t["target"], arguments, t.get("timeout", timeout))
+                raw = engine.invoke(t["target"], arguments, t.get("timeout", timeout), t.get("raw_args", False))
                 if isinstance(raw, dict) and "_mcp_images" in raw:
                     images = raw.pop("_mcp_images")
                 res = codec.encode(raw)

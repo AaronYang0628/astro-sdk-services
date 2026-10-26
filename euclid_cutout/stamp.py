@@ -15,6 +15,7 @@ import astropy.units as u
 
 from .config import default_output_dir
 from .fitsio import _pick_image_hdu, _open
+from .safety import check_write
 
 
 def _parse_size(size: Union[int, float, list, tuple], wcs: WCS) -> Union[int, tuple]:
@@ -86,9 +87,10 @@ def cutout2d(
         cut_wcs = cut.wcs
 
     if output_path:
-        out = Path(output_path)
+        out = check_write(output_path)
     else:
-        out = default_output_dir() / "cutouts" / f"{obj_id}.fits"
+        safe = "".join(c if c.isalnum() or c in "._-" else "_" for c in str(obj_id))[:100] or "cutout"
+        out = default_output_dir() / "cutouts" / f"{safe}.fits"
     out.parent.mkdir(parents=True, exist_ok=True)
 
     # Single PrimaryHDU with image+WCS (better than empty PRIMARY + ImageHDU

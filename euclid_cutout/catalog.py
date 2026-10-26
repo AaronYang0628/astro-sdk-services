@@ -7,9 +7,8 @@ from astropy.table import Table
 
 
 def _load(path: str) -> Table:
-    p = Path(path)
-    if not p.is_file():
-        raise FileNotFoundError(f"catalog not found: {p}")
+    from .safety import check_read
+    p = check_read(path)
     suf = p.suffix.lower()
     if suf in (".fits", ".fit"):
         return Table.read(str(p), format="fits")
