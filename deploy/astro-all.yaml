@@ -27,7 +27,7 @@ spec:
       # securityContext: {runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000}
       containers:
         - name: all
-          image: "ghcr.io/aaronyang0628/astro-sdk-services:4bc9e659378a693d31c4cfc138794b39f38fb03d"
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:5d02628f5b642bb2e65effe1a60ebe138df2d33e"
           imagePullPolicy: IfNotPresent
           env:
             - {name: SDK, value: "all"}

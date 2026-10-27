@@ -2,7 +2,7 @@
 
 **一个镜像 = 一个容器 = 6 个 MCP 服务**：astropy / astroquery / photutils / astroplan / sunpy / **euclid**。
 
-- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:4bc9e659378a693d31c4cfc138794b39f38fb03d`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
+- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:5d02628f5b642bb2e65effe1a60ebe138df2d33e`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
 - 容器端口 `8000`，默认 `SDK=all`：一个进程按路径同时提供 6 个服务 `/<sdk>/{health,tools,invoke,mcp}`
 - **默认不鉴权**（只有设置了非空 `API_TOKEN` 才要求 `Authorization: Bearer <token>`）
 - 部署完成后，在 021 平台登记 **6 个连接器**（每个 SDK 一个 MCP 地址 `https://<你的域名>/<sdk>/mcp`，传输方式 Streamable），见第 7 节
@@ -27,8 +27,8 @@
 | 项 | 值 |
 |---|---|
 | 镜像 | `ghcr.io/aaronyang0628/astro-sdk-services` |
-| 推荐 tag | `4bc9e659378a693d31c4cfc138794b39f38fb03d`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
-| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 4bc9e65 && docker build -t astro-sdk-services:4bc9e65 .`，然后推到内部镜像仓库 |
+| 推荐 tag | `5d02628f5b642bb2e65effe1a60ebe138df2d33e`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
+| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 5d02628 && docker build -t astro-sdk-services:5d02628 .`，然后推到内部镜像仓库 |
 | 端口 | `8000`（HTTP） |
 | 启动时间 | 约 10–20 秒（加载 6 个库）；空闲 RSS 约 350 MB |
 
@@ -43,6 +43,9 @@
 | `EUCLID_WRITE_ROOTS` | `/home/scientist`（不设置时） | **新增**。工具收到显式 `output_path` / `output_dir` 时允许写入的目录（绝对路径，`:` 或 `,` 分隔），用于把切图/预览直接写进 021 科研空间 `/home/scientist/project<项目ID>/ResearchSpace/`。**前提是项目存储以读写方式挂载**（见 6.3）。显式设为 `""` = 关闭外部写入（只能写 `EUCLID_OUTPUT_DIR`）。`EUCLID_OUTPUT_DIR` 始终可写。见 6.4 |
 | `EUCLID_MER_ROOT` | 空（可选） | 本地 Euclid MER 数据根目录，只有用本地 MER 工具时才需要 |
 | `EUCLID_TILE_INDEX` | 空（可选） | 本地 MER 的 TILE 索引 FITS |
+| `EUCLID_PREVIEW_BASE64` | `1` | **新增**。`euclid_write_preview` 是否在返回 JSON 里带 `image_base64`（缩略图的 base64）。`0` = 不带。调用参数 `return_base64` 优先于它。不挂载项目存储、或客户端不显示 MCP 图片块时靠它回传缩略图，见 6.5 |
+| `EUCLID_PREVIEW_BASE64_TARGET_BYTES` | `30000` | **新增**。`image_base64` 的目标原始字节数：预览文件不超过它就原样放进去；超过就自动缩成最长边 ≤ 320 px 的 JPEG 小图再放（服务端文件不变）。智能体要把 base64 文本原样抄进命令里保存，所以要小；调大可得到更清晰的图 |
+| `EUCLID_PREVIEW_BASE64_MAX_BYTES` | `300000` | **新增**。`image_base64` 的硬上限（原始字节）；连最小的缩略图都超过它时不返回 `image_base64`，改返回 `image_base64_omitted` 说明原因 |
 | `EUCLID_INLINE_IMAGE` | `1` | `0` = `euclid_write_preview` 不在 MCP 结果里内嵌缩略图 |
 | `MCP_MAX_INLINE_IMAGE_BYTES` | `2000000` | 内嵌图片大小上限，超过则不内嵌 |
 
@@ -67,20 +70,20 @@ Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/da
 docker run -d --name astro-sdk -p 8000:8000 \
   -e EUCLID_CACHE_DIR=/data/euclid/cache -e EUCLID_OUTPUT_DIR=/data/euclid/cutouts \
   -v /srv/astro-euclid:/data/euclid --memory 8g \
-  ghcr.io/aaronyang0628/astro-sdk-services:4bc9e659378a693d31c4cfc138794b39f38fb03d
+  ghcr.io/aaronyang0628/astro-sdk-services:5d02628f5b642bb2e65effe1a60ebe138df2d33e
 ```
 
 需要鉴权时加 `-e API_TOKEN=$(openssl rand -hex 24)`（不要把 token 写进仓库或公开配置）。需要代理时加 `-e HTTPS_PROXY=... -e NO_PROXY=...`。
 
 ## 4. Kubernetes：Helm（推荐）
 
-Chart 在仓库 `helm/astro-sdk-services`（0.2.5）。默认 `allInOne: true`：1 个 Deployment + 1 个 Service `astro-all`，1 个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 都转发过去。
+Chart 在仓库 `helm/astro-sdk-services`（0.2.6）。默认 `allInOne: true`：1 个 Deployment + 1 个 Service `astro-all`，1 个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 都转发过去。
 
 `my-values.yaml`（只需改域名、证书、存储）：
 ```yaml
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # 用内部仓库时改这里
-  tag: "4bc9e659378a693d31c4cfc138794b39f38fb03d"
+  tag: "5d02628f5b642bb2e65effe1a60ebe138df2d33e"
   pullPolicy: IfNotPresent
 allInOne: true
 services:              # 6 个 SDK，对应 Ingress 路径 /<name>
@@ -217,7 +220,7 @@ BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_ch
 | list_hdus | 3 个 HDU，HDU 1 `shape=[2066,2048]` 带 WCS | <0.1 s |
 | find_peak_sky | `ra≈267.47864, dec≈66.72683`（x=431, y=343） | <0.1 s |
 | cutout2d | `shape=[1024,1024]`，`inside=true`，`fits_path=/data/euclid/cutouts/cutouts/vis2686_peak.fits` | <0.1 s |
-| write_preview | MCP 返回 `content=[text, image]`：text 为 JSON（`preview_path`、`stretch` 等），image 为 `image/png` 缩略图（约 13 KB，最长边 ≤ 1024） | ≈0.2 s |
+| write_preview | MCP 返回 `content=[text, image]`：text 为 JSON（`preview_path`、`stretch` 等），image 为 `image/png` 缩略图（约 13 KB，最长边 ≤ 1024）；JSON 里另有 `image_base64`（见 6.5） | ≈0.2 s |
 
 > 峰值点靠近图像边缘，1024 切图是 `mode=partial`，图像外部分用 0 填充（预览中为黑边），这是正常现象。
 
@@ -287,6 +290,24 @@ BASE=$BASE SDKS=euclid EUCLID_URL=/home/scientist/project<项目ID>/Data/<图像
 ```
 对话里可以直接对智能体说：「把切图和预览图保存到科研空间 /home/scientist/project<项目ID>/ResearchSpace/euclid/」。
 
+### 6.5 不挂载项目存储时：缩略图通过 `image_base64` 回传，agent 自行写入科研空间
+
+若 021 不把项目存储挂进 MCP 容器（只能靠工具调用通信），或 021 客户端不显示 MCP 图片块，`euclid_write_preview` 的返回 JSON 里直接带缩略图：
+
+- `image_base64`：缩略图的 base64 文本；`image_base64_mime`（`image/png` 或 `image/jpeg`）、`image_base64_size_bytes` 说明它的格式和大小。`mime_type` / `size_bytes` / `preview_path` 仍描述服务端上那个预览文件。
+- 预览文件不大于 `EUCLID_PREVIEW_BASE64_TARGET_BYTES`（默认 30000 字节）时，`image_base64` 就是该文件本身；更大时（512×512 真实 VIS 切图的 PNG 约 300 KB）自动缩成 ≤ 320 px 的 JPEG 小图（约 20 KB，base64 约 26 KB），并在 `image_base64_note` 里说明。超过 `EUCLID_PREVIEW_BASE64_MAX_BYTES` 时不返回，改返回 `image_base64_omitted`。
+- 参数 `return_base64=false`（或 `EUCLID_PREVIEW_BASE64=0`）可关闭；MCP 图片内容块行为不变，base64 只是额外附带；HTTP `/invoke` 的结果里同样包含。
+- 这三个变量用 Helm 的 `extraEnv` 设置即可（默认值已适用于不挂载的场景，一般不用改）。
+- 这种部署下**不要传 `output_path`**（容器里没有 `/home/scientist`，会报 `output_path not writable … not mounted`，错误里会写明是“未挂载 / 只读文件系统 / 当前 uid 无写权限”哪一种，并提示改用 `image_base64`）。
+
+工具说明已经告诉 agent 怎么做：拿到 `image_base64` 后，用它自己在项目 Pod 里的 Bash 写进科研空间，例如：
+```bash
+mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpace/euclid/vis2686_A.jpg   # image_base64_mime 为 image/png 时存 .png
+# 或
+python3 -c "import base64,sys; open('ResearchSpace/euclid/vis2686_A.jpg','wb').write(base64.b64decode(sys.argv[1]))" '<image_base64>'
+```
+裁剪后的 FITS 在这种部署下只留在 MCP 容器内（不对外提供下载）；要把切图 FITS 本身放进科研空间，需要挂载读写存储后使用 `output_path`（6.4）。
+
 ## 7. 在 021 登记连接器（创建者：02xlab，平台托管）
 
 入口：「连接器 → 创建连接器 → 自部署 MCP（SSE）」，每个 SDK 建一条，共 6 条：
@@ -317,7 +338,7 @@ BASE=$BASE SDKS=euclid EUCLID_URL=/home/scientist/project<项目ID>/Data/<图像
 - **写入科研空间的风险（多租户）**：MCP 服务本身不知道“调用者是哪个用户/项目”，挂载读写后，**任何能调用这个 MCP 的人都可以往 `/home/scientist` 下任意项目目录写文件**（也能读任意项目的文件）。已有的限制：只能写 `.fits/.fit/.fits.gz/.png/.jpg/.jpeg`，不能覆盖已有文件（除非 `overwrite=true`），不能用 `..`/符号链接逃出根目录，不在根目录下直接写、不新建项目目录；但同名文件在 `overwrite=true` 时会被替换。建议：只让 021 服务端访问本服务并设置 `API_TOKEN`；能缩小范围时把 `euclid.writeRoots` 限定到具体目录（例如单个项目 `/home/scientist/project<项目ID>/ResearchSpace`）；不需要写入时设 `writeRoots: ""` 或只读挂载。
 - **并发**：all 模式下 6 个服务在一个进程里，工具调用在主线程同步执行，一次慢调用（Euclid 下载、Gaia 查询）会让其它请求排队，期间 `/health` 也会等待。并发高时可加副本（注意 emptyDir 缓存每个 Pod 各自一份；不同副本之间 `path` 不通用，见下条），或设 `allInOne: false` 每个 SDK 单独一个 Deployment。
 - **多副本与 Euclid**：工具链前后步骤之间传的是服务端路径（缓存/输出目录），所以 **Euclid 必须保证同一条链路落在同一个 Pod 上**：保持 1 个副本，或用 RWX 的 PVC 共享 `/data/euclid`。
-- **切图结果的返回方式**：`euclid_write_preview` 在 MCP 结果里内嵌 PNG/JPG 缩略图（图片内容块），021 对话里直接可见；`euclid_cutout2d` 返回 `fits_path` / `saved_path` 和统计信息。不传 `output_path` 时完整 FITS 留在 MCP 服务端，不对外提供下载；传 `output_path` 写到科研空间后，用户可在 021 里直接看到（6.4）。
+- **切图结果的返回方式**：`euclid_write_preview` 在 MCP 结果里内嵌 PNG/JPG 缩略图（图片内容块），客户端支持时对话里直接可见；同时 JSON 里带 `image_base64`，客户端丢弃图片块或不挂载项目存储时由 agent 自己保存（6.5）；`euclid_cutout2d` 返回 `fits_path` / `saved_path` 和统计信息。不传 `output_path` 时完整 FITS 留在 MCP 服务端，不对外提供下载；传 `output_path` 写到科研空间后，用户可在 021 里直接看到（6.4）。
 - **缓存清理**：`/data/euclid/cache` 与 `/data/euclid/cutouts` 不会自动清理；emptyDir 在 Pod 重建时清空，PVC 需要定期清理。
 - **样例数据说明**：`EUC_VIS_SWL-BKG-*` 是 VIS 背景（BKG）产品，切出来是平滑背景图，主要用于验证链路；真实科学用途请换成 VIS/NIR 科学图像或 MER 拼接图，并用星表 RA/DEC 而不是最亮像素。
 - **HTTPS**：021 等 MCP 客户端通常要求有效证书。若集群外 80/443 未转发到 Ingress，cert-manager HTTP-01 无法签发，可改用 DNS-01 或内部 CA。
