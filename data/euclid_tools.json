@@ -180,7 +180,7 @@
   {
     "name": "euclid_cutout2d",
     "target": "euclid_cutout.cutout2d",
-    "desc": "按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 1024）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。 默认写到 MCP 服务端 EUCLID_OUTPUT_DIR（021 科研空间看不到）；要保存到 021 科研空间，传 output_path=/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits。返回 saved_path（实际写入路径）、fits_path（同 saved_path，可直接传给 euclid_write_preview），在项目目录下时还返回 project_relpath（如 ResearchSpace/xxx.fits）。",
+    "desc": "Returns download_url; save it into the caller's research space with curl -k -o. Do not pass output_path unless the path is mounted in this server. 返回 download_url（预签名下载链接，限时，见 download_expires_at）、oss_key、size_bytes、download_hint（可直接执行的 curl 命令，用 GET；HEAD 会 403）：用 `curl -k -sS -o \"$PROJECT_DIR/ResearchSpace/euclid/<名称>.fits\" '<download_url>'` 把完整 FITS 存进自己的科研空间。若结果里没有 download_url（服务端未配置 OSS）或有 upload_error，则 FITS 只留在服务端 fits_path，可直接传给 euclid_write_preview。 按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 1024）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。 本地写入：默认写到 MCP 服务端 EUCLID_OUTPUT_DIR；仅当项目存储已读写挂载到服务端时才传 output_path=/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits。返回 saved_path（实际写入路径）、fits_path（同 saved_path，可直接传给 euclid_write_preview），在项目目录下时还返回 project_relpath（如 ResearchSpace/xxx.fits）。",
     "params": [
       {
         "name": "path",
@@ -216,7 +216,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（可选）保存位置。要保存到 021 科研空间：/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits（也可 .fit/.fits.gz）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <obj_id>.fits），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录（科研空间看不到）。"
+        "desc": "（通常不要传；仅当该路径已挂载到 MCP 服务端时才用）保存位置。要保存到 021 科研空间：/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits（也可 .fit/.fits.gz）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <obj_id>.fits），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录（科研空间看不到）。"
       },
       {
         "name": "obj_id",
@@ -251,7 +251,7 @@
   {
     "name": "euclid_write_preview",
     "target": "euclid_cutout.write_preview",
-    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。结果 JSON 里带 image_base64（缩略图的 base64，mime 见 image_base64_mime；图较大时自动缩成约 300px 的 JPEG 小图并在 image_base64_note 说明）；MCP 客户端支持时还会附带图片内容块（inline_image=false 可关闭）。【MCP 服务端无法写入你的项目（没有挂载项目存储）时】不要传 output_path：取 image_base64 自己存进你项目的科研空间，例如 Bash：mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpace/euclid/<名称>.jpg（image_base64_mime 为 image/png 则存 .png，为 image/jpeg 则存 .jpg），或用 python base64.b64decode 写文件。output_path 仅用于已把项目存储读写挂载到服务端的部署：传 /home/scientist/project<项目ID>/ResearchSpace/<名称>.png（或 .jpg），返回 saved_path / project_relpath。不传 output_path 时文件写在服务端 EUCLID_OUTPUT_DIR（你看不到）。",
+    "desc": "Returns download_url; save it into the caller's research space with curl -k -o. Do not pass output_path unless the path is mounted in this server. 返回 download_url（全分辨率 PNG/JPG 的预签名链接，限时，见 download_expires_at）、oss_key、size_bytes、download_hint：用 `curl -k -sS -o \"$PROJECT_DIR/ResearchSpace/euclid/<名称>.png\" '<download_url>'`（GET，HEAD 会 403）保存。服务端配置了 OSS 时默认不再返回 image_base64（EUCLID_PREVIEW_BASE64=auto）；没有 download_url 时才用 image_base64 自行保存（见下）。 把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。结果 JSON 里带 image_base64（缩略图的 base64，mime 见 image_base64_mime；图较大时自动缩成约 300px 的 JPEG 小图并在 image_base64_note 说明）；MCP 客户端支持时还会附带图片内容块（inline_image=false 可关闭）。【MCP 服务端无法写入你的项目（没有挂载项目存储）时】不要传 output_path：取 image_base64 自己存进你项目的科研空间，例如 Bash：mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpace/euclid/<名称>.jpg（image_base64_mime 为 image/png 则存 .png，为 image/jpeg 则存 .jpg），或用 python base64.b64decode 写文件。output_path 仅用于已把项目存储读写挂载到服务端的部署：传 /home/scientist/project<项目ID>/ResearchSpace/<名称>.png（或 .jpg），返回 saved_path / project_relpath。不传 output_path 时文件写在服务端 EUCLID_OUTPUT_DIR（你看不到）。",
     "params": [
       {
         "name": "fits_path",
@@ -263,7 +263,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（可选，仅当服务端已读写挂载项目存储时使用；没挂载就省略它，改用返回的 image_base64 自己保存）保存位置：/home/scientist/project<项目ID>/ResearchSpace/<名称>.png 或 .jpg/.jpeg（扩展名决定格式）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <FITS 文件名>.png），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录。"
+        "desc": "（通常不要传；仅当该路径已挂载到 MCP 服务端时才用）（可选，仅当服务端已读写挂载项目存储时使用；没挂载就省略它，改用返回的 image_base64 自己保存）保存位置：/home/scientist/project<项目ID>/ResearchSpace/<名称>.png 或 .jpg/.jpeg（扩展名决定格式）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <FITS 文件名>.png），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录。"
       },
       {
         "name": "hdu_index",
@@ -317,7 +317,7 @@
         "name": "return_base64",
         "type": "bool",
         "required": false,
-        "desc": "是否在 JSON 里返回 image_base64，默认 true（服务端环境变量 EUCLID_PREVIEW_BASE64 可改默认）"
+        "desc": "是否在 JSON 里返回 image_base64；默认由服务端 EUCLID_PREVIEW_BASE64 决定（auto：已上传 OSS 并有 download_url 时不返回，否则返回；on/off 强制）"
       }
     ],
     "domain": "Euclid裁剪",

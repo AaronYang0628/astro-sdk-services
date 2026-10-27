@@ -131,7 +131,8 @@ def cutout2d(
     else:
         stats = {"min": None, "max": None, "mean": None, "median": None, "nan_frac": 1.0}
 
-    return {
+    from .oss import upload_result
+    res = {
         "ok": True,
         "success": True,
         "source_path": path,
@@ -151,3 +152,6 @@ def cutout2d(
         if inside
         else "ra/dec project outside this HDU footprint — cutout may be empty/fill-valued",
     }
+    # optional: upload the FITS to OSS and return a presigned download_url (no-op unless EUCLID_OSS_* is configured)
+    res.update(upload_result(str(out), filename=out.name, content_type="application/fits"))
+    return res

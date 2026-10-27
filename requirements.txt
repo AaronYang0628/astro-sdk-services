@@ -11,3 +11,4 @@ photutils
 astroplan
 sunpy[map,net,timeseries]
 mcp>=1.20,<2
+oss2

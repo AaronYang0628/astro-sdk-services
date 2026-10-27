@@ -19,6 +19,17 @@ def _env_flag(name: str, default: bool) -> bool:
     return v not in ("0", "false", "no", "off")
 
 
+def _base64_default(uploaded: bool) -> bool:
+    """EUCLID_PREVIEW_BASE64: on / off / auto (default). auto = embed base64 unless the preview was uploaded to OSS
+    (then the download_url replaces it). Without OSS configured, auto behaves like on."""
+    v = (os.environ.get("EUCLID_PREVIEW_BASE64") or "").strip().lower()
+    if v in ("0", "false", "no", "off"):
+        return False
+    if v in ("1", "true", "yes", "on"):
+        return True
+    return not uploaded
+
+
 def _b64_cap() -> int:
     try:
         return int((os.environ.get("EUCLID_PREVIEW_BASE64_MAX_BYTES") or "").strip() or 300000)
@@ -154,7 +165,8 @@ def write_preview(
 
     return_base64: also return the PNG/JPG bytes as `image_base64` in the JSON result (for clients that drop MCP
     image blocks and for servers that cannot write into the caller's project: the caller decodes and saves it
-    itself). Default None -> env EUCLID_PREVIEW_BASE64 (default on). Skipped, with `image_base64_omitted`, when
+    itself). Default None -> env EUCLID_PREVIEW_BASE64: on | off | auto (default; = on, except omitted when the
+    preview was uploaded to OSS and a download_url is returned). Skipped, with `image_base64_omitted`, when
     the file exceeds EUCLID_PREVIEW_BASE64_MAX_BYTES (default 300000 raw bytes).
 
     output_path (optional): absolute file (.png/.jpg/.jpeg) or directory (ends with '/' or exists; default
@@ -241,8 +253,10 @@ def write_preview(
         "size_bytes": out.stat().st_size,
         "stretch": stretch_meta,
     }
+    from .oss import upload_result
+    res.update(upload_result(str(out), filename=out.name, content_type=mime))  # {} unless EUCLID_OSS_* configured
     if return_base64 is None:
-        return_base64 = _env_flag("EUCLID_PREVIEW_BASE64", True)
+        return_base64 = _base64_default(uploaded="download_url" in res)
     if return_base64:
         res.update(_base64_payload(out, mime))
     if inline_image:
