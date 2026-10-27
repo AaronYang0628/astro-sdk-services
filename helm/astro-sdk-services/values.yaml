@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # public; one image, SDK chosen via env (default all)
-  tag: "5d02628f5b642bb2e65effe1a60ebe138df2d33e"   # pinned commit SHA (also :latest)
+  tag: "9a1c0a0cf188f2782616f35301c300ca5001af0b"   # pinned commit SHA (also :latest)
   pullPolicy: IfNotPresent
 ingress:
   enabled: true
@@ -41,6 +41,12 @@ euclid:               # euclid FITS cutout: download cache + cutout/preview outp
     mountPath: /home/scientist     #   keep identical to the project pods' path
     readOnly: false                #   false (default since 0.2.5) = read-write, required for output_path into ResearchSpace;
                                    #   true = read-only (inputs only; output_path there then fails with "not writable")
+  oss:                             # optional result delivery through an OSS-compatible bucket (presigned download_url), see docs/DEPLOY.md 6.6
+    existingSecret: ""             #   name of a k8s Secret with keys: endpoint, bucket, accessKeyId, accessKeySecret (empty = feature off)
+    prefix: ""                     #   EUCLID_OSS_PREFIX (code default euclid-mcp/)
+    urlExpires: ""                 #   EUCLID_OSS_URL_EXPIRES seconds (code default 604800 = 7 days)
+    verifyTls: ""                  #   EUCLID_OSS_VERIFY_TLS: "true"/"false" (code default false: self-signed endpoint chains)
+    caBundle: ""                   #   EUCLID_OSS_CA_BUNDLE: CA file path inside the container (mount it via extraVolumes)
   storage:
     existingClaim: ""              # PVC name to keep cache/outputs across restarts; empty = emptyDir
     sizeLimit: 20Gi                # emptyDir size limit

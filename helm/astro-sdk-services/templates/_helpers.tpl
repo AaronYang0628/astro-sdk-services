@@ -29,6 +29,27 @@
 - {name: EUCLID_WRITE_ROOTS, value: {{ $mp | quote }}}
 {{- end }}
 {{- end }}
+{{- /* optional OSS result delivery: credentials come from an existing Secret (keys: endpoint, bucket, accessKeyId,
+       accessKeySecret); tuning values are plain. Nothing is rendered unless oss.existingSecret is set. */}}
+{{- $oss := .Values.euclid.oss | default dict }}
+{{- if $oss.existingSecret }}
+- {name: EUCLID_OSS_ENDPOINT, valueFrom: {secretKeyRef: {name: {{ $oss.existingSecret | quote }}, key: endpoint}}}
+- {name: EUCLID_OSS_BUCKET, valueFrom: {secretKeyRef: {name: {{ $oss.existingSecret | quote }}, key: bucket}}}
+- {name: EUCLID_OSS_ACCESS_KEY_ID, valueFrom: {secretKeyRef: {name: {{ $oss.existingSecret | quote }}, key: accessKeyId}}}
+- {name: EUCLID_OSS_ACCESS_KEY_SECRET, valueFrom: {secretKeyRef: {name: {{ $oss.existingSecret | quote }}, key: accessKeySecret}}}
+{{- with $oss.prefix }}
+- {name: EUCLID_OSS_PREFIX, value: {{ . | quote }}}
+{{- end }}
+{{- with $oss.urlExpires }}
+- {name: EUCLID_OSS_URL_EXPIRES, value: {{ . | quote }}}
+{{- end }}
+{{- with $oss.verifyTls }}
+- {name: EUCLID_OSS_VERIFY_TLS, value: {{ . | quote }}}
+{{- end }}
+{{- with $oss.caBundle }}
+- {name: EUCLID_OSS_CA_BUNDLE, value: {{ . | quote }}}
+{{- end }}
+{{- end }}
 {{- end }}
 {{/* "true" when a project-storage source (existingClaim / hostPath / nfs) is configured */}}
 {{- define "astro.projectStorageOn" -}}

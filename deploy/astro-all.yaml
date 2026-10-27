@@ -27,7 +27,7 @@ spec:
       # securityContext: {runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000}
       containers:
         - name: all
-          image: "ghcr.io/aaronyang0628/astro-sdk-services:5d02628f5b642bb2e65effe1a60ebe138df2d33e"
+          image: "ghcr.io/aaronyang0628/astro-sdk-services:9a1c0a0cf188f2782616f35301c300ca5001af0b"
           imagePullPolicy: IfNotPresent
           env:
             - {name: SDK, value: "all"}
@@ -38,6 +38,18 @@ spec:
             # so just uncomment the project-storage volumeMount + volume below (read-write). To disable:
             # - {name: EUCLID_INPUT_ROOTS, value: ""}   # no local inputs
             # - {name: EUCLID_WRITE_ROOTS, value: ""}   # no writes into project storage
+            # Result delivery through an OSS-compatible bucket (presigned download_url; docs/DEPLOY.md 6.6).
+            # Enabled only when ALL four of ENDPOINT/BUCKET/ACCESS_KEY_ID/ACCESS_KEY_SECRET are set. Create the Secret first:
+            #   kubectl create secret generic astro-euclid-oss --from-literal=endpoint=<oss-endpoint-host> \
+            #     --from-literal=bucket=<bucket> --from-literal=accessKeyId=<key-id> --from-literal=accessKeySecret=<key-secret>
+            # - {name: EUCLID_OSS_ENDPOINT, valueFrom: {secretKeyRef: {name: astro-euclid-oss, key: endpoint}}}
+            # - {name: EUCLID_OSS_BUCKET, valueFrom: {secretKeyRef: {name: astro-euclid-oss, key: bucket}}}
+            # - {name: EUCLID_OSS_ACCESS_KEY_ID, valueFrom: {secretKeyRef: {name: astro-euclid-oss, key: accessKeyId}}}
+            # - {name: EUCLID_OSS_ACCESS_KEY_SECRET, valueFrom: {secretKeyRef: {name: astro-euclid-oss, key: accessKeySecret}}}
+            # - {name: EUCLID_OSS_PREFIX, value: "euclid-mcp/"}      # default
+            # - {name: EUCLID_OSS_URL_EXPIRES, value: "604800"}      # default 7 days (seconds)
+            # - {name: EUCLID_OSS_VERIFY_TLS, value: "false"}        # default false (self-signed chain); "true" to verify
+            # - {name: EUCLID_OSS_CA_BUNDLE, value: "/etc/ssl/oss-ca.pem"}   # optional
           ports: [{containerPort: 8000}]
           volumeMounts:
             - {name: euclid-data, mountPath: /data/euclid}

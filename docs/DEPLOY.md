@@ -2,7 +2,7 @@
 
 **一个镜像 = 一个容器 = 6 个 MCP 服务**：astropy / astroquery / photutils / astroplan / sunpy / **euclid**。
 
-- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:5d02628f5b642bb2e65effe1a60ebe138df2d33e`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
+- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:9a1c0a0cf188f2782616f35301c300ca5001af0b`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
 - 容器端口 `8000`，默认 `SDK=all`：一个进程按路径同时提供 6 个服务 `/<sdk>/{health,tools,invoke,mcp}`
 - **默认不鉴权**（只有设置了非空 `API_TOKEN` 才要求 `Authorization: Bearer <token>`）
 - 部署完成后，在 021 平台登记 **6 个连接器**（每个 SDK 一个 MCP 地址 `https://<你的域名>/<sdk>/mcp`，传输方式 Streamable），见第 7 节
@@ -27,8 +27,8 @@
 | 项 | 值 |
 |---|---|
 | 镜像 | `ghcr.io/aaronyang0628/astro-sdk-services` |
-| 推荐 tag | `5d02628f5b642bb2e65effe1a60ebe138df2d33e`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
-| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 5d02628 && docker build -t astro-sdk-services:5d02628 .`，然后推到内部镜像仓库 |
+| 推荐 tag | `9a1c0a0cf188f2782616f35301c300ca5001af0b`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
+| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 9a1c0a0 && docker build -t astro-sdk-services:9a1c0a28 .`，然后推到内部镜像仓库 |
 | 端口 | `8000`（HTTP） |
 | 启动时间 | 约 10–20 秒（加载 6 个库）；空闲 RSS 约 350 MB |
 
@@ -43,9 +43,17 @@
 | `EUCLID_WRITE_ROOTS` | `/home/scientist`（不设置时） | **新增**。工具收到显式 `output_path` / `output_dir` 时允许写入的目录（绝对路径，`:` 或 `,` 分隔），用于把切图/预览直接写进 021 科研空间 `/home/scientist/project<项目ID>/ResearchSpace/`。**前提是项目存储以读写方式挂载**（见 6.3）。显式设为 `""` = 关闭外部写入（只能写 `EUCLID_OUTPUT_DIR`）。`EUCLID_OUTPUT_DIR` 始终可写。见 6.4 |
 | `EUCLID_MER_ROOT` | 空（可选） | 本地 Euclid MER 数据根目录，只有用本地 MER 工具时才需要 |
 | `EUCLID_TILE_INDEX` | 空（可选） | 本地 MER 的 TILE 索引 FITS |
-| `EUCLID_PREVIEW_BASE64` | `1` | **新增**。`euclid_write_preview` 是否在返回 JSON 里带 `image_base64`（缩略图的 base64）。`0` = 不带。调用参数 `return_base64` 优先于它。不挂载项目存储、或客户端不显示 MCP 图片块时靠它回传缩略图，见 6.5 |
+| `EUCLID_PREVIEW_BASE64` | `auto` | `euclid_write_preview` 是否在返回 JSON 里带 `image_base64`（缩略图的 base64）：`auto`（默认）= 带，但**已上传 OSS 并返回 `download_url` 时不带**；`on`/`1` = 总是带；`off`/`0` = 不带。调用参数 `return_base64` 优先于它。见 6.5 / 6.6 |
 | `EUCLID_PREVIEW_BASE64_TARGET_BYTES` | `30000` | **新增**。`image_base64` 的目标原始字节数：预览文件不超过它就原样放进去；超过就自动缩成最长边 ≤ 320 px 的 JPEG 小图再放（服务端文件不变）。智能体要把 base64 文本原样抄进命令里保存，所以要小；调大可得到更清晰的图 |
 | `EUCLID_PREVIEW_BASE64_MAX_BYTES` | `300000` | **新增**。`image_base64` 的硬上限（原始字节）；连最小的缩略图都超过它时不返回 `image_base64`，改返回 `image_base64_omitted` 说明原因 |
+| `EUCLID_OSS_ENDPOINT` | 空 | **新增（可选）**。OSS 兼容对象存储的 endpoint，例如 `https://<oss-endpoint-host>`（不写协议默认 https）。**四个必填项（ENDPOINT/BUCKET/ACCESS_KEY_ID/ACCESS_KEY_SECRET）全部设置才启用上传**，否则行为与以前完全一致。见 6.6 |
+| `EUCLID_OSS_BUCKET` | 空 | **新增（可选）**。bucket 名 `<bucket>` |
+| `EUCLID_OSS_ACCESS_KEY_ID` | 空 | **新增（可选）**。`<access-key-id>`，建议放 k8s Secret |
+| `EUCLID_OSS_ACCESS_KEY_SECRET` | 空 | **新增（可选）**。`<access-key-secret>`，建议放 k8s Secret，不要写进 values / 镜像 / 仓库 |
+| `EUCLID_OSS_PREFIX` | `euclid-mcp/` | 对象 key 前缀；实际 key 为 `<prefix><yyyymmdd>/<8 位随机>/<文件名>` |
+| `EUCLID_OSS_URL_EXPIRES` | `604800`（7 天，秒） | 预签名下载链接有效期（秒）。使用 OSS v1 签名，可以设得比 7 天更长 |
+| `EUCLID_OSS_VERIFY_TLS` | `false` | 访问 endpoint 时是否校验 TLS 证书。内网 OSS 常用自签证书链，所以默认不校验；设 `true` 则校验 |
+| `EUCLID_OSS_CA_BUNDLE` | 空 | 可选：CA 证书文件路径（容器内），设置后用它校验 endpoint 证书 |
 | `EUCLID_INLINE_IMAGE` | `1` | `0` = `euclid_write_preview` 不在 MCP 结果里内嵌缩略图 |
 | `MCP_MAX_INLINE_IMAGE_BYTES` | `2000000` | 内嵌图片大小上限，超过则不内嵌 |
 
@@ -70,20 +78,20 @@ Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/da
 docker run -d --name astro-sdk -p 8000:8000 \
   -e EUCLID_CACHE_DIR=/data/euclid/cache -e EUCLID_OUTPUT_DIR=/data/euclid/cutouts \
   -v /srv/astro-euclid:/data/euclid --memory 8g \
-  ghcr.io/aaronyang0628/astro-sdk-services:5d02628f5b642bb2e65effe1a60ebe138df2d33e
+  ghcr.io/aaronyang0628/astro-sdk-services:9a1c0a0cf188f2782616f35301c300ca5001af0b
 ```
 
 需要鉴权时加 `-e API_TOKEN=$(openssl rand -hex 24)`（不要把 token 写进仓库或公开配置）。需要代理时加 `-e HTTPS_PROXY=... -e NO_PROXY=...`。
 
 ## 4. Kubernetes：Helm（推荐）
 
-Chart 在仓库 `helm/astro-sdk-services`（0.2.6）。默认 `allInOne: true`：1 个 Deployment + 1 个 Service `astro-all`，1 个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 都转发过去。
+Chart 在仓库 `helm/astro-sdk-services`（0.2.7）。默认 `allInOne: true`：1 个 Deployment + 1 个 Service `astro-all`，1 个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 都转发过去。
 
 `my-values.yaml`（只需改域名、证书、存储）：
 ```yaml
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # 用内部仓库时改这里
-  tag: "5d02628f5b642bb2e65effe1a60ebe138df2d33e"
+  tag: "9a1c0a0cf188f2782616f35301c300ca5001af0b"
   pullPolicy: IfNotPresent
 allInOne: true
 services:              # 6 个 SDK，对应 Ingress 路径 /<name>
@@ -306,7 +314,64 @@ mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpa
 # 或
 python3 -c "import base64,sys; open('ResearchSpace/euclid/vis2686_A.jpg','wb').write(base64.b64decode(sys.argv[1]))" '<image_base64>'
 ```
-裁剪后的 FITS 在这种部署下只留在 MCP 容器内（不对外提供下载）；要把切图 FITS 本身放进科研空间，需要挂载读写存储后使用 `output_path`（6.4）。
+裁剪后的 FITS 在这种部署下默认只留在 MCP 容器内；要把切图 FITS 本身放进科研空间，请配置 OSS 结果投递（6.6，推荐），或挂载读写存储后使用 `output_path`（6.4）。配置了 OSS 且上传成功时，`EUCLID_PREVIEW_BASE64=auto` 不再返回 `image_base64`，改返回 `download_url`。
+
+### 6.6 结果投递：上传到 OSS，返回下载链接（推荐，不需要共享存储）
+
+021 把 MCP 放在独立容器里、不挂载项目存储时，工具写出的文件调用方（agent）看不到。配置一个 OSS 兼容的 bucket 后，MCP 服务端在 `euclid_cutout2d` / `euclid_write_preview` 写完文件后**自己把结果上传到 bucket，并返回带有效期的预签名下载链接**；agent 用 `curl` 把文件存进自己的科研空间。完整 FITS 也能拿到，不用再靠 base64 抄长字符串。
+
+**配置**（只需运维在 MCP 的容器环境变量里设置；变量名见第 1 节表格，值由 02xlab 提供，**不要写进镜像、仓库或 values 文件**）：
+
+| 变量 | 必填 | 说明 / 占位值 |
+|---|---|---|
+| `EUCLID_OSS_ENDPOINT` | 是 | `https://<oss-endpoint-host>` |
+| `EUCLID_OSS_BUCKET` | 是 | `<bucket>` |
+| `EUCLID_OSS_ACCESS_KEY_ID` | 是 | `<access-key-id>` |
+| `EUCLID_OSS_ACCESS_KEY_SECRET` | 是 | `<access-key-secret>` |
+| `EUCLID_OSS_PREFIX` | 否 | 默认 `euclid-mcp/` |
+| `EUCLID_OSS_URL_EXPIRES` | 否 | 默认 `604800`（7 天） |
+| `EUCLID_OSS_VERIFY_TLS` | 否 | 默认 `false`（自签证书链）；`true` 则校验 |
+| `EUCLID_OSS_CA_BUNDLE` | 否 | 自定义 CA 文件路径 |
+| `EUCLID_PREVIEW_BASE64` | 否 | 默认 `auto`：上传成功就不再返回 `image_base64` |
+
+四个必填项缺任何一个，上传就不启用，工具行为与以前完全相同。bucket 账号需要对 `<prefix>` 下有写入（PutObject）权限；链接是预签名 **GET**（HEAD 会返回 403，用 `curl` 默认的 GET 即可）。
+
+Helm：先建 Secret，再在 values 里引用（chart 0.2.7 起）：
+```bash
+kubectl -n astro-tools create secret generic astro-euclid-oss \
+  --from-literal=endpoint='https://<oss-endpoint-host>' --from-literal=bucket='<bucket>' \
+  --from-literal=accessKeyId='<access-key-id>' --from-literal=accessKeySecret='<access-key-secret>'
+```
+```yaml
+euclid:
+  oss:
+    existingSecret: astro-euclid-oss   # 空 = 不启用；Secret 的 key 固定为 endpoint / bucket / accessKeyId / accessKeySecret
+    # prefix: "euclid-mcp/"
+    # urlExpires: "604800"
+    # verifyTls: "false"
+    # caBundle: ""                     # CA 文件路径（用 extraVolumes 挂进容器）
+```
+不用 Helm 时见 `deploy/astro-all.yaml` 里注释掉的 `EUCLID_OSS_*` 条目。
+
+**返回字段**（`euclid_cutout2d` 返回切图 FITS，`euclid_write_preview` 返回全分辨率 PNG/JPG）：
+
+| 字段 | 说明 |
+|---|---|
+| `download_url` | 预签名 GET 链接 |
+| `download_expires_at` | 失效时间（ISO 8601，Asia/Shanghai，`+08:00`） |
+| `download_expires_in_seconds` | 有效期秒数 |
+| `oss_key` | 对象 key：`<prefix><yyyymmdd>/<8 位随机>/<文件名>` |
+| `size_bytes` | 文件大小 |
+| `download_hint` | 可直接执行的命令，例如 `mkdir -p "$PROJECT_DIR/ResearchSpace/euclid" && curl -k -sS -o "$PROJECT_DIR/ResearchSpace/euclid/<文件名>" '<download_url>'` |
+| `download_note` | 提醒：用 GET，不要 HEAD |
+| `upload_error` | 仅上传失败时出现（已截断、已去掉密钥）。**上传失败不会让工具失败**：本地路径字段（`fits_path`/`saved_path`/`preview_path`…）照常返回，`image_base64` 也照常返回 |
+
+agent 的用法：不传 `output_path`；先用 `pwd` 得到 `PROJECT_DIR`；拿到 `download_url` 后
+```bash
+mkdir -p "$PROJECT_DIR/ResearchSpace/euclid"
+curl -k -sS -o "$PROJECT_DIR/ResearchSpace/euclid/vis_peak.fits" '<download_url>'
+```
+（`-k` 对应默认不校验证书；设了 `EUCLID_OSS_VERIFY_TLS=true` 后 `download_hint` 里不再带 `-k`。）链接一过期就失效，需要时重新调用工具生成。MCP 的图片内容块（`inline_image`）不受影响。
 
 ## 7. 在 021 登记连接器（创建者：02xlab，平台托管）
 
@@ -338,7 +403,7 @@ python3 -c "import base64,sys; open('ResearchSpace/euclid/vis2686_A.jpg','wb').w
 - **写入科研空间的风险（多租户）**：MCP 服务本身不知道“调用者是哪个用户/项目”，挂载读写后，**任何能调用这个 MCP 的人都可以往 `/home/scientist` 下任意项目目录写文件**（也能读任意项目的文件）。已有的限制：只能写 `.fits/.fit/.fits.gz/.png/.jpg/.jpeg`，不能覆盖已有文件（除非 `overwrite=true`），不能用 `..`/符号链接逃出根目录，不在根目录下直接写、不新建项目目录；但同名文件在 `overwrite=true` 时会被替换。建议：只让 021 服务端访问本服务并设置 `API_TOKEN`；能缩小范围时把 `euclid.writeRoots` 限定到具体目录（例如单个项目 `/home/scientist/project<项目ID>/ResearchSpace`）；不需要写入时设 `writeRoots: ""` 或只读挂载。
 - **并发**：all 模式下 6 个服务在一个进程里，工具调用在主线程同步执行，一次慢调用（Euclid 下载、Gaia 查询）会让其它请求排队，期间 `/health` 也会等待。并发高时可加副本（注意 emptyDir 缓存每个 Pod 各自一份；不同副本之间 `path` 不通用，见下条），或设 `allInOne: false` 每个 SDK 单独一个 Deployment。
 - **多副本与 Euclid**：工具链前后步骤之间传的是服务端路径（缓存/输出目录），所以 **Euclid 必须保证同一条链路落在同一个 Pod 上**：保持 1 个副本，或用 RWX 的 PVC 共享 `/data/euclid`。
-- **切图结果的返回方式**：`euclid_write_preview` 在 MCP 结果里内嵌 PNG/JPG 缩略图（图片内容块），客户端支持时对话里直接可见；同时 JSON 里带 `image_base64`，客户端丢弃图片块或不挂载项目存储时由 agent 自己保存（6.5）；`euclid_cutout2d` 返回 `fits_path` / `saved_path` 和统计信息。不传 `output_path` 时完整 FITS 留在 MCP 服务端，不对外提供下载；传 `output_path` 写到科研空间后，用户可在 021 里直接看到（6.4）。
+- **切图结果的返回方式**：`euclid_write_preview` 在 MCP 结果里内嵌 PNG/JPG 缩略图（图片内容块），客户端支持时对话里直接可见；同时 JSON 里带 `image_base64`，客户端丢弃图片块或不挂载项目存储时由 agent 自己保存（6.5）；`euclid_cutout2d` 返回 `fits_path` / `saved_path` 和统计信息。不传 `output_path` 且未配置 OSS 时完整 FITS 留在 MCP 服务端；配置 OSS（6.6）后 `euclid_cutout2d` / `euclid_write_preview` 返回 `download_url`，agent 用 `curl -k -o` 存进科研空间；传 `output_path` 写到科研空间后，用户可在 021 里直接看到（6.4）。
 - **缓存清理**：`/data/euclid/cache` 与 `/data/euclid/cutouts` 不会自动清理；emptyDir 在 Pod 重建时清空，PVC 需要定期清理。
 - **样例数据说明**：`EUC_VIS_SWL-BKG-*` 是 VIS 背景（BKG）产品，切出来是平滑背景图，主要用于验证链路；真实科学用途请换成 VIS/NIR 科学图像或 MER 拼接图，并用星表 RA/DEC 而不是最亮像素。
 - **HTTPS**：021 等 MCP 客户端通常要求有效证书。若集群外 80/443 未转发到 Ingress，cert-manager HTTP-01 无法签发，可改用 DNS-01 或内部 CA。
