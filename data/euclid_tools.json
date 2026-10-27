@@ -251,7 +251,7 @@
   {
     "name": "euclid_write_preview",
     "target": "euclid_cutout.write_preview",
-    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。MCP 调用会把预览缩略图作为图片内容块直接返回，可直接展示给用户（inline_image=false 可关闭）；默认 PNG 写在 MCP 服务端 EUCLID_OUTPUT_DIR；要保存到 021 科研空间，传 output_path=/home/scientist/project<项目ID>/ResearchSpace/<名称>.png（或 .jpg）。返回 saved_path（实际写入路径），在项目目录下时还返回 project_relpath（如 ResearchSpace/xxx.png）。",
+    "desc": "把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。结果 JSON 里带 image_base64（缩略图的 base64，mime 见 image_base64_mime；图较大时自动缩成约 300px 的 JPEG 小图并在 image_base64_note 说明）；MCP 客户端支持时还会附带图片内容块（inline_image=false 可关闭）。【MCP 服务端无法写入你的项目（没有挂载项目存储）时】不要传 output_path：取 image_base64 自己存进你项目的科研空间，例如 Bash：mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpace/euclid/<名称>.jpg（image_base64_mime 为 image/png 则存 .png，为 image/jpeg 则存 .jpg），或用 python base64.b64decode 写文件。output_path 仅用于已把项目存储读写挂载到服务端的部署：传 /home/scientist/project<项目ID>/ResearchSpace/<名称>.png（或 .jpg），返回 saved_path / project_relpath。不传 output_path 时文件写在服务端 EUCLID_OUTPUT_DIR（你看不到）。",
     "params": [
       {
         "name": "fits_path",
@@ -263,7 +263,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（可选）保存位置。要保存到 021 科研空间：/home/scientist/project<项目ID>/ResearchSpace/<名称>.png 或 .jpg/.jpeg（扩展名决定格式）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <FITS 文件名>.png），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录（科研空间看不到）。"
+        "desc": "（可选，仅当服务端已读写挂载项目存储时使用；没挂载就省略它，改用返回的 image_base64 自己保存）保存位置：/home/scientist/project<项目ID>/ResearchSpace/<名称>.png 或 .jpg/.jpeg（扩展名决定格式）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <FITS 文件名>.png），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录。"
       },
       {
         "name": "hdu_index",
@@ -299,7 +299,7 @@
         "name": "max_side",
         "type": "int",
         "required": false,
-        "desc": "预览图最长边像素上限，默认 1024"
+        "desc": "预览文件最长边像素上限，默认 1024；image_base64 另有大小上限（超出会自动缩成小图）"
       },
       {
         "name": "inline_image",
@@ -312,6 +312,12 @@
         "type": "bool",
         "required": false,
         "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
+      },
+      {
+        "name": "return_base64",
+        "type": "bool",
+        "required": false,
+        "desc": "是否在 JSON 里返回 image_base64，默认 true（服务端环境变量 EUCLID_PREVIEW_BASE64 可改默认）"
       }
     ],
     "domain": "Euclid裁剪",

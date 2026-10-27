@@ -12,6 +12,62 @@ import os
 from .config import default_output_dir
 
 
+def _env_flag(name: str, default: bool) -> bool:
+    v = (os.environ.get(name) or "").strip().lower()
+    if not v:
+        return default
+    return v not in ("0", "false", "no", "off")
+
+
+def _b64_cap() -> int:
+    try:
+        return int((os.environ.get("EUCLID_PREVIEW_BASE64_MAX_BYTES") or "").strip() or 300000)
+    except ValueError:
+        return 300000
+
+
+def _b64_target() -> int:
+    """Preferred raw size of the embedded image (LLM agents must copy the base64 text out, so keep it small)."""
+    try:
+        return int((os.environ.get("EUCLID_PREVIEW_BASE64_TARGET_BYTES") or "").strip() or 30000)
+    except ValueError:
+        return 30000
+
+
+def _base64_payload(out: Path, mime: str) -> dict:
+    """image_base64 for a written preview. The file itself when it is <= EUCLID_PREVIEW_BASE64_TARGET_BYTES
+    (default 30000); otherwise a downscaled JPEG thumbnail of it that fits the target (the file on the server is
+    unchanged). Never more than EUCLID_PREVIEW_BASE64_MAX_BYTES (default 300000) raw bytes: if even the smallest
+    thumbnail would exceed that, the field is omitted and image_base64_omitted says why."""
+    import base64
+    import io
+    cap = _b64_cap()
+    target = min(_b64_target(), cap)
+    size = out.stat().st_size
+    if size <= target:
+        return {"image_base64": base64.b64encode(out.read_bytes()).decode("ascii"),
+                "image_base64_mime": mime, "image_base64_size_bytes": size}
+    from PIL import Image
+    best = None
+    with Image.open(out) as im:
+        im = im.convert("RGB")
+        for side in (320, 256, 192, 128, 96, 64):
+            t = im.copy()
+            t.thumbnail((side, side), Image.LANCZOS)
+            buf = io.BytesIO()
+            t.save(buf, format="JPEG", quality=70, optimize=True)
+            best = (buf.getvalue(), t.size)
+            if len(best[0]) <= target:
+                break
+    data, (w, h) = best
+    if len(data) > cap:
+        return {"image_base64_omitted": f"too large ({len(data)} bytes > cap {cap}); lower max_side"}
+    return {"image_base64": base64.b64encode(data).decode("ascii"), "image_base64_mime": "image/jpeg",
+            "image_base64_size_bytes": len(data),
+            "image_base64_note": f"downscaled {w}x{h} JPEG thumbnail of the preview (the preview file is {size} bytes); "
+                                 "set EUCLID_PREVIEW_BASE64_TARGET_BYTES higher on the server for the full file"}
+
+
 def _valid_mask(arr: np.ndarray) -> np.ndarray:
     """Finite pixels; drop exact-zero pad when it dominates a high-floor image.
 
@@ -85,6 +141,7 @@ def write_preview(
     max_side: int = 1024,
     inline_image: Optional[bool] = None,
     overwrite: bool = False,
+    return_base64: Optional[bool] = None,
 ) -> dict:
     """Write a quicklook PNG or JPG from an image FITS (cutout or full).
 
@@ -94,6 +151,11 @@ def write_preview(
     The PNG/JPG is capped at `max_side` pixels (default 1024). Over MCP the image is also
     returned inline as an image content block unless inline_image=False (or env
     EUCLID_INLINE_IMAGE=0).
+
+    return_base64: also return the PNG/JPG bytes as `image_base64` in the JSON result (for clients that drop MCP
+    image blocks and for servers that cannot write into the caller's project: the caller decodes and saves it
+    itself). Default None -> env EUCLID_PREVIEW_BASE64 (default on). Skipped, with `image_base64_omitted`, when
+    the file exceeds EUCLID_PREVIEW_BASE64_MAX_BYTES (default 300000 raw bytes).
 
     output_path (optional): absolute file (.png/.jpg/.jpeg) or directory (ends with '/' or exists; default
     name <fits stem>.<format>) under EUCLID_WRITE_ROOTS (default /home/scientist, e.g. a 021 project's
@@ -179,6 +241,10 @@ def write_preview(
         "size_bytes": out.stat().st_size,
         "stretch": stretch_meta,
     }
+    if return_base64 is None:
+        return_base64 = _env_flag("EUCLID_PREVIEW_BASE64", True)
+    if return_base64:
+        res.update(_base64_payload(out, mime))
     if inline_image:
         res["_mcp_images"] = [{"path": str(out), "mimeType": mime}]  # MCP layer -> image content block
     return res

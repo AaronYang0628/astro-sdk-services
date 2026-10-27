@@ -153,11 +153,45 @@ def write_roots() -> list[Path]:
     return out
 
 
-def _not_writable(raw: str) -> PermissionError:
-    return PermissionError(
-        f"output_path not writable on MCP server: {raw} (project storage must be mounted read-write at "
-        "/home/scientist; see DEPLOY.md)"
-    )
+_NO_WRITE_HINT = "Fix: omit output_path; use image_base64 (euclid_write_preview) and save it from your own environment."
+
+
+def _diagnose_not_writable(raw: str, cause: BaseException | None = None) -> str:
+    """Say WHY a write failed: write root absent (= not mounted), read-only filesystem, or no permission for this uid."""
+    import errno
+    p = Path(os.path.abspath(str(raw)))
+    root = None
+    for r in write_roots():
+        # compare lexically and by realpath (write_roots() are realpaths)
+        if _inside(p, r) or _inside(Path(os.path.realpath(_nearest_existing(p))) / p.relative_to(_nearest_existing(p)), r):
+            root = r
+            break
+    if root is None:
+        root = write_roots()[0] if write_roots() else None
+    if root is not None and not root.is_dir():
+        return (f"write root {root} does not exist in the MCP container, i.e. project storage is not mounted "
+                f"(needs a read-write mount at {root})")
+    anc = _nearest_existing(p)
+    ro = isinstance(cause, OSError) and getattr(cause, "errno", None) == errno.EROFS
+    if not ro:
+        try:
+            ro = bool(os.statvfs(anc).f_flag & os.ST_RDONLY)
+        except OSError:
+            pass
+    if ro:
+        return (f"{anc} is on a read-only filesystem (project storage must be mounted read-write at "
+                f"{root or '/home/scientist'})")
+    try:
+        st = os.stat(anc)
+        owner = f"; {anc} is owned by uid={st.st_uid} gid={st.st_gid} mode={oct(st.st_mode & 0o7777)}"
+    except OSError:
+        owner = ""
+    return (f"no write permission for the MCP server process (uid={os.getuid()} gid={os.getgid()}) on {anc}{owner} "
+            f"(project storage must be mounted read-write and writable by this uid; see DEPLOY.md securityContext)")
+
+
+def _not_writable(raw: str, cause: BaseException | None = None) -> PermissionError:
+    return PermissionError(f"output_path not writable on MCP server: {raw} - {_diagnose_not_writable(raw, cause)}. {_NO_WRITE_HINT}")
 
 
 def _ext(name: str) -> str:
@@ -240,7 +274,7 @@ def resolve_output_dir(raw: str, *, create: bool = True) -> Path:
         except OSError as e:
             if is_out:
                 raise
-            raise _not_writable(raw) from e
+            raise _not_writable(raw, e) from e
         # re-check after creation (race / symlink swapped in)
         real = Path(os.path.realpath(target))
         if not _inside(real, root):
@@ -308,13 +342,13 @@ def atomic_write(target: Path, writer, *, overwrite: bool = False, external: boo
     except PermissionError as e:
         _cleanup(tmp)
         if external:
-            raise _not_writable(str(target)) from e
+            raise _not_writable(str(target), e) from e
         raise
     except OSError as e:
         _cleanup(tmp)
         import errno
         if external and e.errno in (errno.EROFS, errno.EACCES, errno.EPERM):
-            raise _not_writable(str(target)) from e
+            raise _not_writable(str(target), e) from e
         raise
     except BaseException:
         _cleanup(tmp)

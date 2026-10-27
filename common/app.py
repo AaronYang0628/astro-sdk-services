@@ -52,7 +52,7 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
         except BaseException as e:  # noqa
             if isinstance(e, KeyboardInterrupt):
                 raise
-            return {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:500]}", "elapsed_s": round(time.time() - t0, 3)}
+            return {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:900]}", "elapsed_s": round(time.time() - t0, 3)}
     async def outer(scope, receive, send):
         # Pure ASGI wrapper: prefix strip (Ingress may forward /<sdk>/... unchanged), bearer auth, /mcp routing.
         if scope["type"] != "http":

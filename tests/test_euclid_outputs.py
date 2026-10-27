@@ -151,7 +151,7 @@ def library():
         else:
             for out in (ro / "ResearchSpace" / "x.png", ro / "ResearchSpace" / "new" / "x.png"):
                 e = _raises(lambda: ec.write_preview(c["fits_path"], output_path=str(out)), PermissionError,
-                            "output_path not writable on MCP server", "mounted read-write at /home/scientist", "DEPLOY.md")
+                            "output_path not writable on MCP server", "no write permission", "read-write", "image_base64")
             e2 = _raises(lambda: ec.cutout2d(str(img), ra, dec, output_path=str(ro / "ResearchSpace") + "/"), PermissionError, "not writable")
     finally:
         os.chmod(ro, 0o755); os.chmod(ro / "ResearchSpace", 0o755)

@@ -97,7 +97,7 @@ def build(sdk, tools, timeout):
             except BaseException as e:  # noqa
                 if isinstance(e, KeyboardInterrupt):
                     raise
-                out = {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:500]}", "elapsed_s": round(time.time() - t0, 3)}
+                out = {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:900]}", "elapsed_s": round(time.time() - t0, 3)}
         content = [types.TextContent(type="text", text=json.dumps(out, ensure_ascii=False))]
         if out["ok"] and images:
             content += image_blocks(images)
