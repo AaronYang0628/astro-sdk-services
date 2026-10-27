@@ -2,7 +2,7 @@
   {
     "name": "euclid_get_config",
     "target": "euclid_cutout.get_config",
-    "desc": "查看 EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR / EUCLID_MER_ROOT / EUCLID_TILE_INDEX 等路径是否就绪。",
+    "desc": "查看 EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR / EUCLID_MER_ROOT / EUCLID_TILE_INDEX 等路径是否就绪，并返回 oss_configured（是否已配置 OSS 结果投递，只报 true/false，不含任何配置值）。",
     "params": [],
     "domain": "Euclid裁剪",
     "cn": "查看配置",
@@ -11,13 +11,13 @@
   {
     "name": "euclid_fetch_fits",
     "target": "euclid_cutout.fetch_fits",
-    "desc": "准备 FITS 输入，返回后续工具使用的 path。输入二选一：(1) 021 项目文件的绝对路径，如 /home/scientist/project<项目ID>/Data/xxx.fits（用户上传到项目 Data/ 的文件；服务端只读挂载，原地读取不复制，必须在服务端 EUCLID_INPUT_ROOTS 允许的目录内（未设置时默认 /home/scientist），也接受 file://）；(2) http(s) FITS URL（公开链接或带签名参数的临时 OSS 地址，原样完整传入）。多 GB 的远程文件请设 max_bytes（如 25000000）只取前缀。按文件内容（SIMPLE 头）识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。注意：只有含 2D 图像 HDU 的 FITS 才能切图；MOC/星表类 FITS（只有表格 HDU）会报 no image HDU。",
+    "desc": "输入 http(s) FITS 链接（公开链接，或 021 为上传文件生成的带签名临时 OSS 链接，原样完整传入），返回后续工具使用的服务端 path。本地路径（/home/scientist/...）只有在项目存储已挂载到本服务时才可用；021 默认不挂载，请不要传项目路径。多 GB 的远程文件请设 max_bytes（如 25000000）只取前缀。按文件内容识别 FITS，支持 .fits/.fit/.fts/.fz 及无扩展名。注意：只有含 2D 图像 HDU 的 FITS 才能切图；MOC/星表类 FITS（只有表格 HDU）会报 no image HDU。",
     "params": [
       {
         "name": "url",
         "type": "str",
         "required": true,
-        "desc": "项目文件绝对路径（/home/scientist/project<项目ID>/Data/xxx.fits）或 http(s) FITS URL"
+        "desc": "http(s) FITS 链接（公开链接，或 021 带签名的临时 OSS 链接，原样完整传入）；不要传项目路径"
       },
       {
         "name": "force",
@@ -52,7 +52,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
+        "desc": "euclid_fetch_fits 返回的 path（服务端路径，原样传入）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -68,7 +68,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
+        "desc": "euclid_fetch_fits 返回的 path（服务端路径，原样传入）"
       },
       {
         "name": "hdu_index",
@@ -90,7 +90,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
+        "desc": "euclid_fetch_fits 返回的 path（服务端路径，原样传入）"
       },
       {
         "name": "ra",
@@ -124,7 +124,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
+        "desc": "euclid_fetch_fits 返回的 path（服务端路径，原样传入）"
       },
       {
         "name": "hdu_index",
@@ -152,7 +152,7 @@
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
+        "desc": "euclid_fetch_fits 返回的 path（服务端路径，原样传入）"
       },
       {
         "name": "x",
@@ -180,13 +180,13 @@
   {
     "name": "euclid_cutout2d",
     "target": "euclid_cutout.cutout2d",
-    "desc": "Returns download_url; save it into the caller's research space with curl -k -o. Do not pass output_path unless the path is mounted in this server. 返回 download_url（预签名下载链接，限时，见 download_expires_at）、oss_key、size_bytes、download_hint（可直接执行的 curl 命令，用 GET；HEAD 会 403）：用 `curl -k -sS -o \"$PROJECT_DIR/ResearchSpace/euclid/<名称>.fits\" '<download_url>'` 把完整 FITS 存进自己的科研空间。若结果里没有 download_url（服务端未配置 OSS）或有 upload_error，则 FITS 只留在服务端 fits_path，可直接传给 euclid_write_preview。 按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致：WCS(header)+SkyCoord+像素 size，默认 1024）。不要传 fov_center。写出 PrimaryHDU 裁剪 FITS。 本地写入：默认写到 MCP 服务端 EUCLID_OUTPUT_DIR；仅当项目存储已读写挂载到服务端时才传 output_path=/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits。返回 saved_path（实际写入路径）、fits_path（同 saved_path，可直接传给 euclid_write_preview），在项目目录下时还返回 project_relpath（如 ResearchSpace/xxx.fits）。",
+    "desc": "切图后返回 download_url（7 天有效的签名链接）；用 Bash `curl -k -sS -o \"$PROJECT_DIR/ResearchSpace/euclid/<名称>.fits\" '<download_url>'` 保存（GET，HEAD 会 403）。不要传 output_path。结果另含 fits_path（服务端路径，原样传给 euclid_write_preview）、download_expires_at、oss_key、size_bytes、download_hint（可直接执行的命令）。若没有 download_url 或有 upload_error，FITS 只留在服务端，仍可用 fits_path 做预览。按天体源 (ra,dec 度) 做 Cutout2D（与 Euclid-Image-Cutout-Service.cutout_image 一致）：ra/dec 是源坐标（来自星表或 euclid_find_peak_sky），不是 fov_center；size 为边长像素，默认 1024。",
     "params": [
       {
         "name": "path",
         "type": "str",
         "required": true,
-        "desc": "euclid_fetch_fits 返回的 path（项目文件路径或服务端缓存路径）"
+        "desc": "euclid_fetch_fits 返回的 path（服务端路径，原样传入）"
       },
       {
         "name": "ra",
@@ -216,7 +216,7 @@
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（通常不要传；仅当该路径已挂载到 MCP 服务端时才用）保存位置。要保存到 021 科研空间：/home/scientist/project<项目ID>/ResearchSpace/<名称>.fits（也可 .fit/.fits.gz）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <obj_id>.fits），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录（科研空间看不到）。"
+        "desc": "不要传。仅当服务端挂载了该路径时可用；021 未挂载。"
       },
       {
         "name": "obj_id",
@@ -240,7 +240,7 @@
         "name": "overwrite",
         "type": "bool",
         "required": false,
-        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
+        "desc": "仅在传了 output_path 时生效：同名文件已存在时是否覆盖，默认 false（自动加 _1、_2… 后缀）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -251,19 +251,19 @@
   {
     "name": "euclid_write_preview",
     "target": "euclid_cutout.write_preview",
-    "desc": "Returns download_url; save it into the caller's research space with curl -k -o. Do not pass output_path unless the path is mounted in this server. 返回 download_url（全分辨率 PNG/JPG 的预签名链接，限时，见 download_expires_at）、oss_key、size_bytes、download_hint：用 `curl -k -sS -o \"$PROJECT_DIR/ResearchSpace/euclid/<名称>.png\" '<download_url>'`（GET，HEAD 会 403）保存。服务端配置了 OSS 时默认不再返回 image_base64（EUCLID_PREVIEW_BASE64=auto）；没有 download_url 时才用 image_base64 自行保存（见下）。 把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf；忽略 partial cutout 的零填充；默认 1–99 百分位 + asinh。结果 JSON 里带 image_base64（缩略图的 base64，mime 见 image_base64_mime；图较大时自动缩成约 300px 的 JPEG 小图并在 image_base64_note 说明）；MCP 客户端支持时还会附带图片内容块（inline_image=false 可关闭）。【MCP 服务端无法写入你的项目（没有挂载项目存储）时】不要传 output_path：取 image_base64 自己存进你项目的科研空间，例如 Bash：mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpace/euclid/<名称>.jpg（image_base64_mime 为 image/png 则存 .png，为 image/jpeg 则存 .jpg），或用 python base64.b64decode 写文件。output_path 仅用于已把项目存储读写挂载到服务端的部署：传 /home/scientist/project<项目ID>/ResearchSpace/<名称>.png（或 .jpg），返回 saved_path / project_relpath。不传 output_path 时文件写在服务端 EUCLID_OUTPUT_DIR（你看不到）。",
+    "desc": "预览后返回 download_url（全分辨率 PNG/JPG 的 7 天有效签名链接）；用 Bash `curl -k -sS -o \"$PROJECT_DIR/ResearchSpace/euclid/<名称>.png\" '<download_url>'` 保存（GET，HEAD 会 403）。不要传 output_path。结果另含 download_expires_at、oss_key、size_bytes、download_hint。只有没有 download_url（未配置 OSS 或上传失败）时才返回 image_base64，此时自行解码保存：mkdir -p ResearchSpace/euclid && echo '<image_base64>' | base64 -d > ResearchSpace/euclid/<名称>.jpg（image_base64_mime 为 image/png 存 .png，为 image/jpeg 存 .jpg）。把裁剪（或任意）图像 FITS 写成 quicklook PNG/JPG（最长边 ≤ max_side，默认 1024）。拉伸：忽略 NaN/inf 和 partial cutout 的零填充；默认 1–99 百分位 + asinh。MCP 客户端支持时还会附带缩略图内容块（inline_image=false 可关闭）。",
     "params": [
       {
         "name": "fits_path",
         "type": "str",
         "required": true,
-        "desc": "euclid_cutout2d 返回的 fits_path"
+        "desc": "euclid_cutout2d 返回的 fits_path（服务端路径，原样传入）"
       },
       {
         "name": "output_path",
         "type": "str",
         "required": false,
-        "desc": "（通常不要传；仅当该路径已挂载到 MCP 服务端时才用）（可选，仅当服务端已读写挂载项目存储时使用；没挂载就省略它，改用返回的 image_base64 自己保存）保存位置：/home/scientist/project<项目ID>/ResearchSpace/<名称>.png 或 .jpg/.jpeg（扩展名决定格式）；也可给目录（以 / 结尾或已存在的目录，文件名默认 <FITS 文件名>.png），不存在的子目录会自动创建（项目目录本身须已存在）。只允许服务端 EUCLID_WRITE_ROOTS（默认 /home/scientist）或 EUCLID_OUTPUT_DIR 内的绝对路径；不允许 ..。省略则写到服务端默认目录。"
+        "desc": "不要传。仅当服务端挂载了该路径时可用；021 未挂载。"
       },
       {
         "name": "hdu_index",
@@ -299,7 +299,7 @@
         "name": "max_side",
         "type": "int",
         "required": false,
-        "desc": "预览文件最长边像素上限，默认 1024；image_base64 另有大小上限（超出会自动缩成小图）"
+        "desc": "预览文件最长边像素上限，默认 1024；image_base64（仅无 download_url 时返回）另有大小上限，超出会自动缩成小图"
       },
       {
         "name": "inline_image",
@@ -311,13 +311,13 @@
         "name": "overwrite",
         "type": "bool",
         "required": false,
-        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
+        "desc": "仅在传了 output_path 时生效：同名文件已存在时是否覆盖，默认 false（自动加 _1、_2… 后缀）"
       },
       {
         "name": "return_base64",
         "type": "bool",
         "required": false,
-        "desc": "是否在 JSON 里返回 image_base64；默认由服务端 EUCLID_PREVIEW_BASE64 决定（auto：已上传 OSS 并有 download_url 时不返回，否则返回；on/off 强制）"
+        "desc": "是否在 JSON 里返回 image_base64；默认由服务端 EUCLID_PREVIEW_BASE64 决定（auto：有 download_url 时不返回，否则返回；on/off 强制）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -327,13 +327,13 @@
   {
     "name": "euclid_validate_catalog",
     "target": "euclid_cutout.validate_catalog",
-    "desc": "校验本地星表（FITS/CSV）RA/DEC 列（本地 MER 批处理用）。",
+    "desc": "仅本地 MER 数据部署可用（需 EUCLID_MER_ROOT/EUCLID_TILE_INDEX）；021 上请用 fetch_fits→cutout2d→write_preview。校验本地星表（FITS/CSV）RA/DEC 列（本地 MER 批处理用）。",
     "params": [
       {
         "name": "catalog_path",
         "type": "str",
         "required": true,
-        "desc": "星表文件的服务端 path（先用 euclid_fetch_fits 下载 FITS 星表；或服务端 MER 目录内的星表）"
+        "desc": "星表文件的服务端 path（服务端 MER 目录内的星表，或 euclid_fetch_fits 返回的 path）"
       },
       {
         "name": "ra_col",
@@ -367,7 +367,7 @@
   {
     "name": "euclid_query_tile_id",
     "target": "euclid_cutout.query_tile_id",
-    "desc": "本地 MER：坐标 → TILE_ID（需 EUCLID_TILE_INDEX）。",
+    "desc": "仅本地 MER 数据部署可用（需 EUCLID_MER_ROOT/EUCLID_TILE_INDEX）；021 上请用 fetch_fits→cutout2d→write_preview。坐标 → TILE_ID（需 EUCLID_TILE_INDEX）。",
     "params": [
       {
         "name": "ra",
@@ -401,7 +401,7 @@
   {
     "name": "euclid_locate_products",
     "target": "euclid_cutout.locate_products",
-    "desc": "本地 MER：按 TILE/产品类型定位 EUC_MER_* FITS 路径（需 EUCLID_MER_ROOT）。",
+    "desc": "仅本地 MER 数据部署可用（需 EUCLID_MER_ROOT/EUCLID_TILE_INDEX）；021 上请用 fetch_fits→cutout2d→write_preview。按 TILE/产品类型定位 EUC_MER_* FITS 路径（需 EUCLID_MER_ROOT）。",
     "params": [
       {
         "name": "tile_id",
@@ -441,7 +441,7 @@
   {
     "name": "euclid_cutout_single",
     "target": "euclid_cutout.cutout_single",
-    "desc": "本地 MER 便捷封装：查 TILE→定位→Cutout2D→写 FITS。URL 场景请改用 fetch_fits→cutout2d→write_preview 细粒度链。",
+    "desc": "仅本地 MER 数据部署可用（需 EUCLID_MER_ROOT/EUCLID_TILE_INDEX）；021 上请用 fetch_fits→cutout2d→write_preview。本地 MER 便捷封装：查 TILE→定位→Cutout2D→写 FITS。",
     "params": [
       {
         "name": "ra",
@@ -489,7 +489,7 @@
         "name": "output_dir",
         "type": "str",
         "required": false,
-        "desc": "（可选）输出目录：省略=服务端 EUCLID_OUTPUT_DIR；相对路径=其下子目录；绝对路径须在 EUCLID_WRITE_ROOTS（默认 /home/scientist）内，例如 /home/scientist/project<项目ID>/ResearchSpace/cutouts/ 即保存到 021 科研空间。文件写到 <output_dir>/<file_type>/<obj_id>.fits，返回的 files[].saved_path / project_relpath 为实际路径"
+        "desc": "（可选）服务端输出目录：省略=服务端 EUCLID_OUTPUT_DIR；相对路径=其下子目录。文件写到 <output_dir>/<file_type>/<obj_id>.fits，返回的 files[].saved_path 为实际路径（调用方看不到服务端文件）"
       },
       {
         "name": "mer_root",
@@ -513,7 +513,7 @@
         "name": "overwrite",
         "type": "bool",
         "required": false,
-        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
+        "desc": "仅在传了 output_dir 时生效：同名文件已存在时是否覆盖，默认 false（自动加 _1、_2… 后缀）"
       }
     ],
     "domain": "Euclid裁剪",
@@ -524,13 +524,13 @@
   {
     "name": "euclid_cutout_batch",
     "target": "euclid_cutout.cutout_batch",
-    "desc": "本地 MER 星表批量裁剪（默认最多 50 源）。",
+    "desc": "仅本地 MER 数据部署可用（需 EUCLID_MER_ROOT/EUCLID_TILE_INDEX）；021 上请用 fetch_fits→cutout2d→write_preview。本地 MER 星表批量裁剪（默认最多 50 源）。",
     "params": [
       {
         "name": "catalog_path",
         "type": "str",
         "required": true,
-        "desc": "星表文件的服务端 path（先用 euclid_fetch_fits 下载 FITS 星表；或服务端 MER 目录内的星表）"
+        "desc": "星表文件的服务端 path（服务端 MER 目录内的星表，或 euclid_fetch_fits 返回的 path）"
       },
       {
         "name": "size",
@@ -578,7 +578,7 @@
         "name": "output_dir",
         "type": "str",
         "required": false,
-        "desc": "（可选）输出目录：省略=服务端 EUCLID_OUTPUT_DIR；相对路径=其下子目录；绝对路径须在 EUCLID_WRITE_ROOTS（默认 /home/scientist）内，例如 /home/scientist/project<项目ID>/ResearchSpace/cutouts/ 即保存到 021 科研空间。文件写到 <output_dir>/<file_type>/<obj_id>.fits，返回的 files[].saved_path / project_relpath 为实际路径"
+        "desc": "（可选）服务端输出目录：省略=服务端 EUCLID_OUTPUT_DIR；相对路径=其下子目录。文件写到 <output_dir>/<file_type>/<obj_id>.fits，返回的 files[].saved_path 为实际路径（调用方看不到服务端文件）"
       },
       {
         "name": "mer_root",
@@ -608,7 +608,7 @@
         "name": "overwrite",
         "type": "bool",
         "required": false,
-        "desc": "（可选）仅在指定 output_path/output_dir 时生效：同名文件已存在时是否覆盖，默认 false（不覆盖，自动加 _1、_2… 后缀，实际路径见返回的 saved_path）"
+        "desc": "仅在传了 output_dir 时生效：同名文件已存在时是否覆盖，默认 false（自动加 _1、_2… 后缀）"
       }
     ],
     "domain": "Euclid裁剪",

@@ -66,7 +66,7 @@ Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/da
 | CPU | requests 200m，limits 2 | 工具都是单线程计算 |
 | 内存 | requests 1Gi，limits **8Gi** | all 模式 `MEM_LIMIT_GB=8`；Euclid 用 memmap 读 FITS，实测单次切图 RSS 不到 0.5 GB，8Gi 是给大图/多 HDU 的余量 |
 | 磁盘 | `/data/euclid` 卷 **≥ 20Gi**（emptyDir 或 PVC） | 按推荐用法（`max_bytes=25000000`）每个远程 FITS 只缓存约 25 MB；若不传 `max_bytes` 会下载完整文件（CASDC VIS 样例为 2.44 GB）。缓存不会自动清理，长期运行建议用 PVC 并定期清理 |
-| 项目文件 | 021 用户上传的 FITS 在项目 Pod 的 `/home/scientist/project<项目ID>/Data/` 下（下载需登录，没有可用的 URL）；写到 `ResearchSpace/` 的文件会出现在 021 的「科研空间」。要让 MCP 直接读项目文件、并把切图写进科研空间，需把同一份存储**读写**挂到本服务 Pod 的 `/home/scientist`，见 **6.3** | 不挂载时只能用 http(s) URL 作为输入，切图只留在 MCP 容器内 |
+| 项目文件 | 021 默认**不**把项目存储挂进 MCP 容器，所以智能体不要传 `/home/scientist/...` 项目路径；输入用 http(s) 链接（公开链接，或 021 为上传文件生成的带签名临时 OSS 链接，原样完整传入），结果用 OSS 投递返回 `download_url`（6.6），由智能体存进科研空间。只有把项目存储**读写**挂到本服务 Pod 的 `/home/scientist` 时，项目路径和 `output_path` 才可用，见 **6.3** | 不挂载时项目路径不可用；没配 OSS 时切图只留在 MCP 容器内 |
 | 出网 | 必须能访问 `casdc.china-vo.org:443`（Euclid 样例数据）以及用户给出的其它 FITS 链接所在域名；astroquery 需访问 SIMBAD/VizieR（`simbad.cds.unistra.fr`、`vizier.cds.unistra.fr`）、Gaia（`gea.esac.esa.int`）、NASA（`exoplanetarchive.ipac.caltech.edu`、`irsa.ipac.caltech.edu`、`heasarc.gsfc.nasa.gov`）、JPL（`ssd.jpl.nasa.gov`）、MPC（`minorplanetcenter.net`）等；astropy 按名称解析目标也要访问 CDS | 需要走代理时用 `extraEnv` 设 `HTTPS_PROXY` / `NO_PROXY` |
 | 入站 | 021 服务端要能访问到 `https://<你的域名>/<sdk>/mcp` | 021 连接器是从 021 服务端发起调用 |
 | Ingress 超时 | `proxy-read-timeout` / `proxy-send-timeout` 设 **600** 秒 | nginx 默认 60 秒；Euclid 下载 FITS 实测约 37 秒（25 MB），网络慢时会超过 60 秒 |
@@ -240,7 +240,7 @@ BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_ch
 
 | 输入 | 说明 |
 |---|---|
-| **021 项目文件的绝对路径**（主要用法） | 用户把 FITS 上传到项目的 `Data/` 目录后，文件在 `/home/scientist/project<项目ID>/Data/<文件名>`，例如 `/home/scientist/project2114525713776963586/Data/x.fits`。021 智能体直接把这个路径传给 `euclid_fetch_fits`（也接受 `file:///home/scientist/...`）。**前提**：本服务 Pod 以只读方式在同一路径挂载了这份存储，（`EUCLID_INPUT_ROOTS` 默认就是 `/home/scientist`，无需设置，见 6.3）。文件**原地只读打开（memmap），不复制**，返回的 `path` 就是这个路径。 |
+| **项目文件的绝对路径**（仅在项目存储已挂载到本服务时可用；021 默认不挂载，不要传） | 用户把 FITS 上传到项目的 `Data/` 目录后，文件在 `/home/scientist/project<项目ID>/Data/<文件名>`，例如 `/home/scientist/project2114525713776963586/Data/x.fits`。021 智能体直接把这个路径传给 `euclid_fetch_fits`（也接受 `file:///home/scientist/...`）。**前提**：本服务 Pod 以只读方式在同一路径挂载了这份存储，（`EUCLID_INPUT_ROOTS` 默认就是 `/home/scientist`，无需设置，见 6.3）。文件**原地只读打开（memmap），不复制**，返回的 `path` 就是这个路径。 |
 | **http(s) FITS URL** | 公开链接（如 6.1 的 CASDC 镜像），或带签名参数的临时 OSS/S3 地址（查询串原样发送、在结果与错误里显示为 `?<redacted>`）。多 GB 文件传 `max_bytes`（如 `25000000`）只取前缀（HTTP Range；服务器不支持 Range 时边下边截断）；签名过期会返回 `temporary (presigned) URL has expired` 错误。 |
 
 - **本地路径的限制**：路径先做 realpath（解析 `..` 和符号链接）再检查，必须落在 `EUCLID_INPUT_ROOTS` 某个目录内；目录外、`..` 越界、指向外部的符号链接都会被拒绝。错误信息会列出允许的目录并提示可改用 http(s) URL，例如：`PermissionError: path not allowed (outside the input roots): /etc/passwd; allowed input roots (EUCLID_INPUT_ROOTS): /home/scientist; e.g. /home/scientist/project<id>/Data/<file>.fits. Alternatively pass an http(s) URL`。`EUCLID_INPUT_ROOTS` 不设置时允许目录默认是 `/home/scientist`；显式设为空字符串 `""` 时一律拒绝本地路径。输入文件只读打开，不会被修改；只有显式传 `output_path` / `output_dir` 时才会写到 `EUCLID_WRITE_ROOTS`（6.4），否则输出只写 `EUCLID_OUTPUT_DIR`。
@@ -249,6 +249,8 @@ BASE=$BASE EUCLID_URL=$URL SAVE_IMAGE=./mcp_image_block.png python3 tests/mcp_ch
 - **其余工具**：`path` / `fits_path` / `catalog_path` 只能是 `EUCLID_INPUT_ROOTS`、`EUCLID_WRITE_ROOTS`、`EUCLID_CACHE_DIR`、`EUCLID_OUTPUT_DIR`（以及配置了的 `EUCLID_MER_ROOT` / `EUCLID_TILE_INDEX`、镜像内置测试样例）里的文件；`output_path` / `output_dir` 只能在 `EUCLID_OUTPUT_DIR` 或 `EUCLID_WRITE_ROOTS` 内（见 6.4）；`mer_root` 覆盖值只能是 `EUCLID_MER_ROOT` 的子目录。Euclid 工具参数按原样 JSON 传入，不支持 `/invoke` 的 `__call__` 对象构造。
 
 ### 6.3 让 MCP 直接读写 021 项目文件（读写挂载 `/home/scientist`）
+
+> 可选。021 默认**不**挂载项目存储（MCP 在独立容器里）；默认路径是 http(s) 输入 + OSS 投递（6.6）。只有完成下面的挂载，项目路径输入和 `output_path` 才可用。
 
 021 智能体看到的项目文件路径是项目 Pod 内的 `/home/scientist/project<项目ID>/Data/...`，这些文件不能匿名下载（需要登录，返回 401），所以 MCP 服务要**自己能在同一路径读到它们**；反过来，切图要出现在 021「科研空间」，就得写进 `/home/scientist/project<项目ID>/ResearchSpace/`，MCP 服务也要**能在同一路径写**：
 
@@ -390,11 +392,11 @@ curl -k -sS -o "$PROJECT_DIR/ResearchSpace/euclid/vis_peak.fits" '<download_url>
 | Photutils 天文测光 | 让AI直接调用 photutils：源检测、孔径测光、质心定位、背景估计与 PSF 宽度拟合，无需自己写代码。 | `https://<你的域名>/photutils/mcp` | 60 |
 | Astroplan 观测规划 | 让AI直接调用 astroplan：目标升落、可观测性、晨昏蒙影与月相，几句话排好观测计划。 | `https://<你的域名>/astroplan/mcp` | 60 |
 | SunPy 太阳物理工具 | 让AI直接调用 sunpy：日面坐标参数、卡林顿自转、较差自转与太阳图像处理，无需自己写代码。 | `https://<你的域名>/sunpy/mcp` | 60 |
-| Euclid 图像裁剪 | 让AI直接处理 Euclid 等天文 FITS：给一个 FITS 文件（021 项目 Data/ 下文件的路径或公开 http(s) 链接），自动读取、找 HDU、按 RA/DEC 切出 1024 像素小图，并在对话中直接显示缩略图；需要时可把切图和预览图直接保存到项目科研空间。 | `https://<你的域名>/euclid/mcp` | 300 |
+| Euclid 图像裁剪 | 让AI直接处理 Euclid 等天文 FITS：给一个 FITS 的 http(s) 链接（公开链接，或 021 为上传文件生成的带签名临时 OSS 链接），自动读取、找 HDU、按 RA/DEC 切出 1024 像素小图，并在对话中直接显示缩略图；切图和预览图通过 OSS 投递返回 download_url，由智能体用 curl 存进项目科研空间。 | `https://<你的域名>/euclid/mcp` | 300 |
 
 超时说明：Euclid 的耗时主要在 `euclid_fetch_fits` 下载（带 `max_bytes=25000000` 实测约 37 秒），切图和预览都在 1 秒内；300 秒给慢网络留余量。若不传 `max_bytes` 会尝试下载完整的 2.4 GB 文件，必然超时，工具描述里已经提示模型对大文件传 `max_bytes`。astroquery 依赖外部数据库，给 120 秒。因为 6 个服务在同一进程内串行执行（第 8 节），并发时排队也会占用超时时间。
 
-登记后在 021 项目对话里勾选 Euclid 连接器，给模型一句话即可验证（对话里应直接出现切图的缩略图）。配置了 6.3 的挂载后，也可以把 FITS 图像上传到项目 `Data/` 目录，然后说「对 /home/scientist/project<项目ID>/Data/<文件名> 在最亮的源处切一张 1024 像素的图，并把 FITS 和预览图保存到 /home/scientist/project<项目ID>/ResearchSpace/euclid/」（需读写挂载）。远程 URL 示例：
+登记后在 021 项目对话里勾选 Euclid 连接器，给模型一句话即可验证（对话里应直接出现切图的缩略图）。若已按 6.3 挂载了项目存储，也可以把 FITS 图像上传到项目 `Data/` 目录，然后说「对 /home/scientist/project<项目ID>/Data/<文件名> 在最亮的源处切一张 1024 像素的图，并把 FITS 和预览图保存到 /home/scientist/project<项目ID>/ResearchSpace/euclid/」（需读写挂载）。远程 URL 示例：
 > 这是一个 Euclid VIS 的 FITS 文件：https://casdc.china-vo.org/mirror/Euclid-Q1/VIS/2686/EUC_VIS_SWL-BKG-002686-01-1-0000000__20241017T042432.874944Z.fits ，请下载前 25MB，找到科学图像 HDU，在最亮的源处切一张 1024 像素的图并生成预览。
 
 ## 8. 注意事项

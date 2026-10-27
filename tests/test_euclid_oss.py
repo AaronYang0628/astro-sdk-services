@@ -191,10 +191,14 @@ def _post(url, body, headers=None):
 
 def descriptions():
     d = json.loads((REPO / "data/euclid_tools.json").read_text())
-    first = "Returns download_url; save it into the caller's research space with curl -k -o. Do not pass output_path unless the path is mounted in this server."
+    first = {"euclid_cutout2d": "切图后返回 download_url", "euclid_write_preview": "预览后返回 download_url",
+             "euclid_fetch_fits": "输入 http(s) FITS 链接"}
     for t in d:
+        if t["name"] in first:
+            assert t["desc"].startswith(first[t["name"]]), t["name"]
         if t["name"] in ("euclid_cutout2d", "euclid_write_preview"):
-            assert t["desc"].startswith(first), t["name"]
+            assert "curl -k -sS -o" in t["desc"] and "不要传 output_path" in t["desc"] and "HEAD" in t["desc"], t["name"]
+        assert "Returns download_url" not in t["desc"], t["name"]  # no English duplicate sentence
     # and as served over MCP tools/list
     env = dict(os.environ, SDK="euclid")
     proc = subprocess.Popen([sys.executable, "-m", "uvicorn", "sdks.euclid:app", "--host", "127.0.0.1", "--port", "9199"],
@@ -208,11 +212,30 @@ def descriptions():
                 time.sleep(0.25)
         tl = _post(f"{base}/mcp", {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}, {"accept": "application/json, text/event-stream"})
         tools = {t["name"]: t for t in tl["result"]["tools"]}
-        for n in ("euclid_cutout2d", "euclid_write_preview"):
-            assert tools[n]["description"].startswith(first), tools[n]["description"][:200]
+        for n, lead in first.items():
+            assert tools[n]["description"].startswith(lead), tools[n]["description"][:200]
     finally:
         proc.terminate(); proc.wait(timeout=10)
     print("tool descriptions OK")
+
+
+def config_flag():
+    import euclid_cutout as ec
+    keys = ("EUCLID_OSS_ENDPOINT", "EUCLID_OSS_BUCKET", "EUCLID_OSS_ACCESS_KEY_ID", "EUCLID_OSS_ACCESS_KEY_SECRET")
+    saved = {k: os.environ.pop(k, None) for k in keys}
+    try:
+        assert ec.get_config()["oss_configured"] is False
+        for k in keys:
+            os.environ[k] = "x-" + k.lower()
+        cfg = ec.get_config()
+        assert cfg["oss_configured"] is True
+        assert not any(("x-" + k.lower()) in json.dumps(cfg) for k in keys), "get_config must not expose OSS values"
+    finally:
+        for k in keys:
+            os.environ.pop(k, None)
+            if saved[k] is not None:
+                os.environ[k] = saved[k]
+    print("get_config oss_configured OK")
 
 
 if __name__ == "__main__":
@@ -222,6 +245,7 @@ if __name__ == "__main__":
         configured(img, pk)
         failure(img, pk)
         sdk_wiring()
+        config_flag()
         descriptions()
         print("OSS TESTS PASSED")
     finally:

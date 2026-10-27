@@ -32,13 +32,12 @@ def get_config() -> dict[str, Any]:
         "cache_dir_exists": True,
         "input_roots": [str(r) for r in __import__("euclid_cutout.safety", fromlist=["x"]).input_roots()],
         "write_roots": [str(r) for r in __import__("euclid_cutout.safety", fromlist=["x"]).write_roots()],
+        "oss_configured": __import__("euclid_cutout.oss", fromlist=["x"]).is_configured(),
         "hint": (
-            "Input to euclid_fetch_fits: an absolute project file path under input_roots "
-            "(e.g. /home/scientist/project<id>/Data/x.fits) or an http(s) FITS URL; other tools only read "
-            "paths inside input_roots / EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR. "
-            "Outputs: omit output_path to write under EUCLID_OUTPUT_DIR; pass output_path under write_roots "
-            "(e.g. /home/scientist/project<id>/ResearchSpace/x.png|.fits) to save into the 021 科研空间 "
-            "(needs a read-write mount). "
+            "Input to euclid_fetch_fits: an http(s) FITS URL (public, or a signed temporary OSS link, passed in full); "
+            "local project paths under input_roots only work when the project storage is mounted into this server. "
+            "Outputs: when oss_configured is true, cutout2d / write_preview return download_url "
+            "(save it with curl -k -sS -o <file> '<url>'; GET, HEAD gives 403); do not pass output_path unless it is mounted. "
             "Local MER pipeline: set EUCLID_MER_ROOT + EUCLID_TILE_INDEX. "
             "Auth still optional via API_TOKEN on the HTTP/MCP wrapper."
         ),

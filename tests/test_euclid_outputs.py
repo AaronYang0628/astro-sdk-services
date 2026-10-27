@@ -229,7 +229,7 @@ def over_mcp(img, ra, dec):
         tools = {t["name"]: t for t in tl["result"]["tools"]}
         for n in ("euclid_cutout2d", "euclid_write_preview"):
             props = tools[n]["inputSchema"]["properties"]
-            assert "ResearchSpace" in props["output_path"]["description"] and "overwrite" in props, props
+            assert "挂载" in props["output_path"]["description"] and "overwrite" in props, props
         c = json.loads(mcp("euclid_cutout2d", {"path": str(img), "ra": ra, "dec": dec, "size": 32,
                                                 "output_path": str(RS / "mcp" / "m.fits")})["content"][0]["text"])
         assert c["ok"] and c["result"]["project_relpath"] == "ResearchSpace/mcp/m.fits", c
