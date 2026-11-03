@@ -2,7 +2,7 @@
 
 **一个镜像 = 一个容器 = 6 个 MCP 服务**：astropy / astroquery / photutils / astroplan / sunpy / **euclid**。
 
-- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:9a1c0a0cf188f2782616f35301c300ca5001af0b`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
+- 镜像：`ghcr.io/aaronyang0628/astro-sdk-services:1873d07b2fd554ab81f13677105a60d4f3c70553`（公开，免登录拉取；GitHub Actions 按提交 SHA 打 tag，同时更新 `:latest`）
 - 容器端口 `8000`，默认 `SDK=all`：一个进程按路径同时提供 6 个服务 `/<sdk>/{health,tools,invoke,mcp}`
 - **默认不鉴权**（只有设置了非空 `API_TOKEN` 才要求 `Authorization: Bearer <token>`）
 - 部署完成后，在 021 平台登记 **6 个连接器**（每个 SDK 一个 MCP 地址 `https://<你的域名>/<sdk>/mcp`，传输方式 Streamable），见第 7 节
@@ -27,8 +27,8 @@
 | 项 | 值 |
 |---|---|
 | 镜像 | `ghcr.io/aaronyang0628/astro-sdk-services` |
-| 推荐 tag | `9a1c0a0cf188f2782616f35301c300ca5001af0b`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
-| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 9a1c0a0 && docker build -t astro-sdk-services:9a1c0a28 .`，然后推到内部镜像仓库 |
+| 推荐 tag | `1873d07b2fd554ab81f13677105a60d4f3c70553`（固定提交，生产请用这个）；`latest` 为 master 最新构建 |
+| 自行构建 | 无法访问 GHCR 时：`git clone https://github.com/AaronYang0628/astro-sdk-services.git && cd astro-sdk-services && git checkout 1873d07 && docker build -t astro-sdk-services:1873d07 .`，然后推到内部镜像仓库 |
 | 端口 | `8000`（HTTP） |
 | 启动时间 | 约 10–20 秒（加载 6 个库）；空闲 RSS 约 350 MB |
 
@@ -78,7 +78,7 @@ Helm chart 会把 `EUCLID_CACHE_DIR=/data/euclid/cache`、`EUCLID_OUTPUT_DIR=/da
 docker run -d --name astro-sdk -p 8000:8000 \
   -e EUCLID_CACHE_DIR=/data/euclid/cache -e EUCLID_OUTPUT_DIR=/data/euclid/cutouts \
   -v /srv/astro-euclid:/data/euclid --memory 8g \
-  ghcr.io/aaronyang0628/astro-sdk-services:9a1c0a0cf188f2782616f35301c300ca5001af0b
+  ghcr.io/aaronyang0628/astro-sdk-services:1873d07b2fd554ab81f13677105a60d4f3c70553
 ```
 
 需要鉴权时加 `-e API_TOKEN=$(openssl rand -hex 24)`（不要把 token 写进仓库或公开配置）。需要代理时加 `-e HTTPS_PROXY=... -e NO_PROXY=...`。
@@ -91,7 +91,7 @@ Chart 在仓库 `helm/astro-sdk-services`（0.2.7）。默认 `allInOne: true`�
 ```yaml
 image:
   repository: ghcr.io/aaronyang0628/astro-sdk-services   # 用内部仓库时改这里
-  tag: "9a1c0a0cf188f2782616f35301c300ca5001af0b"
+  tag: "1873d07b2fd554ab81f13677105a60d4f3c70553"
   pullPolicy: IfNotPresent
 allInOne: true
 services:              # 6 个 SDK，对应 Ingress 路径 /<name>
@@ -424,3 +424,16 @@ curl -k -sS -o "$PROJECT_DIR/ResearchSpace/euclid/vis_peak.fits" '<download_url>
 }}
 ```
 Claude Code：`claude mcp add --transport http euclid https://astro.example.com/euclid/mcp`
+
+## 10. 可观测性（可选，chart ≥ 0.2.8）
+
+- **指标**：`METRICS_PORT`（chart `metrics.port`，默认 9100，端口名 `metrics`，不经 Ingress、不需要 API_TOKEN）暴露 Prometheus `/metrics`：
+  `astro_tool_calls_total{sdk,tool,transport,status,error_type}`、`astro_tool_duration_seconds`、`astro_tool_request/response_bytes`、
+  `astro_tool_inflight`、`astro_tool_timeouts_total`、`astro_http_requests_total{sdk,route,code}`、`astro_fetch_*`、`astro_oss_upload_*`。
+- **Trace**：设置 `otel.endpoint`（OTLP/HTTP，如 `http://otel-collector.<ns>.svc:4318`）即开启；支持 W3C `traceparent` 头与 MCP `params._meta.traceparent`，
+  每次工具调用一个 `execute_tool <tool>` span（`gen_ai.*` / `astro.*` 属性，不记录参数值；URL 只保留 scheme://host/path）。响应带 `X-Request-ID`。
+- **调用日志**：每次工具调用一行 JSON（stdout，无参数值），`callLog: false` 关闭。
+- **SDK 选择**：all-in-one 只导入 `services` 列表中的 SDK（或 `sdks: "a,b"` 覆盖）。
+- 采集侧示例：Pod 标签 `podLabels: {asa.obs/scrape: "true"}` + OTel Collector prometheus receiver（k8s pod SD，端口名 `metrics`）；
+  Grafana 面板 JSON 见 `deploy/grafana/`。
+

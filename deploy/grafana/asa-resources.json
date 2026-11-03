@@ -1,0 +1,1206 @@
+{
+  "uid": "asa-resources",
+  "title": "ASA · Pod Resources",
+  "description": "Pod / container / node CPU and memory",
+  "tags": [
+    "asa",
+    "observability",
+    "resources"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "style": "dark",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "fiscalYearStartMonth": 0,
+  "weekStart": "",
+  "templating": {
+    "list": [
+      {
+        "name": "ds",
+        "label": "Prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {
+          "text": "Prometheus",
+          "value": "prometheus"
+        },
+        "hide": 0,
+        "refresh": 1,
+        "regex": ""
+      },
+      {
+        "name": "cluster",
+        "label": "Cluster",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${ds}"
+        },
+        "query": {
+          "query": "label_values(asa_up{job=\"asa_obs\"}, asa_cluster)",
+          "refId": "v"
+        },
+        "definition": "label_values(asa_up{job=\"asa_obs\"}, asa_cluster)",
+        "refresh": 2,
+        "multi": false,
+        "includeAll": true,
+        "allValue": ".*",
+        "hide": 0,
+        "sort": 1,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "namespace",
+        "label": "Namespace",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${ds}"
+        },
+        "query": {
+          "query": "label_values(asa_k8s_pod_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\"}, k8s_namespace_name)",
+          "refId": "v"
+        },
+        "definition": "label_values(asa_k8s_pod_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\"}, k8s_namespace_name)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "hide": 0,
+        "sort": 1,
+        "current": {
+          "text": [
+            "astro-sdk",
+            "observability"
+          ],
+          "value": [
+            "astro-sdk",
+            "observability"
+          ]
+        }
+      },
+      {
+        "name": "pod",
+        "label": "Pod",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${ds}"
+        },
+        "query": {
+          "query": "label_values(asa_k8s_pod_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\"}, k8s_pod_name)",
+          "refId": "v"
+        },
+        "definition": "label_values(asa_k8s_pod_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\"}, k8s_pod_name)",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "hide": 0,
+        "sort": 1,
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Memory (working set)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(asa_k8s_pod_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "0",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Memory requests",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(asa_k8s_container_memory_request_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "0",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Memory limits",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(asa_k8s_container_memory_limit_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "noValue": "0",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Container restarts (range)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(increase(asa_k8s_container_restarts{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"}[$__range]))",
+          "legendFormat": "",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          },
+          "noValue": "0",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "wideLayout": true
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Pod memory working set",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_namespace_name, k8s_pod_name) (asa_k8s_pod_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "{{k8s_pod_name}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 18,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Pod memory vs limit (%)",
+      "description": "working set / sum of container limits",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "100 * max by (k8s_pod_name) (asa_k8s_pod_memory_limit_utilization_ratio{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "{{k8s_pod_name}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth",
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Pod CPU (cores)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_pod_name) (asa_k8s_pod_cpu_usage{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "{{k8s_pod_name}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 18,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Container CPU vs limit (%)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "100 * max by (k8s_pod_name, k8s_container_name) (asa_k8s_container_cpu_limit_utilization_ratio{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "{{k8s_pod_name}}/{{k8s_container_name}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": "table",
+      "title": "Containers: usage / request / limit",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 9
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_namespace_name, k8s_pod_name, k8s_container_name) (asa_container_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_namespace_name, k8s_pod_name, k8s_container_name) (asa_k8s_container_memory_request_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "B",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_namespace_name, k8s_pod_name, k8s_container_name) (asa_k8s_container_memory_limit_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "C",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_namespace_name, k8s_pod_name, k8s_container_name) (asa_container_cpu_usage{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "D",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum by (k8s_namespace_name, k8s_pod_name, k8s_container_name) (asa_k8s_container_restarts{job=\"asa_obs\", asa_cluster=~\"$cluster\", k8s_namespace_name=~\"$namespace\", k8s_pod_name=~\"$pod\"})",
+          "legendFormat": "",
+          "refId": "E",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^Mem.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mem used"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "lcd"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-GrYlRd"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU (cores)"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "renameByName": {
+              "k8s_namespace_name": "Namespace",
+              "k8s_pod_name": "Pod",
+              "k8s_container_name": "Container",
+              "Value #A": "Mem used",
+              "Value #B": "Mem request",
+              "Value #C": "Mem limit",
+              "Value #D": "CPU (cores)",
+              "Value #E": "Restarts"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Mem used",
+                "desc": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Nodes",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Node memory working set",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "max by (k8s_node_name) (asa_k8s_node_memory_working_set_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\"})",
+          "legendFormat": "{{k8s_node_name}} used",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "max by (k8s_node_name) (asa_k8s_node_allocatable_memory_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\"})",
+          "legendFormat": "{{k8s_node_name}} allocatable",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Node CPU (cores)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "max by (k8s_node_name) (asa_k8s_node_cpu_usage{job=\"asa_obs\", asa_cluster=~\"$cluster\"})",
+          "legendFormat": "{{k8s_node_name}} used",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "max by (k8s_node_name) (asa_k8s_node_allocatable_cpu{job=\"asa_obs\", asa_cluster=~\"$cluster\"})",
+          "legendFormat": "{{k8s_node_name}} allocatable",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "OTel Collector: RSS / heap",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 39,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "max(asa_otelcol_process_memory_rss_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\"})",
+          "legendFormat": "rss",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "max(asa_otelcol_process_runtime_heap_alloc_bytes{job=\"asa_obs\", asa_cluster=~\"$cluster\"})",
+          "legendFormat": "heap",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "OTel Collector: metric points",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${ds}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 39,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(rate(asa_otelcol_receiver_accepted_metric_points_total{job=\"asa_obs\", asa_cluster=~\"$cluster\"}[$__rate_interval]))",
+          "legendFormat": "accepted",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(rate(asa_otelcol_receiver_refused_metric_points_total{job=\"asa_obs\", asa_cluster=~\"$cluster\"}[$__rate_interval]))",
+          "legendFormat": "refused",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${ds}"
+          },
+          "expr": "sum(rate(asa_otelcol_exporter_send_failed_metric_points_total{job=\"asa_obs\", asa_cluster=~\"$cluster\"}[$__rate_interval]))",
+          "legendFormat": "export failed",
+          "refId": "C",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisBorderShow": false,
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "lineInterpolation": "smooth"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ],
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "title": "ASA dashboards",
+      "type": "dashboards",
+      "tags": [
+        "asa"
+      ],
+      "asDropdown": true,
+      "includeVars": true,
+      "keepTime": true,
+      "icon": "external link"
+    }
+  ]
+}
