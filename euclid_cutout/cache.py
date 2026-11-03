@@ -75,6 +75,14 @@ def _expiry_hint(url: str) -> Optional[str]:
     return None
 
 
+def _metric_fetch(url, status, cache, nbytes=0, seconds=None):
+    try:
+        from common import telemetry
+        telemetry.record_fetch(url, status, cache, nbytes, seconds)
+    except Exception:  # metrics are best-effort (library use without the service)
+        pass
+
+
 def _get(url: str, headers: dict, timeout: int) -> requests.Response:
     s = requests.Session()
     req = requests.Request("GET", url, headers=headers).prepare()
@@ -208,6 +216,7 @@ def fetch_fits(
     if remote_size is not None and target is not None:
         target = min(target, remote_size)
     if local > 0 and ((remote_size is not None and local >= remote_size) or (target is not None and local >= target)):
+        _metric_fetch(raw, "ok", "hit")
         return _result(True)
 
     headers = {"Accept-Encoding": "identity"}
@@ -218,6 +227,7 @@ def fetch_fits(
 
     t0 = time.time()
     range_honored = None
+    start_size = local
     try:
         with _get(raw, headers, timeout) as r:
             _check_status(r, raw)
@@ -238,9 +248,16 @@ def fetch_fits(
                     if limit is not None and f.tell() > limit:
                         f.truncate(limit)
     except FetchError:
+        _metric_fetch(raw, "error", "miss", seconds=time.time() - t0)
         raise
     except requests.RequestException as e:  # never echo the signed URL
+        _metric_fetch(raw, "error", "miss", seconds=time.time() - t0)
         raise FetchError(f"download failed ({type(e).__name__}) url={safe}") from None
+    try:
+        _got = max(0, dest.stat().st_size - (start_size if (range_honored and start_size) else 0))
+    except OSError:
+        _got = 0
+    _metric_fetch(raw, "ok", "miss", _got, time.time() - t0)
 
     kind = _sniff(dest)
     if kind == "unknown":

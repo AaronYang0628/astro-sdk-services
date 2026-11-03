@@ -4,7 +4,13 @@ import sunpy.coordinates  # noqa: F401  registers helioprojective etc frames
 from fastapi.responses import JSONResponse
 from common.app import make_app
 
-SDKS = ["astropy", "astroquery", "photutils", "astroplan", "sunpy", "euclid"]
+ALL_SDKS = ["astropy", "astroquery", "photutils", "astroplan", "sunpy", "euclid"]
+# ASTRO_SDKS: comma-separated subset to load (default: all). Unlisted SDKs are not imported (saves memory).
+_sel = [s.strip() for s in (os.environ.get("ASTRO_SDKS") or "").split(",") if s.strip()]
+_bad = [s for s in _sel if s not in ALL_SDKS]
+if _bad:
+    raise SystemExit(f"ASTRO_SDKS: unknown SDK(s) {_bad}; choose from {ALL_SDKS}")
+SDKS = [s for s in ALL_SDKS if s in _sel] if _sel else list(ALL_SDKS)
 _gb = int(os.environ.get("MEM_LIMIT_GB") or 8)
 resource.setrlimit(resource.RLIMIT_AS, (_gb << 30, _gb << 30))
 APPS = {s: make_app(s, (s,) if s != "euclid" else ("euclid_cutout",), set_limit=False) for s in SDKS}

@@ -1,8 +1,8 @@
-import hmac, json, os, resource, warnings, traceback, time
+import hmac, inspect, json, os, resource, warnings, traceback, time
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Any, Optional
-from . import codec, engine, mcp_server
+from . import codec, engine, mcp_server, telemetry
 import contextlib
 from fastapi.responses import JSONResponse
 
@@ -18,6 +18,7 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
         mem_gb = int(os.environ.get("MEM_LIMIT_GB") or mem_gb or 4)
         resource.setrlimit(resource.RLIMIT_AS, (mem_gb << 30, mem_gb << 30))
     codec.ALLOWED_PREFIXES = tuple(prefixes) + codec.ALLOWED_PREFIXES
+    telemetry.init()
     tools = {t["name"]: t for t in json.load(open(os.path.join(HERE, "data", f"{sdk}_tools.json")))}
     mgr = mcp_server.build(sdk, tools, timeout)
 
@@ -26,7 +27,11 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
         async with mgr.run():
             yield
 
-    app = FastAPI(title=f"{sdk} tool service", lifespan=lifespan)
+    kw = {}
+    if "telemetry" in inspect.signature(FastAPI.__init__).parameters:
+        # FastAPI >= 0.16x has native OTel spans; ours (telemetry.http_request) already cover the request
+        kw["telemetry"] = {"tracing": False, "metrics": False, "logs": False}
+    app = FastAPI(title=f"{sdk} tool service", lifespan=lifespan, **kw)
 
     @app.get("/health")
     def health():
@@ -42,17 +47,21 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
         if t is None:
             return {"ok": False, "result": None, "error": f"unknown function_name (not in whitelist): {req.function_name}"}
         t0 = time.time()
-        try:
-            res = engine.invoke(t["target"], req.arguments, t.get("timeout", timeout), t.get("raw_args", False))
-            if isinstance(res, dict):
-                res.pop("_mcp_images", None)  # MCP-only inline images; /invoke stays plain JSON
-            out = codec.encode(res)
-            json.dumps(out, allow_nan=False)
-            return {"ok": True, "result": out, "error": None, "elapsed_s": round(time.time() - t0, 3)}
-        except BaseException as e:  # noqa
-            if isinstance(e, KeyboardInterrupt):
-                raise
-            return {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:900]}", "elapsed_s": round(time.time() - t0, 3)}
+        with telemetry.tool_call(sdk, req.function_name, "invoke", t["target"], req.arguments) as call:
+            try:
+                res = engine.invoke(t["target"], req.arguments, t.get("timeout", timeout), t.get("raw_args", False))
+                if isinstance(res, dict):
+                    res.pop("_mcp_images", None)  # MCP-only inline images; /invoke stays plain JSON
+                out = codec.encode(res)
+                body = json.dumps(out, allow_nan=False)
+                call.success(result_bytes=len(body))
+                return {"ok": True, "result": out, "error": None, "elapsed_s": round(time.time() - t0, 3)}
+            except BaseException as e:  # noqa
+                if isinstance(e, KeyboardInterrupt):
+                    raise
+                call.failure(e)
+                return {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:900]}", "elapsed_s": round(time.time() - t0, 3)}
+
     async def outer(scope, receive, send):
         # Pure ASGI wrapper: prefix strip (Ingress may forward /<sdk>/... unchanged), bearer auth, /mcp routing.
         if scope["type"] != "http":
@@ -61,14 +70,18 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
         path = scope["path"]
         if path == pre or path.startswith(pre + "/"):
             scope = dict(scope, path=path[len(pre):] or "/")
-        tok = (os.environ.get("API_TOKEN") or "").strip()  # auth only when set and non-empty
-        if tok and scope["path"] != "/health":
-            hdr = dict(scope.get("headers") or []).get(b"authorization", b"").decode("latin-1")
-            if not hmac.compare_digest(hdr, f"Bearer {tok}"):
-                return await JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)(scope, receive, send)
-        if scope["path"] in ("/mcp", "/mcp/"):
-            return await mgr.handle_request(dict(scope, path="/mcp"), receive, send)
-        return await app(scope, receive, send)
+        if scope["path"] in ("/health", "/health/"):
+            return await app(scope, receive, send)  # no span / no auth for health checks
+        async with telemetry.http_request(sdk, scope) as info:
+            send = telemetry.wrap_send(send, info)
+            tok = (os.environ.get("API_TOKEN") or "").strip()  # auth only when set and non-empty
+            if tok:
+                hdr = dict(scope.get("headers") or []).get(b"authorization", b"").decode("latin-1")
+                if not hmac.compare_digest(hdr, f"Bearer {tok}"):
+                    return await JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)(scope, receive, send)
+            if scope["path"] in ("/mcp", "/mcp/"):
+                return await mgr.handle_request(dict(scope, path="/mcp"), receive, send)
+            return await app(scope, receive, send)
     outer.fastapi = app
     outer.mgr = mgr
     return outer

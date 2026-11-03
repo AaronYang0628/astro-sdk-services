@@ -58,3 +58,18 @@ extraVolumes: []      # extra pod volumes
 extraVolumeMounts: [] # extra container volumeMounts
 auth:
   secretName: ""   # optional. Empty = no auth. Else k8s Secret with key `token` -> API_TOKEN (Bearer auth; /health exempt)
+sdks: ""            # optional ASTRO_SDKS override (comma list). Empty = the names in `services` (all-in-one), so unlisted
+                    # SDKs (e.g. euclid) are not even imported. Example: "astropy,astroquery,photutils,astroplan,sunpy"
+otel:                # OpenTelemetry traces (OTLP/HTTP). Empty endpoint = tracing off (metrics + call log still on)
+  endpoint: ""       #   e.g. http://otel-collector.observability.svc:4318
+  serviceName: astro-sdk-services
+  resourceAttributes: ""   # OTEL_RESOURCE_ATTRIBUTES, e.g. "deployment.environment=dev,asa.cluster=my-cluster"
+  sampler: parentbased_always_on
+metrics:             # Prometheus /metrics on a separate port (not routed by the Ingress, not behind API_TOKEN)
+  port: 9100         #   0 = off
+  networkPolicy:     # restrict the metrics port to the namespace of your collector (API port stays open)
+    enabled: false
+    fromNamespace: observability
+podLabels: {}        # extra pod labels, e.g. {asa.obs/scrape: "true"}
+priorityClassName: ""  # optional PriorityClass for the pods
+callLog: true        # one JSON line per tool call on stdout (no argument values)

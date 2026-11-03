@@ -96,6 +96,14 @@ def _redact(msg: str, cfg: dict) -> str:
     return msg
 
 
+def _metric_upload(ok, nbytes=0):
+    try:
+        from common import telemetry
+        telemetry.record_oss_upload(ok, nbytes)
+    except Exception:
+        pass
+
+
 def upload_result(local_path: str, filename: Optional[str] = None, content_type: Optional[str] = None,
                   project_subdir: str = "euclid") -> dict:
     """Upload a result file and describe how to fetch it. Never raises.
@@ -114,6 +122,7 @@ def upload_result(local_path: str, filename: Optional[str] = None, content_type:
         size = p.stat().st_size
         url = _put_and_sign(cfg, key, str(p), ctype, cfg["expires"])
         exp = (_dt.datetime.now(_TZ) + _dt.timedelta(seconds=cfg["expires"])).replace(microsecond=0)
+        _metric_upload(True, size)
         k = "-k " if cfg["verify"] is False else ""
         return {
             "download_url": url,
@@ -127,5 +136,6 @@ def upload_result(local_path: str, filename: Optional[str] = None, content_type:
                              "directory first (e.g. via pwd).",
         }
     except Exception as e:  # noqa: BLE001 - delivery must never fail the tool
+        _metric_upload(False)
         msg = _redact(f"{type(e).__name__}: {e}", cfg)
         return {"upload_error": msg[:400]}

@@ -12,3 +12,7 @@ astroplan
 sunpy[map,net,timeseries]
 mcp>=1.20,<2
 oss2
+prometheus_client
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http
+opentelemetry-instrumentation-requests

@@ -91,3 +91,32 @@
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- define "astro.obsEnv" -}}
+- {name: METRICS_PORT, value: {{ .Values.metrics.port | default 0 | quote }}}
+- {name: TOOL_CALL_LOG, value: {{ ternary "1" "0" (ne .Values.callLog false) | quote }}}
+{{- if .Values.otel.endpoint }}
+- {name: OTEL_EXPORTER_OTLP_ENDPOINT, value: {{ .Values.otel.endpoint | quote }}}
+- {name: OTEL_EXPORTER_OTLP_PROTOCOL, value: http/protobuf}
+- {name: OTEL_SERVICE_NAME, value: {{ .Values.otel.serviceName | default "astro-sdk-services" | quote }}}
+- {name: OTEL_TRACES_SAMPLER, value: {{ .Values.otel.sampler | default "parentbased_always_on" | quote }}}
+{{- end }}
+- name: K8S_POD_NAME
+  valueFrom: {fieldRef: {fieldPath: metadata.name}}
+- name: K8S_NAMESPACE_NAME
+  valueFrom: {fieldRef: {fieldPath: metadata.namespace}}
+- name: OTEL_RESOURCE_ATTRIBUTES
+  value: "k8s.pod.name=$(K8S_POD_NAME),k8s.namespace.name=$(K8S_NAMESPACE_NAME){{ with .Values.otel.resourceAttributes }},{{ . }}{{ end }}"
+{{- end -}}
+
+{{- define "astro.podSpecExtra" -}}
+{{- with .Values.priorityClassName }}
+priorityClassName: {{ . }}
+{{- end }}
+{{- end -}}
+
+{{- define "astro.sdkList" -}}
+{{- $n := list -}}
+{{- range .Values.services }}{{ $n = append $n .name }}{{ end -}}
+{{- join "," $n -}}
+{{- end -}}

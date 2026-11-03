@@ -11,8 +11,13 @@ spec:
     matchLabels: {app: astro-all}
   template:
     metadata:
-      labels: {app: astro-all}
+      labels:
+        app: astro-all
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- include "astro.podSpecExtra" . | nindent 6 }}
       {{- with .Values.securityContext }}
       securityContext: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -22,6 +27,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - {name: SDK, value: "all"}
+            - name: ASTRO_SDKS
+              value: {{ .Values.sdks | default (include "astro.sdkList" .) | quote }}
+            {{- include "astro.obsEnv" . | nindent 12 }}
             {{- include "astro.euclidEnv" . | nindent 12 }}
             {{- if .Values.memoryLimitGB }}
             - {name: MEM_LIMIT_GB, value: {{ .Values.memoryLimitGB | quote }}}
@@ -33,7 +41,11 @@ spec:
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-          ports: [{containerPort: 8000}]
+          ports:
+            - {name: http, containerPort: 8000}
+            {{- if .Values.metrics.port }}
+            - {name: metrics, containerPort: {{ .Values.metrics.port }}}
+            {{- end }}
           volumeMounts:
             {{- include "astro.euclidMounts" . | nindent 12 }}
             {{- with .Values.extraVolumeMounts }}
@@ -51,9 +63,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: astro-all
+  labels: {app: astro-all}
 spec:
   selector: {app: astro-all}
-  ports: [{port: 80, targetPort: 8000}]
+  ports:
+    - {name: http, port: 80, targetPort: 8000}
+    {{- if .Values.metrics.port }}
+    - {name: metrics, port: {{ .Values.metrics.port }}, targetPort: {{ .Values.metrics.port }}}
+    {{- end }}
 {{- else }}
 {{- range .Values.services }}
 ---
@@ -68,8 +85,13 @@ spec:
     matchLabels: {app: astro-{{ .name }}}
   template:
     metadata:
-      labels: {app: astro-{{ .name }}}
+      labels:
+        app: astro-{{ .name }}
+        {{- with $.Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- include "astro.podSpecExtra" $ | nindent 6 }}
       {{- with $.Values.securityContext }}
       securityContext: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -79,6 +101,7 @@ spec:
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           env:
             - {name: SDK, value: {{ .name | quote }}}
+            {{- include "astro.obsEnv" $ | nindent 12 }}
             {{- if eq .name "euclid" }}
             {{- include "astro.euclidEnv" $ | nindent 12 }}
             {{- end }}
@@ -92,7 +115,11 @@ spec:
             {{- with $.Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-          ports: [{containerPort: 8000}]
+          ports:
+            - {name: http, containerPort: 8000}
+            {{- if $.Values.metrics.port }}
+            - {name: metrics, containerPort: {{ $.Values.metrics.port }}}
+            {{- end }}
           {{- if eq .name "euclid" }}
           volumeMounts:
             {{- include "astro.euclidMounts" $ | nindent 12 }}
@@ -108,8 +135,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: astro-{{ .name }}
+  labels: {app: astro-{{ .name }}}
 spec:
   selector: {app: astro-{{ .name }}}
-  ports: [{port: 80, targetPort: 8000}]
+  ports:
+    - {name: http, port: 80, targetPort: 8000}
+    {{- if $.Values.metrics.port }}
+    - {name: metrics, port: {{ $.Values.metrics.port }}, targetPort: {{ $.Values.metrics.port }}}
+    {{- end }}
 {{- end }}
 {{- end }}

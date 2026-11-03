@@ -7,7 +7,7 @@ import base64, inspect, json, os, time
 import mcp.types as types
 from mcp.server.lowlevel import Server
 from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
-from . import codec, engine
+from . import codec, engine, telemetry
 
 _JSON = {"str": "string", "int": "integer", "float": "number", "bool": "boolean",
          "dict": "object", "list": "array", "tuple": "array", "array": "array",
@@ -71,6 +71,20 @@ def image_blocks(images):
     return blocks
 
 
+def _meta_traceparent(server):
+    """W3C traceparent carried inside the MCP message (params._meta.traceparent), if any."""
+    try:
+        meta = server.request_context.meta
+    except Exception:
+        return None
+    if meta is None:
+        return None
+    tp = getattr(meta, "traceparent", None)
+    if tp is None:
+        tp = (getattr(meta, "model_extra", None) or {}).get("traceparent")
+    return tp if isinstance(tp, str) and tp.count("-") == 3 else None
+
+
 def build(sdk, tools, timeout):
     server = Server(f"astro-{sdk}")
     tool_list = [types.Tool(name=t["name"], description=t["desc"], inputSchema=input_schema(t)) for t in tools.values()]
@@ -87,17 +101,20 @@ def build(sdk, tools, timeout):
             out = {"ok": False, "result": None, "error": f"unknown tool: {name}"}
         else:
             t0 = time.time()
-            try:  # runs on the event-loop (main) thread so the SIGALRM timeout works, like /invoke
-                raw = engine.invoke(t["target"], arguments, t.get("timeout", timeout), t.get("raw_args", False))
-                if isinstance(raw, dict) and "_mcp_images" in raw:
-                    images = raw.pop("_mcp_images")
-                res = codec.encode(raw)
-                json.dumps(res, allow_nan=False)
-                out = {"ok": True, "result": res, "error": None, "elapsed_s": round(time.time() - t0, 3)}
-            except BaseException as e:  # noqa
-                if isinstance(e, KeyboardInterrupt):
-                    raise
-                out = {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:900]}", "elapsed_s": round(time.time() - t0, 3)}
+            with telemetry.tool_call(sdk, name, "mcp", t["target"], arguments, _meta_traceparent(server)) as call:
+                try:  # runs on the event-loop (main) thread so the SIGALRM timeout works, like /invoke
+                    raw = engine.invoke(t["target"], arguments, t.get("timeout", timeout), t.get("raw_args", False))
+                    if isinstance(raw, dict) and "_mcp_images" in raw:
+                        images = raw.pop("_mcp_images")
+                    res = codec.encode(raw)
+                    body = json.dumps(res, allow_nan=False)
+                    call.success(images=len(images or []), result_bytes=len(body))
+                    out = {"ok": True, "result": res, "error": None, "elapsed_s": round(time.time() - t0, 3)}
+                except BaseException as e:  # noqa
+                    if isinstance(e, KeyboardInterrupt):
+                        raise
+                    call.failure(e)
+                    out = {"ok": False, "result": None, "error": f"{type(e).__name__}: {str(e)[:900]}", "elapsed_s": round(time.time() - t0, 3)}
         content = [types.TextContent(type="text", text=json.dumps(out, ensure_ascii=False))]
         if out["ok"] and images:
             content += image_blocks(images)

@@ -1,0 +1,18 @@
+{{- if and .Values.metrics.port .Values.metrics.networkPolicy.enabled }}
+# API port open as before; the metrics port only from the collector's namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: astro-sdk-services-metrics
+spec:
+  podSelector:
+    matchExpressions:
+      - {key: app, operator: In, values: [{{ if .Values.allInOne }}astro-all{{ else }}{{ range $i, $s := .Values.services }}{{ if $i }}, {{ end }}astro-{{ $s.name }}{{ end }}{{ end }}]}
+  policyTypes: [Ingress]
+  ingress:
+    - ports: [{port: 8000, protocol: TCP}]
+    - ports: [{port: {{ .Values.metrics.port }}, protocol: TCP}]
+      from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ .Values.metrics.networkPolicy.fromNamespace }}}
+{{- end }}
