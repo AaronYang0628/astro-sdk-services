@@ -46,13 +46,10 @@
   "skip": null
  },
  {
-  "name": "astroquery_simbad_list_votable_fields",
-  "arguments": {},
-  "skip": null
- },
- {
-  "name": "astroquery_simbad_get_votable_fields",
-  "arguments": {},
+  "name": "astroquery_simbad_query_catalog",
+  "arguments": {
+   "catalog": "Messier"
+  },
   "skip": null
  },
  {
@@ -61,19 +58,8 @@
   "skip": null
  },
  {
-  "name": "astroquery_simbad_get_field_description",
-  "arguments": {
-   "field_name": "ra"
-  },
-  "skip": null
- },
- {
-  "name": "astroquery_simbad_list_columns",
-  "arguments": {
-   "_args": [
-    "basic"
-   ]
-  },
+  "name": "astroquery_simbad_list_votable_fields",
+  "arguments": {},
   "skip": null
  },
  {
@@ -112,6 +98,15 @@
   "skip": null
  },
  {
+  "name": "astroquery_vizier_query_constraints",
+  "arguments": {
+   "_args": [],
+   "catalog": "I/239/hip_main",
+   "Vmag": "<3"
+  },
+  "skip": null
+ },
+ {
   "name": "astroquery_gaia_cone_search",
   "arguments": {
    "coordinate": {
@@ -134,9 +129,106 @@
   "skip": null
  },
  {
-  "name": "astroquery_mpc_get_observatory_location",
+  "name": "astroquery_gaia_query_object",
   "arguments": {
-   "code": "500"
+   "coordinate": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.02,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_gaia_load_tables",
+  "arguments": {
+   "only_names": true
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_ned_query_object",
+  "arguments": {
+   "object_name": "M31"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_ned_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_ned_get_table",
+  "arguments": {
+   "object_name": "M31",
+   "table": "positions"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sdss_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.02,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sdss_query_sql",
+  "arguments": {
+   "_args": [
+    "SELECT TOP 3 ra, dec, u, g, r FROM PhotoObj WHERE ra BETWEEN 10.6 AND 10.7 AND dec BETWEEN 41.2 AND 41.3"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_list_catalogs",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_list_columns",
+  "arguments": {
+   "catalog": "fp_psc"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "catalog": "fp_psc",
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
   },
   "skip": null
  },
@@ -159,14 +251,227 @@
   "skip": null
  },
  {
-  "name": "astroquery_jpl_spec_get_species_table",
+  "name": "astroquery_heasarc_query_object",
+  "arguments": {
+   "object_name": "Crab",
+   "mission": "rosmaster"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_heasarc_query_region",
+  "arguments": {
+   "position": {
+    "ra": 83.6331,
+    "dec": 22.0145,
+    "unit": "deg"
+   },
+   "catalog": "rosmaster",
+   "radius": {
+    "value": 0.1,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_get_observatory_location",
+  "arguments": {
+   "code": "500"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_get_observatory_codes",
   "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_query_object",
+  "arguments": {
+   "target": "Ceres",
+   "target_type": "asteroid"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_get_ephemeris",
+  "arguments": {
+   "_args": [
+    "Ceres"
+   ],
+   "location": "500"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sbdb_query",
+  "arguments": {
+   "_args": [
+    "Ceres"
+   ]
+  },
   "skip": null
  },
  {
   "name": "astroquery_nasa_exoplanet_archive_query_object",
   "arguments": {
    "object_name": "TRAPPIST-1 b"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_nasa_exoplanet_archive_query_criteria",
+  "arguments": {
+   "table": "pscomppars",
+   "select": "pl_name,hostname,pl_orbper",
+   "where": "pl_name like 'TRAPPIST%'",
+   "cache": false
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_nasa_exoplanet_archive_query_aliases",
+  "arguments": {
+   "object_name": "TRAPPIST-1"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_jpl_spec_get_species_table",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_cdms_get_species_table",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_splatalogue_query_lines",
+  "arguments": {
+   "_args": [
+    {
+     "value": 100,
+     "unit": "GHz"
+    },
+    {
+     "value": 100.5,
+     "unit": "GHz"
+    }
+   ],
+   "chemical_name": "CO"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_nist_query",
+  "arguments": {
+   "_args": [
+    {
+     "value": 4000,
+     "unit": "Angstrom"
+    },
+    {
+     "value": 7000,
+     "unit": "Angstrom"
+    }
+   ],
+   "linename": "H I"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_list_missions",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_query_object",
+  "arguments": {
+   "_args": [
+    "M31"
+   ],
+   "radius": "0.02 deg"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_catalogs_query_object",
+  "arguments": {
+   "_args": [
+    "M31"
+   ],
+   "catalog": "TIC"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_list_catalogs",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_list_maps",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_query_object_catalogs",
+  "arguments": {
+   "position": "M31",
+   "catalogs": "HSC",
+   "row_limit": 5
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sky_view_list_surveys",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_x_match_get_available_tables",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_x_match_query",
+  "arguments": {
+   "cat1": "vizier:I/239/hip_main",
+   "cat2": "vizier:I/311/hip2",
+   "max_distance": {
+    "value": 1,
+    "unit": "arcsec"
+   },
+   "colRA1": "RAICRS",
+   "colDec1": "DEICRS",
+   "colRA2": "RArad",
+   "colDec2": "DErad"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_svo_fps_get_filter_list",
+  "arguments": {
+   "facility": "HST"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_alma_query_region",
+  "arguments": {
+   "_args": [
+    {
+     "ra": 10.684,
+     "dec": 41.269,
+     "unit": "deg"
+    }
+   ],
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
   },
   "skip": null
  }

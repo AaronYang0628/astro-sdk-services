@@ -1,15 +1,15 @@
 # astro-sdk-services
 
-One small FastAPI HTTP service per astronomy SDK (prototype). Each service exposes a whitelist of 20 tools
-(100 in total), with JSON-serialisable inputs/outputs.
+One small FastAPI HTTP service per astronomy SDK (prototype). Each service exposes a curated whitelist of tools
+(247 in total across five SDKs; euclid is separate), with JSON-serialisable inputs/outputs.
 
 | SDK | port | tools |
 |---|---|---|
-| astropy | 9101 | 20 |
-| astroquery | 9102 | 20 (network: SIMBAD/VizieR/Gaia/MPC/IRSA/HEASARC/JPL/NASA) |
-| photutils | 9103 | 20 |
-| astroplan | 9104 | 20 |
-| sunpy | 9105 | 20 |
+| astropy | 9101 | 61 |
+| astroquery | 9102 | 51 (network: SIMBAD/VizieR/Gaia/NED/SDSS/IRSA/HEASARC/MPC/Horizons/MAST/ESASky/…) |
+| photutils | 9103 | 49 |
+| astroplan | 9104 | 44 |
+| sunpy | 9105 | 42 |
 | euclid | (all-in-one `/euclid`) | 14 (HTTPS FITS URL or local MER cutout + PNG preview; EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR; optional `output_path` into EUCLID_WRITE_ROOTS, e.g. a 021 project ResearchSpace) |
 
 Services bind to `127.0.0.1` only. Behind an Ingress (`https://astro.example.com/<sdk>/...`) the services accept the
@@ -48,7 +48,7 @@ via `numpy.load` / `astropy.io.fits`: do not expose publicly without sandboxing 
 ## Verification
 `cases/<sdk>.json` hold one reproducible input per tool; `python tests/run_cases.py <sdk>` calls the running service
 and writes `results/<sdk>.json`. `tests/build_xlsx.py` renders the tool table. Statuses are recorded as observed.
-Candidates in astroquery whose external service timed out (NED, SDSS) were left out of the 20 and are not claimed to work.
+Astroquery network tools: upstream timeouts (e.g. SIMBAD/Sesame historically) are acceptable; NED/SDSS/IRSA/… are included and marked 未验证 when the upstream is unreachable.
 
 ## Helm
 `helm/astro-sdk-services`: by default (`allInOne: true`) one Deployment + Service `astro-all` (SDK=all) and an Ingress
@@ -68,7 +68,7 @@ Regression against a deployed instance: `BASE_URL=https://astro.example.com API_
 
 ## MCP (Streamable HTTP)
 Every SDK service also speaks MCP at `/mcp` (via Ingress: `/<sdk>/mcp`, e.g. `https://astro.example.com/astropy/mcp`).
-Its 20 tools are registered as MCP tools with the same names; `description` is the tool description and `inputSchema`
+Its whitelisted tools are registered as MCP tools with the same names; `description` is the tool description and `inputSchema`
 is generated from the parameter list (`str/int/float/bool/dict/list` map to JSON Schema types, astro objects such as
 `SkyCoord`/`Time`/`Quantity` accept the codec forms above, required params go into `required`, methods require `_self`).
 Calls share the `/invoke` engine: same whitelist, timeout and encoding; the tool result is a JSON text
@@ -90,4 +90,4 @@ Cursor (`~/.cursor/mcp.json`) / Claude Code / other clients that support remote 
 Claude Code CLI: `claude mcp add --transport http astropy https://astro.example.com/astropy/mcp --header "Authorization: Bearer <YOUR_TOKEN>"`.
 Clients that only speak stdio (e.g. Claude Desktop) can bridge with `npx mcp-remote https://astro.example.com/astropy/mcp --header "Authorization: Bearer <YOUR_TOKEN>"`.
 
-Smoke test: `BASE=https://astro.example.com API_TOKEN=... [VERIFY_TLS=0] python tests/mcp_check.py` (initialize, list_tools = 20, two tool calls per SDK).
+Smoke test: `BASE=https://astro.example.com API_TOKEN=... [VERIFY_TLS=0] python tests/mcp_check.py` (initialize, list_tools ≈ per-SDK counts above (total 257), two tool calls per SDK).

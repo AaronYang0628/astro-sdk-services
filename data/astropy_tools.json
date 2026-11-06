@@ -88,6 +88,88 @@
   "orig_params": "other[BaseCoordinateFrame] 必填: The other coordinate to compute the position angle to. It is treated as the \"head\" of the vector of the…"
  },
  {
+  "name": "astropy_sky_coord_directional_offset_by",
+  "target": "astropy.coordinates.SkyCoord.directional_offset_by",
+  "desc": "由起点坐标按给定位置角和角距离求出终点坐标，用于生成望远镜抖动点位、构造偏移指向位置，返回新的 SkyCoord。返回类型：astropy.coordinates.SkyCoord。主要参数：position_angle、separation。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord.directional_offset_by。",
+  "params": [
+   {
+    "name": "position_angle",
+    "type": "Angle",
+    "required": true,
+    "desc": "position_angle of offset"
+   },
+   {
+    "name": "separation",
+    "type": "Angle",
+    "required": true,
+    "desc": "offset angular separation"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "沿方向偏移坐标",
+  "orig_params": "position_angle[Angle] 必填: position_angle of offset\nseparation[Angle] 必填: offset angular separation"
+ },
+ {
+  "name": "astropy_sky_coord_to_string",
+  "target": "astropy.coordinates.SkyCoord.to_string",
+  "desc": "将坐标输出为十进制度或时分秒/度分秒字符串，可设精度、分隔符与小数位，用于生成可读报告、观测申请表中的坐标栏。主要参数：style、kwargs。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord.to_string。",
+  "params": [
+   {
+    "name": "style",
+    "type": "str",
+    "required": false,
+    "desc": "The formatting specification to use. These encode the three most common ways to represent coordinates. The…（默认 'decimal'）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "坐标格式化输出",
+  "orig_params": "style[str] 可选: The formatting specification to use. These encode the three most common ways to represent coordinates. The…（默认 'decimal'）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_sky_coord_spherical_offsets_to",
+  "target": "astropy.coordinates.SkyCoord.spherical_offsets_to",
+  "desc": "计算从一个坐标到另一坐标的球面偏移 (dlon, dlat)，用于望远镜偏置指向。返回两个 Angle。返回类型：astropy.coordinates.Angle。主要参数：tocoord。属于「坐标与时间系统」，底层调用 astropy.coordinates.SkyCoord.spherical_offsets_to。",
+  "params": [
+   {
+    "name": "tocoord",
+    "type": "BaseCoordinateFrame",
+    "required": true,
+    "desc": "The coordinate to find the offset to."
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "球面偏移量计算",
+  "orig_params": "tocoord[BaseCoordinateFrame] 必填: The coordinate to find the offset to."
+ },
+ {
+  "name": "astropy_time_to_datetime",
+  "target": "astropy.time.Time.to_datetime",
+  "desc": "转换为 datetime 对象，便于与标准库交互。返回类型：datetime.datetime。主要参数：timezone、leap_second_strict。属于「坐标与时间系统」，底层调用 astropy.time.Time.to_datetime。",
+  "params": [
+   {
+    "name": "timezone",
+    "type": "object",
+    "required": false,
+    "desc": "If not None, return timezone-aware datetime.（默认 None）"
+   },
+   {
+    "name": "leap_second_strict",
+    "type": "str",
+    "required": false,
+    "desc": "If raise (default), raise an exception if the time is within a leap second. If warn then issue a warning. If…（默认 'raise'）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "转 Python datetime",
+  "orig_params": "timezone[object] 可选: If not None, return timezone-aware datetime.（默认 None）\nleap_second_strict[str] 可选: If raise (default), raise an exception if the time is within a leap second. If warn then issue a warning. If…（默认 'raise'）"
+ },
+ {
   "name": "astropy_sky_coord_match_to_catalog_sky",
   "target": "astropy.coordinates.SkyCoord.match_to_catalog_sky",
   "desc": "在目标星表中为每个坐标找到天球上最近的对应源，基于 KD-tree 在单位球面上搜索。适用于多波段星表交叉证认，返回索引、角距离与三维距离。返回类型：CoordinateMatchResult。主要参数：catalogcoord、nthneighbor。属于「星表表格与交叉匹配」，底层调用 astropy.coordinates.SkyCoord.match_to_catalog_sky。",
@@ -194,6 +276,90 @@
   "orig_params": "time[Time] 必填: The time(s) at which to compute the location of the sun."
  },
  {
+  "name": "astropy_get_constellation",
+  "target": "astropy.coordinates.get_constellation",
+  "desc": "给定天球坐标，返回其所处 IAU 星座的全名或缩写，使用 IAU 边界。返回类型：str。主要参数：coord、short_name、constellation_list。属于「坐标与时间系统」，底层调用 astropy.coordinates.get_constellation。",
+  "params": [
+   {
+    "name": "coord",
+    "type": "object",
+    "required": true,
+    "desc": "The object to determine the constellation of."
+   },
+   {
+    "name": "short_name",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the returned names are the IAU-sanctioned abbreviated names. Otherwise, full names for the…（默认 False）"
+   },
+   {
+    "name": "constellation_list",
+    "type": "str",
+    "required": false,
+    "desc": "The set of constellations to use. Currently only 'iau' is supported, meaning the 88 \"modern\" constellations…（默认 'iau'）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "星座判定",
+  "orig_params": "coord[object] 必填: The object to determine the constellation of.\nshort_name[bool] 可选: If True, the returned names are the IAU-sanctioned abbreviated names. Otherwise, full names for the…（默认 False）\nconstellation_list[str] 可选: The set of constellations to use. Currently only 'iau' is supported, meaning the 88 \"modern\" constellations…（默认 'iau'）"
+ },
+ {
+  "name": "astropy_angular_separation",
+  "target": "astropy.coordinates.angular_separation",
+  "desc": "纯函数形式的角分离计算，输入两点经纬度，返回角距离，适用于数组化批量计算。主要参数：lon1、lat1、lon2、lat2。属于「坐标与时间系统」，底层调用 astropy.coordinates.angular_separation。",
+  "params": [
+   {
+    "name": "lon1",
+    "type": "Angle",
+    "required": true,
+    "desc": "Longitude and latitude of the two points. Quantities should be in angular units; floats in radians."
+   },
+   {
+    "name": "lat1",
+    "type": "Angle",
+    "required": true,
+    "desc": "Longitude and latitude of the two points. Quantities should be in angular units; floats in radians."
+   },
+   {
+    "name": "lon2",
+    "type": "Angle",
+    "required": true,
+    "desc": "Longitude and latitude of the two points. Quantities should be in angular units; floats in radians."
+   },
+   {
+    "name": "lat2",
+    "type": "Angle",
+    "required": true,
+    "desc": "Longitude and latitude of the two points. Quantities should be in angular units; floats in radians."
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "球面角距离函数",
+  "orig_params": "lon1[Angle] 必填: Longitude and latitude of the two points. Quantities should be in angular units; floats in radians.\nlat1[Angle] 必填: Longitude and latitude of the two points. Quantities should be in angular units; floats in radians.\nlon2[Angle] 必填: Longitude and latitude of the two points. Quantities should be in angular units; floats in radians.\nlat2[Angle] 必填: Longitude and latitude of the two points. Quantities should be in angular units; floats in radians."
+ },
+ {
+  "name": "astropy_angle_create",
+  "target": "astropy.coordinates.Angle",
+  "desc": "构造 Angle，支持度、弧度、时角、度分秒字符串输入，提供 wrap_at、to_string、hms/dms 访问。主要参数：args、kwargs。属于「坐标与时间系统」，底层调用 astropy.coordinates.Angle。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "创建角度对象",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
   "name": "astropy_time_create",
   "target": "astropy.time.Time",
   "desc": "创建高精度 Time，支持 jd、mjd、iso、unix 等格式及 utc/tai/tt/tdb 等时间尺度。主要参数：val、val2、format、scale。属于「坐标与时间系统」，底层调用 astropy.time.Time。",
@@ -258,6 +424,15 @@
   "orig_params": "val[list] 必填: Value(s) to initialize the time or times. Bytes are decoded as ascii.\nval2[list] 可选: Value(s) to initialize the time or times. Only used for numerical input, to help preserve precision.（默认 None）\nformat[str] 可选: Format of input value(s), specifying how to interpret them (e.g., ISO, JD, or Unix time). By default, the…（默认 None）\nscale[str] 可选: Time scale of input value(s), must be one of the following: ('tai', 'tcb', 'tcg', 'tdb', 'tt', 'ut1', 'utc')（默认 None）\nprecision[int] 可选: Digits of precision in string representation of time（默认 None）\nin_subfmt[str] 可选: Unix glob to select subformats for parsing input times（默认 None）\nout_subfmt[str] 可选: Unix glob to select subformat for outputting times（默认 None）\nlocation[EarthLocation] 可选: If given as an tuple, it should be able to initialize an an EarthLocation instance, i.e., either contain 3…（默认 None）\ncopy[bool] 可选: Make a copy of the input values（默认 None）"
  },
  {
+  "name": "astropy_time_now",
+  "target": "astropy.time.Time.now",
+  "desc": "返回当前 UTC 时刻的 Time 对象，用于观测规划实时计算。无需额外参数。属于「坐标与时间系统」，底层调用 astropy.time.Time.now。",
+  "params": [],
+  "domain": "坐标与时间系统",
+  "cn": "当前时间",
+  "orig_params": "无参数"
+ },
+ {
   "name": "astropy_time_sidereal_time",
   "target": "astropy.time.Time.sidereal_time",
   "desc": "计算给定经度处的平/视恒星时，用于望远镜指向与时角计算。返回类型：astropy.coordinates.Longitude。主要参数：kind、longitude、model。属于「坐标与时间系统」，底层调用 astropy.time.Time.sidereal_time。",
@@ -284,6 +459,120 @@
   "domain": "坐标与时间系统",
   "cn": "恒星时计算",
   "orig_params": "kind[str] 必填: 'mean' or 'apparent', i.e., accounting for precession only, or also for nutation.\nlongitude[astropy.units.Quantity] 可选: The longitude on the Earth at which to compute the Earth rotation angle (taken from a location as needed). If…（默认 None）\nmodel[str] 可选: Precession (and nutation) model to use. The available ones are: - apparent: ['IAU1994', 'IAU2000A',…（默认 None）"
+ },
+ {
+  "name": "astropy_time_delta_create",
+  "target": "astropy.time.TimeDelta",
+  "desc": "创建 TimeDelta 表示时间间隔，可与 Time 做算术运算。主要参数：val、val2、format、scale。属于「坐标与时间系统」，底层调用 astropy.time.TimeDelta。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "val",
+    "type": "list",
+    "required": true,
+    "desc": "Value(s) to initialize the time difference(s). Any quantities will be converted appropriately (with care…"
+   },
+   {
+    "name": "val2",
+    "type": "list",
+    "required": false,
+    "desc": "Additional values, as needed to preserve precision.（默认 None）"
+   },
+   {
+    "name": "format",
+    "type": "str",
+    "required": false,
+    "desc": "Format of input value(s). For numerical inputs without units, \"jd\" is assumed and values are interpreted as…（默认 None）"
+   },
+   {
+    "name": "scale",
+    "type": "str",
+    "required": false,
+    "desc": "Time scale of input value(s), must be one of the following values: ('tdb', 'tt', 'ut1', 'tcg', 'tcb', 'tai').…（默认 None）"
+   },
+   {
+    "name": "precision",
+    "type": "int",
+    "required": false,
+    "desc": "Digits of precision in string representation of time（默认 None）"
+   },
+   {
+    "name": "in_subfmt",
+    "type": "str",
+    "required": false,
+    "desc": "Unix glob to select subformats for parsing input times（默认 None）"
+   },
+   {
+    "name": "out_subfmt",
+    "type": "str",
+    "required": false,
+    "desc": "Unix glob to select subformat for outputting times（默认 None）"
+   },
+   {
+    "name": "copy",
+    "type": "bool",
+    "required": false,
+    "desc": "Make a copy of the input values（默认 None）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "时间差对象",
+  "orig_params": "val[list] 必填: Value(s) to initialize the time difference(s). Any quantities will be converted appropriately (with care…\nval2[list] 可选: Additional values, as needed to preserve precision.（默认 None）\nformat[str] 可选: Format of input value(s). For numerical inputs without units, \"jd\" is assumed and values are interpreted as…（默认 None）\nscale[str] 可选: Time scale of input value(s), must be one of the following values: ('tdb', 'tt', 'ut1', 'tcg', 'tcb', 'tai').…（默认 None）\nprecision[int] 可选: Digits of precision in string representation of time（默认 None）\nin_subfmt[str] 可选: Unix glob to select subformats for parsing input times（默认 None）\nout_subfmt[str] 可选: Unix glob to select subformat for outputting times（默认 None）\ncopy[bool] 可选: Make a copy of the input values（默认 None）"
+ },
+ {
+  "name": "astropy_time_light_travel_time",
+  "target": "astropy.time.Time.light_travel_time",
+  "desc": "计算目标到观测地与日心/质心之间的光行时差，用于 HJD/BJD 转换，返回 TimeDelta。返回类型：astropy.time.TimeDelta。主要参数：skycoord、kind、location、ephemeris。属于「坐标与时间系统」，底层调用 astropy.time.Time.light_travel_time。",
+  "params": [
+   {
+    "name": "skycoord",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "The sky location(s) to calculate the correction for."
+   },
+   {
+    "name": "kind",
+    "type": "str",
+    "required": false,
+    "desc": "'barycentric' (default) or 'heliocentric'（默认 'barycentric'）"
+   },
+   {
+    "name": "location",
+    "type": "EarthLocation",
+    "required": false,
+    "desc": "The location(s) of the observatory to calculate the correction for. If no location is given, the location…（默认 None）"
+   },
+   {
+    "name": "ephemeris",
+    "type": "str",
+    "required": false,
+    "desc": "Solar system ephemeris to use (e.g., 'builtin', 'jpl'). By default, use the one set with…（默认 None）"
+   }
+  ],
+  "domain": "坐标与时间系统",
+  "cn": "光行时修正",
+  "orig_params": "skycoord[SkyCoord] 必填: The sky location(s) to calculate the correction for.\nkind[str] 可选: 'barycentric' (default) or 'heliocentric'（默认 'barycentric'）\nlocation[EarthLocation] 可选: The location(s) of the observatory to calculate the correction for. If no location is given, the location…（默认 None）\nephemeris[str] 可选: Solar system ephemeris to use (e.g., 'builtin', 'jpl'). By default, use the one set with…（默认 None）"
+ },
+ {
+  "name": "astropy_quantity_create",
+  "target": "astropy.units.Quantity",
+  "desc": "构造带单位的数值数组，是单位运算和量纲检查的基础。主要参数：args、kwargs。属于「单位与物理常量」，底层调用 astropy.units.Quantity。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "单位与物理常量",
+  "cn": "创建物理量",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
  },
  {
   "name": "astropy_quantity_to",
@@ -314,6 +603,28 @@
   "orig_params": "unit[object] 必填: An object that represents the unit to convert to. Must be an ~astropy.units.UnitBase object or a string…\nequivalencies[list] 可选: A list of equivalence pairs to try if the units are not directly convertible. See astropy:unit_equivalencies.…（默认 []）\ncopy[bool] 可选: If True (default), then the value is copied. Otherwise, a copy will only be made if necessary.（默认 True）"
  },
  {
+  "name": "astropy_quantity_to_value",
+  "target": "astropy.units.Quantity.to_value",
+  "desc": "转换到目标单位后返回裸数值。返回类型：ndarray。主要参数：unit、equivalencies。属于「单位与物理常量」，底层调用 astropy.units.Quantity.to_value。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "unit",
+    "type": "object",
+    "required": false,
+    "desc": "The unit in which the value should be given. If not given or None, use the current unit.（默认 None）"
+   },
+   {
+    "name": "equivalencies",
+    "type": "list",
+    "required": false,
+    "desc": "A list of equivalence pairs to try if the units are not directly convertible (see…（默认 []）"
+   }
+  ],
+  "domain": "单位与物理常量",
+  "cn": "提取指定单位数值",
+  "orig_params": "unit[object] 可选: The unit in which the value should be given. If not given or None, use the current unit.（默认 None）\nequivalencies[list] 可选: A list of equivalence pairs to try if the units are not directly convertible (see…（默认 []）"
+ },
+ {
   "name": "astropy_doppler_optical",
   "target": "astropy.units.doppler_optical",
   "desc": "基于静止频率或波长的光学速度定义等价关系。主要参数：rest。属于「单位与物理常量」，底层调用 astropy.units.doppler_optical。",
@@ -328,6 +639,89 @@
   "domain": "单位与物理常量",
   "cn": "光学多普勒等价",
   "orig_params": "rest[astropy.units.Quantity] 必填: Any quantity supported by the standard spectral equivalencies (wavelength, energy, frequency, wave number)."
+ },
+ {
+  "name": "astropy_doppler_radio",
+  "target": "astropy.units.doppler_radio",
+  "desc": "射电速度定义的多普勒等价关系。主要参数：rest。属于「单位与物理常量」，底层调用 astropy.units.doppler_radio。",
+  "params": [
+   {
+    "name": "rest",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "Any quantity supported by the standard spectral equivalencies (wavelength, energy, frequency, wave number)."
+   }
+  ],
+  "domain": "单位与物理常量",
+  "cn": "射电多普勒等价",
+  "orig_params": "rest[astropy.units.Quantity] 必填: Any quantity supported by the standard spectral equivalencies (wavelength, energy, frequency, wave number)."
+ },
+ {
+  "name": "astropy_parallax",
+  "target": "astropy.units.parallax",
+  "desc": "视差角与距离之间转换的等价关系。无需额外参数。属于「单位与物理常量」，底层调用 astropy.units.parallax。",
+  "params": [],
+  "domain": "单位与物理常量",
+  "cn": "视差距离等价",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_create",
+  "target": "astropy.cosmology.FlatLambdaCDM",
+  "desc": "创建平直 ΛCDM 宇宙学模型，参数 H0、Om0、Tcmb0 等，返回宇宙学对象。主要参数：H0、Om0、Tcmb0、Neff。属于「宇宙学计算」，底层调用 astropy.cosmology.FlatLambdaCDM。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "H0",
+    "type": "float",
+    "required": true,
+    "desc": "Hubble constant at z = 0. If a float, must be in [km/sec/Mpc]."
+   },
+   {
+    "name": "Om0",
+    "type": "float",
+    "required": true,
+    "desc": "Omega matter: density of non-relativistic matter in units of the critical density at z=0."
+   },
+   {
+    "name": "Tcmb0",
+    "type": "float",
+    "required": false,
+    "desc": "Temperature of the CMB z=0. If a float, must be in [K]. Default: 0 [K]. Setting this to zero will turn off…（默认 库内部默认）"
+   },
+   {
+    "name": "Neff",
+    "type": "float",
+    "required": false,
+    "desc": "Effective number of Neutrino species. Default 3.04.（默认 库内部默认）"
+   },
+   {
+    "name": "m_nu",
+    "type": "object",
+    "required": false,
+    "desc": "Mass of each neutrino species in [eV] (mass-energy equivalency enabled). If this is a scalar Quantity, then…（默认 库内部默认）"
+   },
+   {
+    "name": "Ob0",
+    "type": "float",
+    "required": false,
+    "desc": "Omega baryons: density of baryonic matter in units of the critical density at z=0.（默认 库内部默认）"
+   },
+   {
+    "name": "name",
+    "type": "str",
+    "required": false,
+    "desc": "Name for this cosmological object.（默认 None）"
+   },
+   {
+    "name": "meta",
+    "type": "dict",
+    "required": false,
+    "desc": "Metadata for the cosmology, e.g., a reference.（默认 None）"
+   }
+  ],
+  "domain": "宇宙学计算",
+  "cn": "平直ΛCDM宇宙学",
+  "orig_params": "H0[float] 必填: Hubble constant at z = 0. If a float, must be in [km/sec/Mpc].\nOm0[float] 必填: Omega matter: density of non-relativistic matter in units of the critical density at z=0.\nTcmb0[float] 可选: Temperature of the CMB z=0. If a float, must be in [K]. Default: 0 [K]. Setting this to zero will turn off…（默认 库内部默认）\nNeff[float] 可选: Effective number of Neutrino species. Default 3.04.（默认 库内部默认）\nm_nu[object] 可选: Mass of each neutrino species in [eV] (mass-energy equivalency enabled). If this is a scalar Quantity, then…（默认 库内部默认）\nOb0[float] 可选: Omega baryons: density of baryonic matter in units of the critical density at z=0.（默认 库内部默认）\nname[str] 可选: Name for this cosmological object.（默认 None）\nmeta[dict] 可选: Metadata for the cosmology, e.g., a reference.（默认 None）"
  },
  {
   "name": "astropy_flat_lambda_cdm_luminosity_distance",
@@ -384,6 +778,477 @@
   "orig_params": "z[object] 必填: 红移\nz2[object] 可选: Input redshifts. If one argument z is given, the distance d_A(0, z) is returned. If two arguments z1, z2 are…（默认 None）"
  },
  {
+  "name": "astropy_flat_lambda_cdm_comoving_distance",
+  "target": "astropy.cosmology.FlatLambdaCDM.comoving_distance",
+  "desc": "计算红移 z 的视线向共动距离。主要参数：z、z2。属于「宇宙学计算」，底层调用 astropy.cosmology.FlatLambdaCDM.comoving_distance。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "z",
+    "type": "object",
+    "required": true,
+    "desc": "Input redshifts. If one argument z is given, the distance d_c(0, z) is returned. If two arguments z1, z2 are…"
+   },
+   {
+    "name": "z2",
+    "type": "object",
+    "required": false,
+    "desc": "Input redshifts. If one argument z is given, the distance d_c(0, z) is returned. If two arguments z1, z2 are…（默认 None）"
+   }
+  ],
+  "domain": "宇宙学计算",
+  "cn": "共动距离",
+  "orig_params": "z[object] 必填: Input redshifts. If one argument z is given, the distance d_c(0, z) is returned. If two arguments z1, z2 are…\nz2[object] 可选: Input redshifts. If one argument z is given, the distance d_c(0, z) is returned. If two arguments z1, z2 are…（默认 None）"
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_distmod",
+  "target": "astropy.cosmology.FlatLambdaCDM.distmod",
+  "desc": "计算红移 z 的距离模数 μ。主要参数：z。属于「宇宙学计算」，底层调用 astropy.cosmology.FlatLambdaCDM.distmod。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "z",
+    "type": "object",
+    "required": true,
+    "desc": "Input redshift."
+   }
+  ],
+  "domain": "宇宙学计算",
+  "cn": "距离模数",
+  "orig_params": "z[object] 必填: Input redshift."
+ },
+ {
+  "name": "astropy_planck18",
+  "target": "astropy.cosmology.Planck18",
+  "desc": "预置的 Planck 2018 参数宇宙学对象。无需额外参数。属于「宇宙学计算」，底层调用 astropy.cosmology.Planck18。",
+  "params": [],
+  "domain": "宇宙学计算",
+  "cn": "Planck 2018 宇宙学",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astropy_table_create",
+  "target": "astropy.table.Table",
+  "desc": "构造 astropy Table。可传 rows 为字典列表，或用 _args 传列数据。返回 Table，可再交给 hstack/vstack/join/unique/table_read 等。底层 astropy.table.Table。",
+  "params": [
+   {
+    "name": "data",
+    "type": "object",
+    "required": false,
+    "desc": "Data to initialize table.（默认 None）"
+   },
+   {
+    "name": "masked",
+    "type": "bool",
+    "required": false,
+    "desc": "Specify whether the table is masked.（默认 False）"
+   },
+   {
+    "name": "names",
+    "type": "list",
+    "required": false,
+    "desc": "Specify column names.（默认 None）"
+   },
+   {
+    "name": "dtype",
+    "type": "list",
+    "required": false,
+    "desc": "Specify column data types.（默认 None）"
+   },
+   {
+    "name": "meta",
+    "type": "dict",
+    "required": false,
+    "desc": "Metadata associated with the table.（默认 None）"
+   },
+   {
+    "name": "copy",
+    "type": "bool",
+    "required": false,
+    "desc": "Copy the input column data and make a deep copy of the input meta. Default is True.（默认 True）"
+   },
+   {
+    "name": "rows",
+    "type": "object",
+    "required": false,
+    "desc": "Row-oriented data for table instead of data argument.（默认 None）"
+   },
+   {
+    "name": "copy_indices",
+    "type": "bool",
+    "required": false,
+    "desc": "Copy any indices in the input data. Default is True.（默认 True）"
+   },
+   {
+    "name": "units",
+    "type": "list",
+    "required": false,
+    "desc": "List or dict of units to apply to columns.（默认 None）"
+   },
+   {
+    "name": "descriptions",
+    "type": "list",
+    "required": false,
+    "desc": "List or dict of descriptions to apply to columns.（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "创建表格",
+  "orig_params": "data[object] 可选: Data to initialize table.（默认 None）\nmasked[bool] 可选: Specify whether the table is masked.（默认 False）\nnames[list] 可选: Specify column names.（默认 None）\ndtype[list] 可选: Specify column data types.（默认 None）\nmeta[dict] 可选: Metadata associated with the table.（默认 None）\ncopy[bool] 可选: Copy the input column data and make a deep copy of the input meta. Default is True.（默认 True）\nrows[object] 可选: Row-oriented data for table instead of data argument.（默认 None）\ncopy_indices[bool] 可选: Copy any indices in the input data. Default is True.（默认 True）\nunits[list] 可选: List or dict of units to apply to columns.（默认 None）\ndescriptions[list] 可选: List or dict of descriptions to apply to columns.（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_table_read",
+  "target": "astropy.table.Table.read",
+  "desc": "按格式读取 FITS、VOTable、ASCII、HDF5 等到 Table。返回类型：astropy.table.Table。主要参数：args、kwargs。属于「星表表格与交叉匹配」，底层调用 astropy.table.Table.read。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "读取表格",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_hstack",
+  "target": "astropy.table.hstack",
+  "desc": "横向合并多张表的列。返回类型：astropy.table.Table object。主要参数：tables、join_type、uniq_col_name、table_names。属于「星表表格与交叉匹配」，底层调用 astropy.table.hstack。",
+  "params": [
+   {
+    "name": "tables",
+    "type": "Table",
+    "required": true,
+    "desc": "Tables to stack along columns (horizontally) with the current table"
+   },
+   {
+    "name": "join_type",
+    "type": "str",
+    "required": false,
+    "desc": "Join type ('inner' | 'exact' | 'outer'), default is 'outer'（默认 'outer'）"
+   },
+   {
+    "name": "uniq_col_name",
+    "type": "str",
+    "required": false,
+    "desc": "String generate a unique output column name in case of a conflict. The default is '{col_name}_{table_name}'.（默认 '{col_name}_{table_name}'）"
+   },
+   {
+    "name": "table_names",
+    "type": "object",
+    "required": false,
+    "desc": "Two-element list of table names used when generating unique output column names. The default is ['1', '2',…（默认 None）"
+   },
+   {
+    "name": "metadata_conflicts",
+    "type": "str",
+    "required": false,
+    "desc": "How to proceed with metadata conflicts. This should be one of: * 'silent': silently pick the last conflicting…（默认 'warn'）"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "表格横向拼接",
+  "orig_params": "tables[Table] 必填: Tables to stack along columns (horizontally) with the current table\njoin_type[str] 可选: Join type ('inner' | 'exact' | 'outer'), default is 'outer'（默认 'outer'）\nuniq_col_name[str] 可选: String generate a unique output column name in case of a conflict. The default is '{col_name}_{table_name}'.（默认 '{col_name}_{table_name}'）\ntable_names[object] 可选: Two-element list of table names used when generating unique output column names. The default is ['1', '2',…（默认 None）\nmetadata_conflicts[str] 可选: How to proceed with metadata conflicts. This should be one of: * 'silent': silently pick the last conflicting…（默认 'warn'）"
+ },
+ {
+  "name": "astropy_vstack",
+  "target": "astropy.table.vstack",
+  "desc": "纵向合并多张表。返回类型：astropy.table.Table object。主要参数：tables、join_type、metadata_conflicts。属于「星表表格与交叉匹配」，底层调用 astropy.table.vstack。",
+  "params": [
+   {
+    "name": "tables",
+    "type": "Table",
+    "required": true,
+    "desc": "Table(s) to stack along rows (vertically) with the current table"
+   },
+   {
+    "name": "join_type",
+    "type": "str",
+    "required": false,
+    "desc": "Join type ('inner' | 'exact' | 'outer'), default is 'outer'（默认 'outer'）"
+   },
+   {
+    "name": "metadata_conflicts",
+    "type": "str",
+    "required": false,
+    "desc": "How to proceed with metadata conflicts. This should be one of: * 'silent': silently pick the last conflicting…（默认 'warn'）"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "表格纵向堆叠",
+  "orig_params": "tables[Table] 必填: Table(s) to stack along rows (vertically) with the current table\njoin_type[str] 可选: Join type ('inner' | 'exact' | 'outer'), default is 'outer'（默认 'outer'）\nmetadata_conflicts[str] 可选: How to proceed with metadata conflicts. This should be one of: * 'silent': silently pick the last conflicting…（默认 'warn'）"
+ },
+ {
+  "name": "astropy_join",
+  "target": "astropy.table.join",
+  "desc": "按键列做 inner/left/right/outer 连接，用于星表合并。返回类型：astropy.table.Table object。主要参数：left、right、keys、join_type。属于「星表表格与交叉匹配」，底层调用 astropy.table.join。",
+  "params": [
+   {
+    "name": "left",
+    "type": "object",
+    "required": true,
+    "desc": "Left side table in the join. If not a Table, will call Table(left)"
+   },
+   {
+    "name": "right",
+    "type": "object",
+    "required": true,
+    "desc": "Right side table in the join. If not a Table, will call Table(right)"
+   },
+   {
+    "name": "keys",
+    "type": "str",
+    "required": false,
+    "desc": "Name(s) of column(s) used to match rows of left and right tables. Default is to use all columns which are…（默认 None）"
+   },
+   {
+    "name": "join_type",
+    "type": "str",
+    "required": false,
+    "desc": "Join type ('inner' | 'outer' | 'left' | 'right' | 'cartesian'), default is 'inner'（默认 'inner'）"
+   },
+   {
+    "name": "keys_left",
+    "type": "str",
+    "required": false,
+    "desc": "Left column(s) used to match rows instead of keys arg. This can be be a single left table column name or list…（默认 None）"
+   },
+   {
+    "name": "keys_right",
+    "type": "str",
+    "required": false,
+    "desc": "Same as keys_left, but for the right side of the join.（默认 None）"
+   },
+   {
+    "name": "keep_order",
+    "type": "bool",
+    "required": false,
+    "desc": "By default, rows are sorted by the join keys. If True, preserve the order of rows from the left table for…（默认 False）"
+   },
+   {
+    "name": "uniq_col_name",
+    "type": "str",
+    "required": false,
+    "desc": "String generate a unique output column name in case of a conflict. The default is '{col_name}_{table_name}'.（默认 '{col_name}_{table_name}'）"
+   },
+   {
+    "name": "table_names",
+    "type": "list",
+    "required": false,
+    "desc": "Two-element list of table names used when generating unique output column names. The default is ['1', '2'].（默认 ['1', '2']）"
+   },
+   {
+    "name": "metadata_conflicts",
+    "type": "str",
+    "required": false,
+    "desc": "How to proceed with metadata conflicts. This should be one of: * 'silent': silently pick the last conflicting…（默认 'warn'）"
+   },
+   {
+    "name": "join_funcs",
+    "type": "dict",
+    "required": false,
+    "desc": "Dict of functions to use for matching the corresponding key column(s). See ~astropy.table.join_skycoord for…（默认 None）"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "表格连接",
+  "orig_params": "left[object] 必填: Left side table in the join. If not a Table, will call Table(left)\nright[object] 必填: Right side table in the join. If not a Table, will call Table(right)\nkeys[str] 可选: Name(s) of column(s) used to match rows of left and right tables. Default is to use all columns which are…（默认 None）\njoin_type[str] 可选: Join type ('inner' | 'outer' | 'left' | 'right' | 'cartesian'), default is 'inner'（默认 'inner'）\nkeys_left[str] 可选: Left column(s) used to match rows instead of keys arg. This can be be a single left table column name or list…（默认 None）\nkeys_right[str] 可选: Same as keys_left, but for the right side of the join.（默认 None）\nkeep_order[bool] 可选: By default, rows are sorted by the join keys. If True, preserve the order of rows from the left table for…（默认 False）\nuniq_col_name[str] 可选: String generate a unique output column name in case of a conflict. The default is '{col_name}_{table_name}'.（默认 '{col_name}_{table_name}'）\ntable_names[list] 可选: Two-element list of table names used when generating unique output column names. The default is ['1', '2'].（默认 ['1', '2']）\nmetadata_conflicts[str] 可选: How to proceed with metadata conflicts. This should be one of: * 'silent': silently pick the last conflicting…（默认 'warn'）\njoin_funcs[dict] 可选: Dict of functions to use for matching the corresponding key column(s). See ~astropy.table.join_skycoord for…（默认 None）"
+ },
+ {
+  "name": "astropy_unique",
+  "target": "astropy.table.unique",
+  "desc": "按键列去重。返回类型：astropy.table.Table object。主要参数：input_table、keys、silent、keep。属于「星表表格与交叉匹配」，底层调用 astropy.table.unique。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "input_table",
+    "type": "object",
+    "required": true,
+    "desc": "input_table，详见官方 API 文档"
+   },
+   {
+    "name": "keys",
+    "type": "str",
+    "required": false,
+    "desc": "Name(s) of column(s) used to create unique rows. Default is to use all columns.（默认 None）"
+   },
+   {
+    "name": "silent",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, masked value column(s) are silently removed from keys. If False, an exception is raised when keys…（默认 False）"
+   },
+   {
+    "name": "keep",
+    "type": "str",
+    "required": false,
+    "desc": "Whether to keep the first or last row for each set of duplicates. If 'none', all rows that are duplicate are…（默认 'first'）"
+   }
+  ],
+  "domain": "星表表格与交叉匹配",
+  "cn": "表格去重",
+  "orig_params": "input_table[object] 必填: input_table，详见官方 API 文档\nkeys[str] 可选: Name(s) of column(s) used to create unique rows. Default is to use all columns.（默认 None）\nsilent[bool] 可选: If True, masked value column(s) are silently removed from keys. If False, an exception is raised when keys…（默认 False）\nkeep[str] 可选: Whether to keep the first or last row for each set of duplicates. If 'none', all rows that are duplicate are…（默认 'first'）"
+ },
+ {
+  "name": "astropy_getheader",
+  "target": "astropy.io.fits.getheader",
+  "desc": "读取指定 HDU 的 Header，用于检索观测参数、WCS 关键字。主要参数：filename、args、kwargs。属于「FITS与图像读写」，底层调用 astropy.io.fits.getheader。",
+  "params": [
+   {
+    "name": "filename",
+    "type": "object",
+    "required": true,
+    "desc": "File to get header from. If an opened file object, its mode must be one of the following rb, rb+, or ab+)."
+   },
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "FITS与图像读写",
+  "cn": "读取FITS头",
+  "orig_params": "filename[object] 必填: File to get header from. If an opened file object, its mode must be one of the following rb, rb+, or ab+).\nargs[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_getval",
+  "target": "astropy.io.fits.getval",
+  "desc": "从 FITS 文件指定 HDU 读取某个关键字的值。主要参数：filename、keyword、args、kwargs。属于「FITS与图像读写」，底层调用 astropy.io.fits.getval。",
+  "params": [
+   {
+    "name": "filename",
+    "type": "object",
+    "required": true,
+    "desc": "Name of the FITS file, or file object (if opened, mode must be one of the following rb, rb+, or ab+)."
+   },
+   {
+    "name": "keyword",
+    "type": "str",
+    "required": true,
+    "desc": "Keyword name"
+   },
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "FITS与图像读写",
+  "cn": "读取头关键字",
+  "orig_params": "filename[object] 必填: Name of the FITS file, or file object (if opened, mode must be one of the following rb, rb+, or ab+).\nkeyword[str] 必填: Keyword name\nargs[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_info",
+  "target": "astropy.io.fits.info",
+  "desc": "打印 FITS 文件各 HDU 名称、类型、维度和格式，快速了解文件结构。主要参数：filename、output、kwargs。属于「FITS与图像读写」，底层调用 astropy.io.fits.info。",
+  "params": [
+   {
+    "name": "filename",
+    "type": "object",
+    "required": true,
+    "desc": "FITS file to obtain info from. If opened, mode must be one of the following: rb, rb+, or ab+ (i.e. the file…"
+   },
+   {
+    "name": "output",
+    "type": "str",
+    "required": false,
+    "desc": "A file-like object to write the output to. If False, does not output to a file and instead returns a list of…（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "FITS与图像读写",
+  "cn": "FITS结构摘要",
+  "orig_params": "filename[object] 必填: FITS file to obtain info from. If opened, mode must be one of the following: rb, rb+, or ab+ (i.e. the file…\noutput[str] 可选: A file-like object to write the output to. If False, does not output to a file and instead returns a list of…（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_cutout2d_create",
+  "target": "astropy.nddata.Cutout2D",
+  "desc": "从二维数组剪裁子图并可同步裁 WCS。必填 data、position（像素 (x,y) 或 SkyCoord）、size；可选 wcs。返回 Cutout2D（含 data/wcs/bbox_original）。不对原始 FITS 路径做任意读写。底层 astropy.nddata.Cutout2D。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The 2D data array from which to extract the cutout array."
+   },
+   {
+    "name": "position",
+    "type": "tuple",
+    "required": true,
+    "desc": "The position of the cutout array's center with respect to the data array. The position can be specified…"
+   },
+   {
+    "name": "size",
+    "type": "int",
+    "required": true,
+    "desc": "The size of the cutout array along each axis. If size is a scalar number or a scalar ~astropy.units.Quantity,…"
+   },
+   {
+    "name": "wcs",
+    "type": "WCS",
+    "required": false,
+    "desc": "A WCS object associated with the input data array. If wcs is not None, then the returned cutout object will…（默认 None）"
+   },
+   {
+    "name": "mode",
+    "type": "str",
+    "required": false,
+    "desc": "The mode used for creating the cutout data array. For the 'partial' and 'trim' modes, a partial overlap of…（默认 'trim'）"
+   },
+   {
+    "name": "fill_value",
+    "type": "float",
+    "required": false,
+    "desc": "If mode='partial', the value to fill pixels in the cutout array that do not overlap with the input data.…（默认 nan）"
+   },
+   {
+    "name": "copy",
+    "type": "bool",
+    "required": false,
+    "desc": "If False (default), then the cutout data will be a view into the original data array. If True, then the…（默认 False）"
+   },
+   {
+    "name": "limit_rounding_method",
+    "type": "callable",
+    "required": false,
+    "desc": "The rounding method when calculating the minimum and maximum pixel indices. This must be a callable function.…（默认 库内部默认）"
+   }
+  ],
+  "domain": "FITS与图像读写",
+  "cn": "二维图像剪裁",
+  "orig_params": "data[numpy.ndarray] 必填: The 2D data array from which to extract the cutout array.\nposition[tuple] 必填: The position of the cutout array's center with respect to the data array. The position can be specified…\nsize[int] 必填: The size of the cutout array along each axis. If size is a scalar number or a scalar ~astropy.units.Quantity,…\nwcs[WCS] 可选: A WCS object associated with the input data array. If wcs is not None, then the returned cutout object will…（默认 None）\nmode[str] 可选: The mode used for creating the cutout data array. For the 'partial' and 'trim' modes, a partial overlap of…（默认 'trim'）\nfill_value[float] 可选: If mode='partial', the value to fill pixels in the cutout array that do not overlap with the input data.…（默认 nan）\ncopy[bool] 可选: If False (default), then the cutout data will be a view into the original data array. If True, then the…（默认 False）\nlimit_rounding_method[callable] 可选: The rounding method when calculating the minimum and maximum pixel indices. This must be a callable function.…（默认 库内部默认）"
+ },
+ {
   "name": "astropy_skycoord_to_pixel",
   "target": "astropy.wcs.utils.skycoord_to_pixel",
   "desc": "便捷函数：用 WCS 把 SkyCoord 转为像素。返回类型：numpy.ndarray。主要参数：coords、wcs、origin、mode。属于「WCS与天球投影」，底层调用 astropy.wcs.utils.skycoord_to_pixel。",
@@ -418,32 +1283,152 @@
   "orig_params": "coords[SkyCoord] 必填: The coordinates to convert.\nwcs[WCS] 必填: The WCS transformation to use.\norigin[int] 可选: Whether to return 0 or 1-based pixel coordinates.（默认 0）\nmode[str] 可选: Whether to do the transformation including distortions ('all') or only including only the core WCS…（默认 'all'）"
  },
  {
-  "name": "astropy_getheader",
-  "target": "astropy.io.fits.getheader",
-  "desc": "读取指定 HDU 的 Header，用于检索观测参数、WCS 关键字。主要参数：filename、args、kwargs。属于「FITS与图像读写」，底层调用 astropy.io.fits.getheader。",
+  "name": "astropy_pixel_to_skycoord",
+  "target": "astropy.wcs.utils.pixel_to_skycoord",
+  "desc": "便捷函数：用 WCS 把像素转换为 SkyCoord。主要参数：xp、yp、wcs、origin。属于「WCS与天球投影」，底层调用 astropy.wcs.utils.pixel_to_skycoord。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
   "params": [
    {
-    "name": "filename",
-    "type": "object",
+    "name": "xp",
+    "type": "float",
     "required": true,
-    "desc": "File to get header from. If an opened file object, its mode must be one of the following rb, rb+, or ab+)."
+    "desc": "The coordinates to convert."
    },
    {
-    "name": "args",
+    "name": "yp",
+    "type": "float",
+    "required": true,
+    "desc": "The coordinates to convert."
+   },
+   {
+    "name": "wcs",
+    "type": "WCS",
+    "required": true,
+    "desc": "The WCS transformation to use."
+   },
+   {
+    "name": "origin",
+    "type": "int",
+    "required": false,
+    "desc": "Whether to return 0 or 1-based pixel coordinates.（默认 0）"
+   },
+   {
+    "name": "mode",
+    "type": "str",
+    "required": false,
+    "desc": "Whether to do the transformation including distortions ('all') or only including only the core WCS…（默认 'all'）"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "像素转SkyCoord",
+  "orig_params": "xp[float] 必填: The coordinates to convert.\nyp[float] 必填: The coordinates to convert.\nwcs[WCS] 必填: The WCS transformation to use.\norigin[int] 可选: Whether to return 0 or 1-based pixel coordinates.（默认 0）\nmode[str] 可选: Whether to do the transformation including distortions ('all') or only including only the core WCS…（默认 'all'）"
+ },
+ {
+  "name": "astropy_wcs_create",
+  "target": "astropy.wcs.WCS",
+  "desc": "由 FITS 头字典或头对象构造 WCS。常见传法：header={\"NAXIS\":2,\"CTYPE1\":\"RA---TAN\",...} 或 _args=[header]。返回 WCS，可再用于 skycoord_to_pixel / wcs_pixel_to_world。底层 astropy.wcs.WCS。",
+  "params": [
+   {
+    "name": "header",
+    "type": "Header",
+    "required": false,
+    "desc": "If *header* is not provided or None, the object will be initialized to default values.（默认 None）"
+   },
+   {
+    "name": "fobj",
+    "type": "HDUList",
+    "required": false,
+    "desc": "It is needed when header keywords point to a distortion paper_ lookup table stored in a different extension.（默认 None）"
+   },
+   {
+    "name": "key",
+    "type": "str",
+    "required": false,
+    "desc": "The name of a particular WCS transform to use. This may be either ' ' or 'A'-'Z' and corresponds to the \"a\"…（默认 ' '）"
+   },
+   {
+    "name": "minerr",
+    "type": "float",
+    "required": false,
+    "desc": "The minimum value a distortion correction must have in order to be applied. If the value of CQERRja is…（默认 0.0）"
+   },
+   {
+    "name": "relax",
+    "type": "bool",
+    "required": false,
+    "desc": "Degree of permissiveness: - True (default): Admit all recognized informal extensions of the WCS standard. -…（默认 True）"
+   },
+   {
+    "name": "naxis",
+    "type": "int",
+    "required": false,
+    "desc": "Extracts specific coordinate axes using ~astropy.wcs.Wcsprm.sub. If a header is provided, and *naxis* is not…（默认 None）"
+   },
+   {
+    "name": "keysel",
+    "type": "object",
+    "required": false,
+    "desc": "A sequence of flags used to select the keyword types considered by wcslib. When None, only the standard image…（默认 None）"
+   },
+   {
+    "name": "colsel",
+    "type": "object",
+    "required": false,
+    "desc": "A sequence of table column numbers used to restrict the WCS transformations considered to only those…（默认 None）"
+   },
+   {
+    "name": "fix",
+    "type": "bool",
+    "required": false,
+    "desc": "When True (default), call ~astropy.wcs.Wcsprm.fix on the resulting object to fix any non-standard uses in the…（默认 True）"
+   },
+   {
+    "name": "translate_units",
+    "type": "str",
+    "required": false,
+    "desc": "Specify which potentially unsafe translations of non-standard unit strings to perform. By default, performs…（默认 ''）"
+   },
+   {
+    "name": "preserve_units",
+    "type": "bool",
+    "required": false,
+    "desc": "By default, some units are converted to SI, for example spectral axes in units of nm might be converted to m,…（默认 False）"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "创建WCS对象",
+  "orig_params": "header[Header] 可选: If *header* is not provided or None, the object will be initialized to default values.（默认 None）\nfobj[HDUList] 可选: It is needed when header keywords point to a distortion paper_ lookup table stored in a different extension.（默认 None）\nkey[str] 可选: The name of a particular WCS transform to use. This may be either ' ' or 'A'-'Z' and corresponds to the \"a\"…（默认 ' '）\nminerr[float] 可选: The minimum value a distortion correction must have in order to be applied. If the value of CQERRja is…（默认 0.0）\nrelax[bool] 可选: Degree of permissiveness: - True (default): Admit all recognized informal extensions of the WCS standard. -…（默认 True）\nnaxis[int] 可选: Extracts specific coordinate axes using ~astropy.wcs.Wcsprm.sub. If a header is provided, and *naxis* is not…（默认 None）\nkeysel[object] 可选: A sequence of flags used to select the keyword types considered by wcslib. When None, only the standard image…（默认 None）\ncolsel[object] 可选: A sequence of table column numbers used to restrict the WCS transformations considered to only those…（默认 None）\nfix[bool] 可选: When True (default), call ~astropy.wcs.Wcsprm.fix on the resulting object to fix any non-standard uses in the…（默认 True）\ntranslate_units[str] 可选: Specify which potentially unsafe translations of non-standard unit strings to perform. By default, performs…（默认 ''）\npreserve_units[bool] 可选: By default, some units are converted to SI, for example spectral axes in units of nm might be converted to m,…（默认 False）"
+ },
+ {
+  "name": "astropy_wcs_pixel_to_world",
+  "target": "astropy.wcs.WCS.pixel_to_world",
+  "desc": "将像素坐标转换为高层 SkyCoord/SpectralCoord，遵循 APE14 接口。主要参数：pixel_arrays。属于「WCS与天球投影」，底层调用 astropy.wcs.WCS.pixel_to_world。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "pixel_arrays",
     "type": "tuple",
     "required": false,
     "desc": "额外位置参数"
-   },
-   {
-    "name": "kwargs",
-    "type": "dict",
-    "required": false,
-    "desc": "额外关键字参数，原样传递给底层函数"
    }
   ],
-  "domain": "FITS与图像读写",
-  "cn": "读取FITS头",
-  "orig_params": "filename[object] 必填: File to get header from. If an opened file object, its mode must be one of the following rb, rb+, or ab+).\nargs[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+  "domain": "WCS与天球投影",
+  "cn": "像素转天球坐标",
+  "orig_params": "pixel_arrays[tuple] 可选: 额外位置参数"
+ },
+ {
+  "name": "astropy_wcs_world_to_pixel",
+  "target": "astropy.wcs.WCS.world_to_pixel",
+  "desc": "将 SkyCoord 转换为像素坐标。主要参数：world_objects。属于「WCS与天球投影」，底层调用 astropy.wcs.WCS.world_to_pixel。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "world_objects",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "天球坐标转像素",
+  "orig_params": "world_objects[tuple] 可选: 额外位置参数"
  },
  {
   "name": "astropy_sigma_clipped_stats",
@@ -526,6 +1511,160 @@
   "domain": "统计与采样拟合",
   "cn": "裁剪统计量",
   "orig_params": "data[numpy.ndarray] 必填: Data array or object that can be converted to an array.\nmask[object] 可选: A boolean mask with the same shape as data, where a True value indicates the corresponding element of data is…（默认 None）\nmask_value[float] 可选: A data value (e.g., 0.0) that is ignored when computing the statistics. mask_value will be masked in addition…（默认 None）\nsigma[float] 可选: The number of standard deviations to use for both the lower and upper clipping limit. These limits are…（默认 3.0）\nsigma_lower[float] 可选: The number of standard deviations to use as the lower bound for the clipping limit. If None then the value of…（默认 None）\nsigma_upper[float] 可选: The number of standard deviations to use as the upper bound for the clipping limit. If None then the value of…（默认 None）\nmaxiters[int] 可选: The maximum number of sigma-clipping iterations to perform or None to clip until convergence is achieved…（默认 5）\ncenfunc[str] 可选: The statistic or callable function/object used to compute the center value for the clipping. If using a…（默认 'median'）\nstdfunc[str] 可选: The statistic or callable function/object used to compute the standard deviation about the center value. If…（默认 'std'）\nstd_ddof[int] 可选: The delta degrees of freedom for the standard deviation calculation. The divisor used in the calculation is N…（默认 0）\naxis[object] 可选: The axis or axes along which to sigma clip the data. If None, then the flattened data will be used. axis is…（默认 None）\ngrow[float] 可选: Radius within which to mask the neighbouring pixels of those that fall outwith the clipping limits (only…（默认 False）"
+ },
+ {
+  "name": "astropy_biweight_location",
+  "target": "astropy.stats.biweight_location",
+  "desc": "双权重稳健中心估计。返回类型：float。主要参数：data、c、M、axis。属于「统计与采样拟合」，底层调用 astropy.stats.biweight_location。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Input array or object that can be converted to an array. data can be a ~numpy.ma.MaskedArray."
+   },
+   {
+    "name": "c",
+    "type": "float",
+    "required": false,
+    "desc": "Tuning constant for the biweight estimator (default = 6.0).（默认 6.0）"
+   },
+   {
+    "name": "M",
+    "type": "float",
+    "required": false,
+    "desc": "Initial guess for the location. If M is a scalar value, then its value will be used for the entire array (or…（默认 None）"
+   },
+   {
+    "name": "axis",
+    "type": "int",
+    "required": false,
+    "desc": "The axis or axes along which the biweight locations are computed. If None (default), then the biweight…（默认 None）"
+   },
+   {
+    "name": "ignore_nan",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether to ignore NaN values in the input data.（默认 False）"
+   }
+  ],
+  "domain": "统计与采样拟合",
+  "cn": "双权重位置估计",
+  "orig_params": "data[numpy.ndarray] 必填: Input array or object that can be converted to an array. data can be a ~numpy.ma.MaskedArray.\nc[float] 可选: Tuning constant for the biweight estimator (default = 6.0).（默认 6.0）\nM[float] 可选: Initial guess for the location. If M is a scalar value, then its value will be used for the entire array (or…（默认 None）\naxis[int] 可选: The axis or axes along which the biweight locations are computed. If None (default), then the biweight…（默认 None）\nignore_nan[bool] 可选: Whether to ignore NaN values in the input data.（默认 False）"
+ },
+ {
+  "name": "astropy_biweight_scale",
+  "target": "astropy.stats.biweight_scale",
+  "desc": "双权重稳健标准差。返回类型：float。主要参数：data、c、M、axis。属于「统计与采样拟合」，底层调用 astropy.stats.biweight_scale。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Input array or object that can be converted to an array. data can be a ~numpy.ma.MaskedArray."
+   },
+   {
+    "name": "c",
+    "type": "float",
+    "required": false,
+    "desc": "Tuning constant for the biweight estimator (default = 9.0).（默认 9.0）"
+   },
+   {
+    "name": "M",
+    "type": "float",
+    "required": false,
+    "desc": "The location estimate. If M is a scalar value, then its value will be used for the entire array (or along…（默认 None）"
+   },
+   {
+    "name": "axis",
+    "type": "int",
+    "required": false,
+    "desc": "The axis or axes along which the biweight scales are computed. If None (default), then the biweight scale of…（默认 None）"
+   },
+   {
+    "name": "modify_sample_size",
+    "type": "bool",
+    "required": false,
+    "desc": "If False (default), then the sample size used is the total number of elements in the array (or along the…（默认 False）"
+   },
+   {
+    "name": "ignore_nan",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether to ignore NaN values in the input data.（默认 False）"
+   }
+  ],
+  "domain": "统计与采样拟合",
+  "cn": "双权重尺度估计",
+  "orig_params": "data[numpy.ndarray] 必填: Input array or object that can be converted to an array. data can be a ~numpy.ma.MaskedArray.\nc[float] 可选: Tuning constant for the biweight estimator (default = 9.0).（默认 9.0）\nM[float] 可选: The location estimate. If M is a scalar value, then its value will be used for the entire array (or along…（默认 None）\naxis[int] 可选: The axis or axes along which the biweight scales are computed. If None (default), then the biweight scale of…（默认 None）\nmodify_sample_size[bool] 可选: If False (default), then the sample size used is the total number of elements in the array (or along the…（默认 False）\nignore_nan[bool] 可选: Whether to ignore NaN values in the input data.（默认 False）"
+ },
+ {
+  "name": "astropy_circmean",
+  "target": "astropy.stats.circmean",
+  "desc": "角度数据的圆周均值。返回类型：ndarray。主要参数：data、axis、weights。属于「统计与采样拟合」，底层调用 astropy.stats.circmean。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Array of circular (directional) data, which is assumed to be in radians whenever data is numpy.ndarray."
+   },
+   {
+    "name": "axis",
+    "type": "int",
+    "required": false,
+    "desc": "Axis along which circular means are computed. The default is to compute the mean of the flattened array.（默认 None）"
+   },
+   {
+    "name": "weights",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "In case of grouped data, the i-th element of weights represents a weighting factor for each group such that…（默认 None）"
+   }
+  ],
+  "domain": "统计与采样拟合",
+  "cn": "圆周均值",
+  "orig_params": "data[numpy.ndarray] 必填: Array of circular (directional) data, which is assumed to be in radians whenever data is numpy.ndarray.\naxis[int] 可选: Axis along which circular means are computed. The default is to compute the mean of the flattened array.（默认 None）\nweights[numpy.ndarray] 可选: In case of grouped data, the i-th element of weights represents a weighting factor for each group such that…（默认 None）"
+ },
+ {
+  "name": "astropy_bayesian_blocks",
+  "target": "astropy.stats.bayesian_blocks",
+  "desc": "贝叶斯块算法检测光变/事件序列变点。返回类型：ndarray。主要参数：t、x、sigma、fitness。属于「统计与采样拟合」，底层调用 astropy.stats.bayesian_blocks。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "t",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "data times (one dimensional, length N)"
+   },
+   {
+    "name": "x",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "data values（默认 None）"
+   },
+   {
+    "name": "sigma",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "data errors（默认 None）"
+   },
+   {
+    "name": "fitness",
+    "type": "str",
+    "required": false,
+    "desc": "the fitness function to use for the model. If a string, the following options are supported: - 'events' :…（默认 'events'）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "统计与采样拟合",
+  "cn": "贝叶斯分块",
+  "orig_params": "t[numpy.ndarray] 必填: data times (one dimensional, length N)\nx[numpy.ndarray] 可选: data values（默认 None）\nsigma[numpy.ndarray] 可选: data errors（默认 None）\nfitness[str] 可选: the fitness function to use for the model. If a string, the following options are supported: - 'events' :…（默认 'events'）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
  },
  {
   "name": "astropy_lomb_scargle_autopower",
@@ -636,5 +1775,251 @@
   "domain": "时序与光变曲线",
   "cn": "BLS自动功率谱",
   "orig_params": "duration[object] 必填: duration，详见官方 API 文档\nobjective[object] 可选: objective，详见官方 API 文档（默认 None）\nmethod[object] 可选: method，详见官方 API 文档（默认 None）\noversample[int] 可选: oversample，详见官方 API 文档（默认 10）\nminimum_n_transit[int] 可选: minimum_n_transit，详见官方 API 文档（默认 3）\nminimum_period[object] 可选: minimum_period，详见官方 API 文档（默认 None）\nmaximum_period[object] 可选: maximum_period，详见官方 API 文档（默认 None）\nfrequency_factor[float] 可选: frequency_factor，详见官方 API 文档（默认 1.0）"
+ },
+ {
+  "name": "astropy_convolve",
+  "target": "astropy.convolution.convolve",
+  "desc": "带 NaN 插值处理的卷积，适用于平滑、核匹配。返回类型：numpy.ndarray。主要参数：array、kernel、boundary、fill_value。属于「点源检测与背景估计」，底层调用 astropy.convolution.convolve。",
+  "params": [
+   {
+    "name": "array",
+    "type": "NDData",
+    "required": true,
+    "desc": "The array to convolve. This should be a 1, 2, or 3-dimensional array or a list or a set of nested lists…"
+   },
+   {
+    "name": "kernel",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "The convolution kernel. The number of dimensions should match those for the array, and the dimensions should…"
+   },
+   {
+    "name": "boundary",
+    "type": "str",
+    "required": false,
+    "desc": "A flag indicating how to handle boundaries: * None: Set the result values to zero where the kernel extends…（默认 'fill'）"
+   },
+   {
+    "name": "fill_value",
+    "type": "float",
+    "required": false,
+    "desc": "The value to use outside the array when using boundary='fill'.（默认 0.0）"
+   },
+   {
+    "name": "nan_treatment",
+    "type": "str",
+    "required": false,
+    "desc": "The method used to handle NaNs in the input array: * 'interpolate': NaN values are replaced with interpolated…（默认 'interpolate'）"
+   },
+   {
+    "name": "normalize_kernel",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether to normalize the kernel to have a sum of one.（默认 True）"
+   },
+   {
+    "name": "mask",
+    "type": "object",
+    "required": false,
+    "desc": "A \"mask\" array. Shape must match array, and anything that is masked (i.e., not 0/False) will be set to NaN…（默认 None）"
+   },
+   {
+    "name": "preserve_nan",
+    "type": "bool",
+    "required": false,
+    "desc": "After performing convolution, should pixels that were originally NaN again become NaN?（默认 False）"
+   },
+   {
+    "name": "normalization_zero_tol",
+    "type": "float",
+    "required": false,
+    "desc": "The absolute tolerance on whether the kernel is different than zero. If the kernel sums to zero to within…（默认 1e-08）"
+   }
+  ],
+  "domain": "点源检测与背景估计",
+  "cn": "图像卷积",
+  "orig_params": "array[NDData] 必填: The array to convolve. This should be a 1, 2, or 3-dimensional array or a list or a set of nested lists…\nkernel[numpy.ndarray] 必填: The convolution kernel. The number of dimensions should match those for the array, and the dimensions should…\nboundary[str] 可选: A flag indicating how to handle boundaries: * None: Set the result values to zero where the kernel extends…（默认 'fill'）\nfill_value[float] 可选: The value to use outside the array when using boundary='fill'.（默认 0.0）\nnan_treatment[str] 可选: The method used to handle NaNs in the input array: * 'interpolate': NaN values are replaced with interpolated…（默认 'interpolate'）\nnormalize_kernel[bool] 可选: Whether to normalize the kernel to have a sum of one.（默认 True）\nmask[object] 可选: A \"mask\" array. Shape must match array, and anything that is masked (i.e., not 0/False) will be set to NaN…（默认 None）\npreserve_nan[bool] 可选: After performing convolution, should pixels that were originally NaN again become NaN?（默认 False）\nnormalization_zero_tol[float] 可选: The absolute tolerance on whether the kernel is different than zero. If the kernel sums to zero to within…（默认 1e-08）"
+ },
+ {
+  "name": "astropy_gaussian2d_kernel_create",
+  "target": "astropy.convolution.Gaussian2DKernel",
+  "desc": "创建二维高斯卷积核。主要参数：x_stddev、y_stddev、theta、kwargs。属于「点源检测与背景估计」，底层调用 astropy.convolution.Gaussian2DKernel。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "x_stddev",
+    "type": "float",
+    "required": true,
+    "desc": "Standard deviation of the Gaussian in x before rotating by theta."
+   },
+   {
+    "name": "y_stddev",
+    "type": "float",
+    "required": false,
+    "desc": "Standard deviation of the Gaussian in y before rotating by theta.（默认 None）"
+   },
+   {
+    "name": "theta",
+    "type": "float",
+    "required": false,
+    "desc": "Rotation angle. If passed as a float, it is assumed to be in radians. The rotation angle increases…（默认 0.0）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "点源检测与背景估计",
+  "cn": "二维高斯核",
+  "orig_params": "x_stddev[float] 必填: Standard deviation of the Gaussian in x before rotating by theta.\ny_stddev[float] 可选: Standard deviation of the Gaussian in y before rotating by theta.（默认 None）\ntheta[float] 可选: Rotation angle. If passed as a float, it is assumed to be in radians. The rotation angle increases…（默认 0.0）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_gaussian1d_create",
+  "target": "astropy.modeling.models.Gaussian1D",
+  "desc": "一维高斯函数（振幅、均值、标准差），用于谱线轮廓、径向剖面拟合。主要参数：amplitude、mean、stddev、kwargs。属于「数据结构与模型拟合」，底层调用 astropy.modeling.models.Gaussian1D。",
+  "params": [
+   {
+    "name": "amplitude",
+    "type": "float",
+    "required": false,
+    "desc": "Amplitude (peak value) of the Gaussian - for a normalized profile (integrating to 1), set amplitude = 1 /…（默认 1）"
+   },
+   {
+    "name": "mean",
+    "type": "float",
+    "required": false,
+    "desc": "Mean of the Gaussian.（默认 0）"
+   },
+   {
+    "name": "stddev",
+    "type": "float",
+    "required": false,
+    "desc": "Standard deviation of the Gaussian with FWHM = 2 * stddev * np.sqrt(2 * np.log(2)).（默认 1）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "数据结构与模型拟合",
+  "cn": "一维高斯模型",
+  "orig_params": "amplitude[float] 可选: Amplitude (peak value) of the Gaussian - for a normalized profile (integrating to 1), set amplitude = 1 /…（默认 1）\nmean[float] 可选: Mean of the Gaussian.（默认 0）\nstddev[float] 可选: Standard deviation of the Gaussian with FWHM = 2 * stddev * np.sqrt(2 * np.log(2)).（默认 1）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_gaussian2d_create",
+  "target": "astropy.modeling.models.Gaussian2D",
+  "desc": "二维高斯（含椭率与取向），用于点源 PSF、星系核模型拟合。主要参数：amplitude、x_mean、y_mean、x_stddev。属于「数据结构与模型拟合」，底层调用 astropy.modeling.models.Gaussian2D。",
+  "params": [
+   {
+    "name": "amplitude",
+    "type": "float",
+    "required": false,
+    "desc": "Amplitude (peak value) of the Gaussian.（默认 1）"
+   },
+   {
+    "name": "x_mean",
+    "type": "float",
+    "required": false,
+    "desc": "Mean of the Gaussian in x.（默认 0）"
+   },
+   {
+    "name": "y_mean",
+    "type": "float",
+    "required": false,
+    "desc": "Mean of the Gaussian in y.（默认 0）"
+   },
+   {
+    "name": "x_stddev",
+    "type": "float",
+    "required": false,
+    "desc": "Standard deviation of the Gaussian in x before rotating by theta. Must be None if a covariance matrix…（默认 None）"
+   },
+   {
+    "name": "y_stddev",
+    "type": "float",
+    "required": false,
+    "desc": "Standard deviation of the Gaussian in y before rotating by theta. Must be None if a covariance matrix…（默认 None）"
+   },
+   {
+    "name": "theta",
+    "type": "float",
+    "required": false,
+    "desc": "The rotation angle as an angular quantity (~astropy.units.Quantity or ~astropy.coordinates.Angle) or a value…（默认 None）"
+   },
+   {
+    "name": "cov_matrix",
+    "type": "numpy.ndarray",
+    "required": false,
+    "desc": "A 2x2 covariance matrix. If specified, overrides the x_stddev, y_stddev, and theta defaults.（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "数据结构与模型拟合",
+  "cn": "二维高斯模型",
+  "orig_params": "amplitude[float] 可选: Amplitude (peak value) of the Gaussian.（默认 1）\nx_mean[float] 可选: Mean of the Gaussian in x.（默认 0）\ny_mean[float] 可选: Mean of the Gaussian in y.（默认 0）\nx_stddev[float] 可选: Standard deviation of the Gaussian in x before rotating by theta. Must be None if a covariance matrix…（默认 None）\ny_stddev[float] 可选: Standard deviation of the Gaussian in y before rotating by theta. Must be None if a covariance matrix…（默认 None）\ntheta[float] 可选: The rotation angle as an angular quantity (~astropy.units.Quantity or ~astropy.coordinates.Angle) or a value…（默认 None）\ncov_matrix[numpy.ndarray] 可选: A 2x2 covariance matrix. If specified, overrides the x_stddev, y_stddev, and theta defaults.（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astropy_median_absolute_deviation",
+  "target": "astropy.stats.median_absolute_deviation",
+  "desc": "计算 MAD。返回类型：float。主要参数：data、axis、func、ignore_nan。属于「统计与采样拟合」，底层调用 astropy.stats.median_absolute_deviation。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "data",
+    "type": "numpy.ndarray",
+    "required": true,
+    "desc": "Input array or object that can be converted to an array."
+   },
+   {
+    "name": "axis",
+    "type": "object",
+    "required": false,
+    "desc": "The axis or axes along which the MADs are computed. The default (None) is to compute the MAD of the flattened…（默认 None）"
+   },
+   {
+    "name": "func",
+    "type": "callable",
+    "required": false,
+    "desc": "The function used to compute the median. Defaults to numpy.ma.median for masked arrays, otherwise to…（默认 None）"
+   },
+   {
+    "name": "ignore_nan",
+    "type": "bool",
+    "required": false,
+    "desc": "Ignore NaN values (treat them as if they are not in the array) when computing the median. This will use…（默认 False）"
+   }
+  ],
+  "domain": "统计与采样拟合",
+  "cn": "中位绝对偏差",
+  "orig_params": "data[numpy.ndarray] 必填: Input array or object that can be converted to an array.\naxis[object] 可选: The axis or axes along which the MADs are computed. The default (None) is to compute the MAD of the flattened…（默认 None）\nfunc[callable] 可选: The function used to compute the median. Defaults to numpy.ma.median for masked arrays, otherwise to…（默认 None）\nignore_nan[bool] 可选: Ignore NaN values (treat them as if they are not in the array) when computing the median. This will use…（默认 False）"
+ },
+ {
+  "name": "astropy_wcs_to_header",
+  "target": "astropy.wcs.WCS.to_header",
+  "desc": "把 WCS 转回 FITS 头关键字，可输出 SIP 或 relax 选项。返回类型：astropy.io.fits.Header。主要参数：relax、key。属于「WCS与天球投影」，底层调用 astropy.wcs.WCS.to_header。",
+  "params": [
+   {
+    "name": "relax",
+    "type": "bool",
+    "required": false,
+    "desc": "Degree of permissiveness: - False (default): Write all extensions that are considered to be safe and…（默认 None）"
+   },
+   {
+    "name": "key",
+    "type": "str",
+    "required": false,
+    "desc": "The name of a particular WCS transform to use. This may be either ' ' or 'A'-'Z' and corresponds to the \"a\"…（默认 None）"
+   }
+  ],
+  "domain": "WCS与天球投影",
+  "cn": "WCS输出为头",
+  "orig_params": "relax[bool] 可选: Degree of permissiveness: - False (default): Write all extensions that are considered to be safe and…（默认 None）\nkey[str] 可选: The name of a particular WCS transform to use. This may be either ' ' or 'A'-'Z' and corresponds to the \"a\"…（默认 None）"
  }
 ]

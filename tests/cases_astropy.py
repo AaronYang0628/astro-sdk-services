@@ -124,7 +124,7 @@ ARGS = {
 }
 ARGS.update({
  "table_create": {"data": [[1, 2, 3], [4.0, 5.0, 6.0]], "names": ["a", "b"]},
- "table_read": {"_args": [FX + "/table.ecsv"]},
+ "table_read": {"_self": TAB(), "_args": [FX + "/table.ecsv"]},
  "table_write": {"filename": F("tw.ecsv"), "format": "ascii.ecsv", "overwrite": True},
  "table_add_column": {"col": [1, 2, 3, 4, 5], "name": "newcol"}, "table_add_row": {"vals": [6, 10.6, 41.6, 17.0, "f"]},
  "table_sort": {"keys": "mag", "reverse": True}, "table_group_by": {"keys": "name"},
@@ -221,14 +221,39 @@ ARGS.update({
  "write_table_hdf5": {"table": TAB(), "output": F("t.h5"), "path": "data", "overwrite": True}, "read_table_hdf5": {"input": F("t.h5"), "path": "data"},
  "write_table_parquet": {"table": TAB(), "output": F("t.parquet"), "overwrite": True}, "read_table_parquet": {"input": F("t.parquet")},
 })
+NO_SELF = {"earth_location_from_geodetic", "earth_location_of_site", "earth_location_to_geodetic", "sky_coord_from_name", "sky_coord_guess_from_table", "get_body", "get_sun", "get_constellation", "planck18", "available", "z_at_value", "table_read", "table_create", "getheader", "getval", "info", "open", "convolve", "angular_separation", "position_angle", "pixel_to_skycoord", "skycoord_to_pixel", "hstack", "vstack", "join", "unique", "wcs_create", "cutout2d_create", "gaussian1d_create", "gaussian2d_create", "gaussian2d_kernel_create", "quantity_create", "angle_create", "time_create", "time_now", "flat_lambda_cdm_create", "median_absolute_deviation", "sigma_clipped_stats", "biweight_location", "biweight_scale", "circmean", "bayesian_blocks", "binom_conf_interval", "freedman_bin_width", "doppler_optical", "doppler_radio", "doppler_relativistic", "parallax", "dimensionless_angles"}
 SKIP = {"table_show_in_browser": "未验证：会在服务端启动本地浏览器/HTTP 服务，已跳过",
         "samp_hub_server_create": "未验证：SAMP Hub 会监听本地端口，沙箱内不启动"}
 for _n in ["luminosity_distance","angular_diameter_distance","comoving_distance","comoving_volume","differential_comoving_volume","lookback_time","age","h","efunc","distmod","kpc_proper_per_arcmin","critical_density","om","ode","tcmb","scale_factor","absorption_distance","comoving_transverse_distance","nu_relative_density"]:
     ARGS["flat_lambda_cdm_" + _n] = {"z": 0.5}
 
-for _n in ["luminosity_distance","lookback_time","angular_diameter_distance"]:
+for _n in ["luminosity_distance","lookback_time","angular_diameter_distance","comoving_distance","distmod","age","h"]:
     ARGS["flat_lambda_cdm_" + _n] = {"_args": [0.5]}
-SELECT = ["sky_coord_create","sky_coord_transform_to","sky_coord_separation","sky_coord_position_angle","sky_coord_match_to_catalog_sky",
- "sky_coord_from_name","get_body","get_sun","time_create","time_sidereal_time","quantity_to","doppler_optical",
- "flat_lambda_cdm_luminosity_distance","flat_lambda_cdm_lookback_time","flat_lambda_cdm_angular_diameter_distance","skycoord_to_pixel",
- "getheader","sigma_clipped_stats","lomb_scargle_autopower","box_least_squares_autopower"]
+ARGS["earth_location_from_geodetic"] = {"lon": -155.47, "lat": 19.82, "height": 4200}
+SELECT = [
+ # coordinates / time
+ "sky_coord_create","sky_coord_transform_to","sky_coord_separation",
+ "sky_coord_position_angle","sky_coord_directional_offset_by","sky_coord_to_string","sky_coord_spherical_offsets_to","time_to_datetime",
+ "sky_coord_match_to_catalog_sky","sky_coord_from_name",
+ "get_body","get_sun","get_constellation",
+ "angular_separation","angle_create",
+ "time_create","time_now","time_sidereal_time","time_delta_create","time_light_travel_time",
+ # units
+ "quantity_create","quantity_to","quantity_to_value","doppler_optical","doppler_radio","parallax",
+ # cosmology
+ "flat_lambda_cdm_create","flat_lambda_cdm_luminosity_distance","flat_lambda_cdm_lookback_time",
+ "flat_lambda_cdm_angular_diameter_distance","flat_lambda_cdm_comoving_distance",
+ "flat_lambda_cdm_distmod","planck18",
+ # tables
+ "table_create","table_read","hstack","vstack","join","unique",
+ # FITS (conservative)
+ "getheader","getval","info","cutout2d_create",
+ # WCS
+ "skycoord_to_pixel","pixel_to_skycoord","wcs_create","wcs_pixel_to_world","wcs_world_to_pixel",
+ # stats / timeseries
+ "sigma_clipped_stats","biweight_location","biweight_scale","circmean","bayesian_blocks",
+ "lomb_scargle_autopower","box_least_squares_autopower",
+ # convolution / models
+ "convolve","gaussian2d_kernel_create","gaussian1d_create","gaussian2d_create",
+ "median_absolute_deviation","wcs_to_header",
+]

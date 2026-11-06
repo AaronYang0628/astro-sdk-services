@@ -39,7 +39,15 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
 
     @app.get("/tools")
     def list_tools():
-        return [{"name": t["name"], "target": t["target"], "description": t["desc"][:200], "params": t["params"]} for t in tools.values()]
+        # Same in-memory whitelist as /invoke and MCP tools/list (single source of truth).
+        return {
+            "ok": True, "sdk": sdk, "count": len(tools),
+            "tools": [
+                {"name": t["name"], "sdk": sdk, "target": t["target"], "description": t["desc"],
+                 "params": t["params"], "invoke": f"/{sdk}/invoke", "mcp": f"/{sdk}/mcp"}
+                for t in tools.values()
+            ],
+        }
 
     @app.post("/invoke")
     async def invoke(req: Req):  # async: runs in main thread so SIGALRM timeout works
@@ -70,8 +78,8 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
         path = scope["path"]
         if path == pre or path.startswith(pre + "/"):
             scope = dict(scope, path=path[len(pre):] or "/")
-        if scope["path"] in ("/health", "/health/"):
-            return await app(scope, receive, send)  # no span / no auth for health checks
+        if scope["path"] in ("/health", "/health/", "/tools", "/tools/"):
+            return await app(scope, receive, send)  # listing + health: no auth
         async with telemetry.http_request(sdk, scope) as info:
             send = telemetry.wrap_send(send, info)
             tok = (os.environ.get("API_TOKEN") or "").strip()  # auth only when set and non-empty
@@ -84,4 +92,6 @@ def make_app(sdk, prefixes, timeout=30, mem_gb=None, set_limit=True):
             return await app(scope, receive, send)
     outer.fastapi = app
     outer.mgr = mgr
+    outer.tools = tools  # in-memory whitelist; /tools catalog reads this
+    outer.sdk = sdk
     return outer

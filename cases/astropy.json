@@ -53,6 +53,64 @@
   "skip": null
  },
  {
+  "name": "astropy_sky_coord_directional_offset_by",
+  "arguments": {
+   "position_angle": {
+    "value": 30,
+    "unit": "deg"
+   },
+   "separation": {
+    "value": 1,
+    "unit": "deg"
+   },
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_to_string",
+  "arguments": {
+   "style": "hmsdms",
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_sky_coord_spherical_offsets_to",
+  "arguments": {
+   "tocoord": {
+    "ra": 11.0,
+    "dec": 42.0,
+    "unit": "deg"
+   },
+   "_self": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_time_to_datetime",
+  "arguments": {
+   "_self": {
+    "__type__": "Time",
+    "value": "2026-10-12T12:00:00",
+    "scale": "utc"
+   }
+  },
+  "skip": null
+ },
+ {
   "name": "astropy_sky_coord_match_to_catalog_sky",
   "arguments": {
    "catalogcoord": {
@@ -79,12 +137,7 @@
  {
   "name": "astropy_sky_coord_from_name",
   "arguments": {
-   "name": "M31",
-   "_self": {
-    "ra": 10.684,
-    "dec": 41.269,
-    "unit": "deg"
-   }
+   "name": "M31"
   },
   "skip": null
  },
@@ -129,6 +182,47 @@
   "skip": null
  },
  {
+  "name": "astropy_get_constellation",
+  "arguments": {
+   "coord": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_angular_separation",
+  "arguments": {
+   "lon1": {
+    "value": 10,
+    "unit": "deg"
+   },
+   "lat1": {
+    "value": 41,
+    "unit": "deg"
+   },
+   "lon2": {
+    "value": 11,
+    "unit": "deg"
+   },
+   "lat2": {
+    "value": 42,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_angle_create",
+  "arguments": {
+   "angle": 190.5,
+   "unit": "deg"
+  },
+  "skip": null
+ },
+ {
   "name": "astropy_time_create",
   "arguments": {
    "val": [
@@ -137,6 +231,11 @@
    "format": "isot",
    "scale": "utc"
   },
+  "skip": null
+ },
+ {
+  "name": "astropy_time_now",
+  "arguments": {},
   "skip": null
  },
  {
@@ -156,7 +255,70 @@
   "skip": null
  },
  {
+  "name": "astropy_time_delta_create",
+  "arguments": {
+   "val": [
+    1.5
+   ],
+   "format": "jd"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_time_light_travel_time",
+  "arguments": {
+   "skycoord": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "kind": "barycentric",
+   "location": {
+    "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+    "args": [
+     {
+      "value": -155.47,
+      "unit": "deg"
+     },
+     {
+      "value": 19.82,
+      "unit": "deg"
+     },
+     {
+      "value": 4200,
+      "unit": "m"
+     }
+    ]
+   },
+   "_self": {
+    "__type__": "Time",
+    "value": "2026-10-12T12:00:00",
+    "scale": "utc"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_quantity_create",
+  "arguments": {
+   "value": 3.0,
+   "unit": "km"
+  },
+  "skip": null
+ },
+ {
   "name": "astropy_quantity_to",
+  "arguments": {
+   "unit": "m",
+   "_self": {
+    "value": 1.5,
+    "unit": "km"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_quantity_to_value",
   "arguments": {
    "unit": "m",
    "_self": {
@@ -173,6 +335,29 @@
     "value": 500,
     "unit": "nm"
    }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_doppler_radio",
+  "arguments": {
+   "rest": {
+    "value": 1420,
+    "unit": "MHz"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_parallax",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_create",
+  "arguments": {
+   "H0": 70,
+   "Om0": 0.3
   },
   "skip": null
  },
@@ -225,6 +410,394 @@
   "skip": null
  },
  {
+  "name": "astropy_flat_lambda_cdm_comoving_distance",
+  "arguments": {
+   "_args": [
+    0.5
+   ],
+   "_self": {
+    "__call__": "astropy.cosmology.FlatLambdaCDM",
+    "kwargs": {
+     "H0": 70,
+     "Om0": 0.3
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_flat_lambda_cdm_distmod",
+  "arguments": {
+   "_args": [
+    0.5
+   ],
+   "_self": {
+    "__call__": "astropy.cosmology.FlatLambdaCDM",
+    "kwargs": {
+     "H0": 70,
+     "Om0": 0.3
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_planck18",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astropy_table_create",
+  "arguments": {
+   "data": [
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     4.0,
+     5.0,
+     6.0
+    ]
+   ],
+   "names": [
+    "a",
+    "b"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_table_read",
+  "arguments": {
+   "_self": {
+    "__type__": "Table",
+    "rows": [
+     {
+      "id": 1,
+      "ra": 10.1,
+      "dec": 41.1,
+      "mag": 13,
+      "name": "a"
+     },
+     {
+      "id": 2,
+      "ra": 10.2,
+      "dec": 41.2,
+      "mag": 14,
+      "name": "b"
+     },
+     {
+      "id": 3,
+      "ra": 10.3,
+      "dec": 41.3,
+      "mag": 15,
+      "name": "c"
+     },
+     {
+      "id": 4,
+      "ra": 10.4,
+      "dec": 41.4,
+      "mag": 16,
+      "name": "d"
+     },
+     {
+      "id": 5,
+      "ra": 10.5,
+      "dec": 41.5,
+      "mag": 17,
+      "name": "e"
+     }
+    ]
+   },
+   "_args": [
+    "/workspace/astro_services/fixtures/table.ecsv"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_hstack",
+  "arguments": {
+   "tables": [
+    {
+     "__call__": "astropy.table.Table",
+     "kwargs": {
+      "rows": [
+       [
+        1,
+        2
+       ]
+      ],
+      "names": [
+       "a",
+       "b"
+      ]
+     }
+    },
+    {
+     "__call__": "astropy.table.Table",
+     "kwargs": {
+      "rows": [
+       [
+        3
+       ]
+      ],
+      "names": [
+       "c"
+      ]
+     }
+    }
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_vstack",
+  "arguments": {
+   "tables": [
+    {
+     "__type__": "Table",
+     "rows": [
+      {
+       "id": 1,
+       "ra": 10.1,
+       "dec": 41.1,
+       "mag": 13,
+       "name": "a"
+      },
+      {
+       "id": 2,
+       "ra": 10.2,
+       "dec": 41.2,
+       "mag": 14,
+       "name": "b"
+      },
+      {
+       "id": 3,
+       "ra": 10.3,
+       "dec": 41.3,
+       "mag": 15,
+       "name": "c"
+      },
+      {
+       "id": 4,
+       "ra": 10.4,
+       "dec": 41.4,
+       "mag": 16,
+       "name": "d"
+      },
+      {
+       "id": 5,
+       "ra": 10.5,
+       "dec": 41.5,
+       "mag": 17,
+       "name": "e"
+      }
+     ]
+    },
+    {
+     "__type__": "Table",
+     "rows": [
+      {
+       "id": 1,
+       "ra": 10.1,
+       "dec": 41.1,
+       "mag": 13,
+       "name": "a"
+      },
+      {
+       "id": 2,
+       "ra": 10.2,
+       "dec": 41.2,
+       "mag": 14,
+       "name": "b"
+      },
+      {
+       "id": 3,
+       "ra": 10.3,
+       "dec": 41.3,
+       "mag": 15,
+       "name": "c"
+      },
+      {
+       "id": 4,
+       "ra": 10.4,
+       "dec": 41.4,
+       "mag": 16,
+       "name": "d"
+      },
+      {
+       "id": 5,
+       "ra": 10.5,
+       "dec": 41.5,
+       "mag": 17,
+       "name": "e"
+      }
+     ]
+    }
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_join",
+  "arguments": {
+   "left": {
+    "__type__": "Table",
+    "rows": [
+     {
+      "id": 1,
+      "ra": 10.1,
+      "dec": 41.1,
+      "mag": 13,
+      "name": "a"
+     },
+     {
+      "id": 2,
+      "ra": 10.2,
+      "dec": 41.2,
+      "mag": 14,
+      "name": "b"
+     },
+     {
+      "id": 3,
+      "ra": 10.3,
+      "dec": 41.3,
+      "mag": 15,
+      "name": "c"
+     },
+     {
+      "id": 4,
+      "ra": 10.4,
+      "dec": 41.4,
+      "mag": 16,
+      "name": "d"
+     },
+     {
+      "id": 5,
+      "ra": 10.5,
+      "dec": 41.5,
+      "mag": 17,
+      "name": "e"
+     }
+    ]
+   },
+   "right": {
+    "__call__": "astropy.table.Table",
+    "kwargs": {
+     "rows": [
+      [
+       1,
+       5.5
+      ],
+      [
+       2,
+       6.5
+      ]
+     ],
+     "names": [
+      "id",
+      "extra"
+     ]
+    }
+   },
+   "keys": "id"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_unique",
+  "arguments": {
+   "input_table": {
+    "__type__": "Table",
+    "rows": [
+     {
+      "id": 1,
+      "ra": 10.1,
+      "dec": 41.1,
+      "mag": 13,
+      "name": "a"
+     },
+     {
+      "id": 2,
+      "ra": 10.2,
+      "dec": 41.2,
+      "mag": 14,
+      "name": "b"
+     },
+     {
+      "id": 3,
+      "ra": 10.3,
+      "dec": 41.3,
+      "mag": 15,
+      "name": "c"
+     },
+     {
+      "id": 4,
+      "ra": 10.4,
+      "dec": 41.4,
+      "mag": 16,
+      "name": "d"
+     },
+     {
+      "id": 5,
+      "ra": 10.5,
+      "dec": 41.5,
+      "mag": 17,
+      "name": "e"
+     }
+    ]
+   },
+   "keys": "name"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_getheader",
+  "arguments": {
+   "filename": "/workspace/astro_services/fixtures/image.fits"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_getval",
+  "arguments": {
+   "filename": "/workspace/astro_services/fixtures/image.fits",
+   "keyword": "EXPTIME"
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_info",
+  "arguments": {
+   "filename": "/workspace/astro_services/fixtures/image.fits",
+   "output": false
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_cutout2d_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "position": {
+    "__type__": "tuple",
+    "items": [
+     50,
+     50
+    ]
+   },
+   "size": 11
+  },
+  "skip": null
+ },
+ {
   "name": "astropy_skycoord_to_pixel",
   "arguments": {
    "coords": {
@@ -254,9 +827,104 @@
   "skip": null
  },
  {
-  "name": "astropy_getheader",
+  "name": "astropy_pixel_to_skycoord",
   "arguments": {
-   "filename": "/workspace/astro_services/fixtures/image.fits"
+   "xp": 50.0,
+   "yp": 50.0,
+   "wcs": {
+    "__call__": "astropy.wcs.WCS",
+    "args": [
+     {
+      "NAXIS": 2,
+      "CTYPE1": "RA---TAN",
+      "CTYPE2": "DEC--TAN",
+      "CRPIX1": 50,
+      "CRPIX2": 50,
+      "CRVAL1": 10.684,
+      "CRVAL2": 41.269,
+      "CDELT1": -0.0002778,
+      "CDELT2": 0.0002778,
+      "CUNIT1": "deg",
+      "CUNIT2": "deg"
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_wcs_create",
+  "arguments": {
+   "header": {
+    "NAXIS": 2,
+    "CTYPE1": "RA---TAN",
+    "CTYPE2": "DEC--TAN",
+    "CRPIX1": 50,
+    "CRPIX2": 50,
+    "CRVAL1": 10.684,
+    "CRVAL2": 41.269,
+    "CDELT1": -0.0002778,
+    "CDELT2": 0.0002778
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_wcs_pixel_to_world",
+  "arguments": {
+   "_args": [
+    50.0,
+    50.0
+   ],
+   "_self": {
+    "__call__": "astropy.wcs.WCS",
+    "args": [
+     {
+      "NAXIS": 2,
+      "CTYPE1": "RA---TAN",
+      "CTYPE2": "DEC--TAN",
+      "CRPIX1": 50,
+      "CRPIX2": 50,
+      "CRVAL1": 10.684,
+      "CRVAL2": 41.269,
+      "CDELT1": -0.0002778,
+      "CDELT2": 0.0002778,
+      "CUNIT1": "deg",
+      "CUNIT2": "deg"
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_wcs_world_to_pixel",
+  "arguments": {
+   "_args": [
+    {
+     "ra": 10.684,
+     "dec": 41.269,
+     "unit": "deg"
+    }
+   ],
+   "_self": {
+    "__call__": "astropy.wcs.WCS",
+    "args": [
+     {
+      "NAXIS": 2,
+      "CTYPE1": "RA---TAN",
+      "CTYPE2": "DEC--TAN",
+      "CRPIX1": 50,
+      "CRPIX2": 50,
+      "CRVAL1": 10.684,
+      "CRVAL2": 41.269,
+      "CDELT1": -0.0002778,
+      "CDELT2": 0.0002778,
+      "CUNIT1": "deg",
+      "CUNIT2": "deg"
+     }
+    ]
+   }
   },
   "skip": null
  },
@@ -264,6 +932,78 @@
   "name": "astropy_sigma_clipped_stats",
   "arguments": {
    "data": {
+    "__type__": "ndarray",
+    "data": [
+     1.0,
+     2.0,
+     2.5,
+     3.0,
+     4.0,
+     5.0,
+     7.0,
+     12.0
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_biweight_location",
+  "arguments": {
+   "data": {
+    "__type__": "ndarray",
+    "data": [
+     1.0,
+     2.0,
+     2.5,
+     3.0,
+     4.0,
+     5.0,
+     7.0,
+     12.0
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_biweight_scale",
+  "arguments": {
+   "data": {
+    "__type__": "ndarray",
+    "data": [
+     1.0,
+     2.0,
+     2.5,
+     3.0,
+     4.0,
+     5.0,
+     7.0,
+     12.0
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_circmean",
+  "arguments": {
+   "data": {
+    "__type__": "ndarray",
+    "data": [
+     0.1,
+     0.2,
+     0.3,
+     6.2
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_bayesian_blocks",
+  "arguments": {
+   "t": {
     "__type__": "ndarray",
     "data": [
      1.0,
@@ -476,6 +1216,129 @@
        1.02,
        1.0
       ]
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_convolve",
+  "arguments": {
+   "array": {
+    "__type__": "ndarray",
+    "data": [
+     [
+      1.0,
+      2.0,
+      3.0,
+      4.0
+     ],
+     [
+      2.0,
+      1.0,
+      5.0,
+      3.0
+     ],
+     [
+      3.0,
+      4.0,
+      1.0,
+      2.0
+     ],
+     [
+      4.0,
+      3.0,
+      2.0,
+      5.0
+     ]
+    ]
+   },
+   "kernel": {
+    "__type__": "ndarray",
+    "data": [
+     [
+      0.0,
+      0.25,
+      0.0
+     ],
+     [
+      0.25,
+      0.0,
+      0.25
+     ],
+     [
+      0.0,
+      0.25,
+      0.0
+     ]
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_gaussian2d_kernel_create",
+  "arguments": {
+   "x_stddev": 1.5
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_gaussian1d_create",
+  "arguments": {
+   "amplitude": 1,
+   "mean": 0,
+   "stddev": 1
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_gaussian2d_create",
+  "arguments": {
+   "amplitude": 1,
+   "x_mean": 0,
+   "y_mean": 0
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_median_absolute_deviation",
+  "arguments": {
+   "data": {
+    "__type__": "ndarray",
+    "data": [
+     1.0,
+     2.0,
+     2.5,
+     3.0,
+     4.0,
+     5.0,
+     7.0,
+     12.0
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astropy_wcs_to_header",
+  "arguments": {
+   "_self": {
+    "__call__": "astropy.wcs.WCS",
+    "args": [
+     {
+      "NAXIS": 2,
+      "CTYPE1": "RA---TAN",
+      "CTYPE2": "DEC--TAN",
+      "CRPIX1": 50,
+      "CRPIX2": 50,
+      "CRVAL1": 10.684,
+      "CRVAL2": 41.269,
+      "CDELT1": -0.0002778,
+      "CDELT2": 0.0002778,
+      "CUNIT1": "deg",
+      "CUNIT2": "deg"
      }
     ]
    }

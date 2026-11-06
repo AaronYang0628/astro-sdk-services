@@ -682,7 +682,7 @@
  {
   "name": "astroplan_observer_tonight",
   "target": "astroplan.Observer.tonight",
-  "desc": "返回今晚天文暮光之间的时间范围。返回类型：astropy.time.Time。主要参数：time、horizon、obswl。属于「望远镜观测规划」，底层调用 astroplan.Observer.tonight。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "desc": "返回今晚（天文暮光之间）的时间范围。这是 Observer 实例方法，需要 _self 为 Observer（可用 astroplan_observer_create / observer_at_site 的返回值）；可选 time/horizon。底层 Observer.tonight。",
   "params": [
    {
     "name": "time",
@@ -1554,7 +1554,7 @@
  {
   "name": "astroplan_eclipsing_system_next_primary_eclipse_time",
   "target": "astroplan.EclipsingSystem.next_primary_eclipse_time",
-  "desc": "计算下一次主食中心时间。返回类型：astropy.time.Time。主要参数：time、n_eclipses。属于「望远镜观测规划」，底层调用 astroplan.EclipsingSystem.next_primary_eclipse_time。",
+  "desc": "计算下一次主食中心时刻。需要 _self 为 EclipsingSystem（可用 astroplan_eclipsing_system_create 的返回值），并传 time。底层 EclipsingSystem.next_primary_eclipse_time。",
   "params": [
    {
     "name": "time",

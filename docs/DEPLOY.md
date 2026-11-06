@@ -9,14 +9,14 @@
 
 | SDK | MCP 地址（Streamable HTTP） | 工具数 | 简介文件 |
 |---|---|---|---|
-| astropy | `https://<你的域名>/astropy/mcp` | 20 | `astropy.json` |
-| astroquery | `https://<你的域名>/astroquery/mcp` | 20 | `astroquery.json` |
-| photutils | `https://<你的域名>/photutils/mcp` | 20 | `photutils.json` |
-| astroplan | `https://<你的域名>/astroplan/mcp` | 20 | `astroplan.json` |
-| sunpy | `https://<你的域名>/sunpy/mcp` | 20 | `sunpy.json` |
+| astropy | `https://<你的域名>/astropy/mcp` | 61 | `astropy.json` |
+| astroquery | `https://<你的域名>/astroquery/mcp` | 51 | `astroquery.json` |
+| photutils | `https://<你的域名>/photutils/mcp` | 49 | `photutils.json` |
+| astroplan | `https://<你的域名>/astroplan/mcp` | 44 | `astroplan.json` |
+| sunpy | `https://<你的域名>/sunpy/mcp` | 42 | `sunpy.json` |
 | euclid | `https://<你的域名>/euclid/mcp` | 14 | `euclid.json` |
 
-其他路径：`GET /`、`GET /health` 返回 6 个服务列表；`GET /<sdk>/health` 单个服务健康检查（始终免鉴权）；`GET /<sdk>/tools` 工具清单；`POST /<sdk>/invoke` 直接 HTTP 调用（请求体 `{"function_name": "...", "arguments": {...}}`）。`/mcp` 为 MCP Streamable HTTP（无状态、JSON 响应）。
+其他路径：`GET /`、`GET /health` 返回已加载服务列表（含每 SDK 工具数、总工具数、目录入口 `/tools`）；`GET /tools` **聚合工具目录**（JSON；浏览器打开或 `?format=html` 看 HTML，按 SDK 分组），数据来自进程内白名单（与 `/invoke`、MCP `tools/list` 同一份 `data/<sdk>_tools.json`，受 `ASTRO_SDKS` 约束）；`GET /<sdk>/health` 健康检查；`GET /<sdk>/tools` 单 SDK 工具清单（完整 description，不截断）。**`GET /`、`/health`、`/tools`、`/<sdk>/health`、`/<sdk>/tools` 一律免鉴权**，方便浏览器直接打开目录；`POST /<sdk>/invoke` 与 `/<sdk>/mcp` 在设置了非空 `API_TOKEN` 时仍需 `Authorization: Bearer <token>`。`/mcp` 为 MCP Streamable HTTP（无状态、JSON 响应）。
 
 > 文档里的 `astro.example.com`、`<你的域名>` 都是占位符，请换成你们自己的域名。
 
@@ -181,7 +181,9 @@ H='-H Content-Type:application/json -H Accept:application/json,text/event-stream
 curl -s $BASE/health                      # {"ok":true,"mode":"all","auth":false,"services":{...6 个...}}
 curl -s $BASE/euclid/health               # {"ok":true,"sdk":"euclid","tools":14}
 
-# MCP tools/list（每个 SDK 都可以这样测，astropy 等应返回 20，euclid 返回 14）
+# 聚合目录（免鉴权）：curl -s https://<你的域名>/tools | jq '.total'
+# 单 SDK 目录（免鉴权）：curl -s https://<你的域名>/astropy/tools | jq .count
+# MCP tools/list（每个 SDK；工具数应与上表一致：astropy=61 / astroquery=51 / photutils=49 / astroplan=44 / sunpy=42，euclid=14）
 for s in astropy astroquery photutils astroplan sunpy euclid; do
   printf "%-11s" $s; curl -s -X POST $BASE/$s/mcp $H \
     -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | python3 -c "import json,sys;print(len(json.load(sys.stdin)['result']['tools']))"

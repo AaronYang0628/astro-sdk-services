@@ -3774,7 +3774,7 @@
  {
   "name": "astropy_wcs_create",
   "target": "astropy.wcs.WCS",
-  "desc": "由 FITS 头构建世界坐标系对象，保存投影类型、参考点、CD/PC 矩阵、畸变，用于像素与天球坐标转换。主要参数：header、fobj、key、minerr。属于「WCS与天球投影」，底层调用 astropy.wcs.WCS。",
+  "desc": "由 FITS 头字典或头对象构造 WCS。常见传法：header={\"NAXIS\":2,\"CTYPE1\":\"RA---TAN\",...} 或 _args=[header]。返回 WCS，可再用于 skycoord_to_pixel / wcs_pixel_to_world。底层 astropy.wcs.WCS。",
   "params": [
    {
     "name": "header",
@@ -4470,7 +4470,7 @@
  {
   "name": "astropy_table_create",
   "target": "astropy.table.Table",
-  "desc": "创建 Table，支持列、单位、元数据，是天文星表的核心数据结构。主要参数：data、masked、names、dtype。属于「星表表格与交叉匹配」，底层调用 astropy.table.Table。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "desc": "构造 astropy Table。可传 rows 为字典列表，或用 _args 传列数据。返回 Table，可再交给 hstack/vstack/join/unique/table_read 等。底层 astropy.table.Table。",
   "params": [
    {
     "name": "data",
@@ -10620,7 +10620,7 @@
  {
   "name": "astropy_cutout2d_create",
   "target": "astropy.nddata.Cutout2D",
-  "desc": "以位置和尺寸剪裁图像并同步更新 WCS，支持 SkyCoord 位置。主要参数：data、position、size、wcs。属于「FITS与图像读写」，底层调用 astropy.nddata.Cutout2D。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "desc": "从二维数组剪裁子图并可同步裁 WCS。必填 data、position（像素 (x,y) 或 SkyCoord）、size；可选 wcs。返回 Cutout2D（含 data/wcs/bbox_original）。不对原始 FITS 路径做任意读写。底层 astropy.nddata.Cutout2D。",
   "params": [
    {
     "name": "data",

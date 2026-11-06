@@ -79,8 +79,23 @@
   "skip": null
  },
  {
+  "name": "sunpy_julian_centuries",
+  "arguments": {
+   "t": "2026-10-12"
+  },
+  "skip": null
+ },
+ {
   "name": "sunpy_get_earth",
   "arguments": {
+   "time": "2026-10-12"
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_get_body_heliographic_stonyhurst",
+  "arguments": {
+   "body": "earth",
    "time": "2026-10-12"
   },
   "skip": null
@@ -121,9 +136,37 @@
   "skip": null
  },
  {
+  "name": "sunpy_carrington_rotation_time",
+  "arguments": {
+   "crot": 2300
+  },
+  "skip": null
+ },
+ {
   "name": "sunpy_earth_distance",
   "arguments": {
    "time": "2026-10-12"
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_true_longitude",
+  "arguments": {
+   "t": "2026-10-12"
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_mean_obliquity_of_ecliptic",
+  "arguments": {
+   "t": "2026-10-12"
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_sky_position",
+  "arguments": {
+   "t": "2026-10-12"
   },
   "skip": null
  },
@@ -142,10 +185,40 @@
   "skip": null
  },
  {
+  "name": "sunpy_solar_rotate_coordinate",
+  "arguments": {
+   "coordinate": {
+    "__call__": "astropy.coordinates.SkyCoord",
+    "args": [
+     {
+      "value": 0,
+      "unit": "arcsec"
+     },
+     {
+      "value": 0,
+      "unit": "arcsec"
+     }
+    ],
+    "kwargs": {
+     "obstime": "2026-10-01T00:00:00",
+     "observer": "earth",
+     "frame": "helioprojective"
+    }
+   },
+   "time": "2026-10-02T00:00:00"
+  },
+  "skip": null
+ },
+ {
   "name": "sunpy_get",
   "arguments": {
    "key": "radius"
   },
+  "skip": null
+ },
+ {
+  "name": "sunpy_print_all",
+  "arguments": {},
   "skip": null
  },
  {
@@ -328,6 +401,70 @@
       }
      }
     }
+   },
+   "_self": {
+    "__call__": "sunpy.map.Map",
+    "args": [
+     {
+      "__call__": "numpy.load",
+      "args": [
+       "/workspace/astro_services/fixtures/image.npy"
+      ]
+     },
+     {
+      "__call__": "sunpy.map.make_fitswcs_header",
+      "args": [
+       {
+        "__call__": "numpy.load",
+        "args": [
+         "/workspace/astro_services/fixtures/image.npy"
+        ]
+       },
+       {
+        "__call__": "astropy.coordinates.SkyCoord",
+        "args": [
+         {
+          "value": 0,
+          "unit": "arcsec"
+         },
+         {
+          "value": 0,
+          "unit": "arcsec"
+         }
+        ],
+        "kwargs": {
+         "obstime": "2026-10-01T00:00:00",
+         "observer": "earth",
+         "frame": "helioprojective"
+        }
+       }
+      ],
+      "kwargs": {
+       "scale": {
+        "value": [
+         20,
+         20
+        ],
+        "unit": "arcsec/pix"
+       },
+       "instrument": "TEST",
+       "wavelength": {
+        "value": 171,
+        "unit": "Angstrom"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_generic_map_rotate",
+  "arguments": {
+   "angle": {
+    "value": 30,
+    "unit": "deg"
    },
    "_self": {
     "__call__": "sunpy.map.Map",
@@ -570,6 +707,27 @@
   "skip": null
  },
  {
+  "name": "sunpy_make_heliographic_header",
+  "arguments": {
+   "date": "2026-10-01T00:00:00",
+   "observer_coordinate": {
+    "__call__": "sunpy.coordinates.get_earth",
+    "args": [
+     "2026-10-01"
+    ]
+   },
+   "shape": {
+    "__type__": "tuple",
+    "items": [
+     128,
+     128
+    ]
+   },
+   "frame": "carrington"
+  },
+  "skip": null
+ },
+ {
   "name": "sunpy_contains_full_disk",
   "arguments": {
    "smap": {
@@ -626,6 +784,309 @@
      }
     ]
    }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_coordinate_is_on_solar_disk",
+  "arguments": {
+   "coordinates": {
+    "__call__": "astropy.coordinates.SkyCoord",
+    "args": [
+     {
+      "value": 0,
+      "unit": "arcsec"
+     },
+     {
+      "value": 0,
+      "unit": "arcsec"
+     }
+    ],
+    "kwargs": {
+     "obstime": "2026-10-01T00:00:00",
+     "observer": "earth",
+     "frame": "helioprojective"
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_all_coordinates_from_map",
+  "arguments": {
+   "smap": {
+    "__call__": "sunpy.map.Map",
+    "args": [
+     {
+      "__call__": "numpy.load",
+      "args": [
+       "/workspace/astro_services/fixtures/image.npy"
+      ]
+     },
+     {
+      "__call__": "sunpy.map.make_fitswcs_header",
+      "args": [
+       {
+        "__call__": "numpy.load",
+        "args": [
+         "/workspace/astro_services/fixtures/image.npy"
+        ]
+       },
+       {
+        "__call__": "astropy.coordinates.SkyCoord",
+        "args": [
+         {
+          "value": 0,
+          "unit": "arcsec"
+         },
+         {
+          "value": 0,
+          "unit": "arcsec"
+         }
+        ],
+        "kwargs": {
+         "obstime": "2026-10-01T00:00:00",
+         "observer": "earth",
+         "frame": "helioprojective"
+        }
+       }
+      ],
+      "kwargs": {
+       "scale": {
+        "value": [
+         20,
+         20
+        ],
+        "unit": "arcsec/pix"
+       },
+       "instrument": "TEST",
+       "wavelength": {
+        "value": 171,
+        "unit": "Angstrom"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_solar_angular_radius",
+  "arguments": {
+   "coordinates": {
+    "__call__": "astropy.coordinates.SkyCoord",
+    "args": [
+     {
+      "value": 0,
+      "unit": "arcsec"
+     },
+     {
+      "value": 0,
+      "unit": "arcsec"
+     }
+    ],
+    "kwargs": {
+     "obstime": "2026-10-01T00:00:00",
+     "observer": "earth",
+     "frame": "helioprojective"
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_pixelate_coord_path",
+  "arguments": {
+   "smap": {
+    "__call__": "sunpy.map.Map",
+    "args": [
+     {
+      "__call__": "numpy.load",
+      "args": [
+       "/workspace/astro_services/fixtures/image.npy"
+      ]
+     },
+     {
+      "__call__": "sunpy.map.make_fitswcs_header",
+      "args": [
+       {
+        "__call__": "numpy.load",
+        "args": [
+         "/workspace/astro_services/fixtures/image.npy"
+        ]
+       },
+       {
+        "__call__": "astropy.coordinates.SkyCoord",
+        "args": [
+         {
+          "value": 0,
+          "unit": "arcsec"
+         },
+         {
+          "value": 0,
+          "unit": "arcsec"
+         }
+        ],
+        "kwargs": {
+         "obstime": "2026-10-01T00:00:00",
+         "observer": "earth",
+         "frame": "helioprojective"
+        }
+       }
+      ],
+      "kwargs": {
+       "scale": {
+        "value": [
+         20,
+         20
+        ],
+        "unit": "arcsec/pix"
+       },
+       "instrument": "TEST",
+       "wavelength": {
+        "value": 171,
+        "unit": "Angstrom"
+       }
+      }
+     }
+    ]
+   },
+   "coord_path": {
+    "__call__": "astropy.coordinates.SkyCoord",
+    "args": [
+     {
+      "value": [
+       -100,
+       100
+      ],
+      "unit": "arcsec"
+     },
+     {
+      "value": [
+       -100,
+       100
+      ],
+      "unit": "arcsec"
+     }
+    ],
+    "kwargs": {
+     "frame": {
+      "__call__": "sunpy.coordinates.Helioprojective",
+      "kwargs": {
+       "obstime": "2026-10-01T00:00:00",
+       "observer": "earth"
+      }
+     }
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_affine_transform",
+  "arguments": {
+   "image": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "rmatrix": {
+    "__type__": "ndarray",
+    "data": [
+     [
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0
+     ]
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_resample",
+  "arguments": {
+   "orig": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "dimensions": {
+    "__type__": "tuple",
+    "items": [
+     50,
+     50
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_reshape_image_to_4d_superpixel",
+  "arguments": {
+   "img": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "dimensions": [
+    2,
+    2
+   ],
+   "offset": [
+    0,
+    0
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_time_create",
+  "arguments": {
+   "start": "2026-10-12",
+   "end": "2026-10-13"
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_instrument_create",
+  "arguments": {
+   "value": "AIA"
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_wavelength_create",
+  "arguments": {
+   "wavemin": {
+    "value": 171,
+    "unit": "Angstrom"
+   },
+   "wavemax": {
+    "value": 171,
+    "unit": "Angstrom"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_level_create",
+  "arguments": {
+   "value": 1
+  },
+  "skip": null
+ },
+ {
+  "name": "sunpy_source_create",
+  "arguments": {
+   "value": "SDO"
   },
   "skip": null
  }

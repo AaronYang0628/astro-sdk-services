@@ -118,7 +118,7 @@
  {
   "name": "photutils_dao_star_finder",
   "target": "photutils.detection.DAOStarFinder",
-  "desc": "实现经典 DAOFIND 算法（Stetson 1987, PASP 99, 191）的 photutils.detection.DAOStarFinder 类，用于检测图像中高于阈值的局部密度极大值。工作方式为：先用与 fwhm 匹配的二维椭圆高斯核卷积图像（scale_threshold 控制是否按原版算法缩放阈值），再在卷积图上寻找超过 threshold 的局部峰值，并用 sharpness_range（尖锐度区间）与 roundlo/roundhi（圆度上下界）剔除宇宙线、坏像素与延展结构造成的虚假检测；支持输入空间变化的背景 RMS 图以适应噪声不均。输出 QTable 含 id、xcentroid、ycentroid、sharpness、roundness1、roundness2、peak、flux、mag、daofind_mag 等列。使用时先用 sigma_clipped_stats 估计背景并扣除，threshold 常取 5.0*std；mask 参数可屏蔽已知伪源区域。",
+  "desc": "构造 DAOStarFinder 检测器（不是直接出星表）。必填 threshold、fwhm；返回的对象可在后续步骤对图像调用。若只要检测器实例，用本工具或 photutils_dao_star_finder_create。底层 photutils.detection.DAOStarFinder。",
   "params": [
    {
     "name": "threshold",
@@ -1350,7 +1350,7 @@
  {
   "name": "photutils_circular_aperture_do_photometry",
   "target": "photutils.aperture.CircularAperture.do_photometry",
-  "desc": "由孔径对象对数据求和，返回和与误差。返回类型：numpy.ndarray。主要参数：data、error、mask、method。属于「孔径测光与源测量」，底层调用 photutils.aperture.CircularAperture.do_photometry。",
+  "desc": "对已构造的 CircularAperture 做测光求和。需要 _self 为 CircularAperture 实例（可用 photutils_circular_aperture_create 的返回值），并传 data 图像。返回 (sum, sum_err)。底层 CircularAperture.do_photometry。",
   "params": [
    {
     "name": "data",
@@ -1390,7 +1390,7 @@
  {
   "name": "photutils_circular_aperture_to_mask",
   "target": "photutils.aperture.CircularAperture.to_mask",
-  "desc": "把孔径转为 ApertureMask，用于裁剪像素。主要参数：method、subpixels。属于「孔径测光与源测量」，底层调用 photutils.aperture.CircularAperture.to_mask。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "desc": "把 CircularAperture 转为像素掩码。需要 _self 为 CircularAperture 实例；可选 method/subpixels。底层 CircularAperture.to_mask。",
   "params": [
    {
     "name": "method",

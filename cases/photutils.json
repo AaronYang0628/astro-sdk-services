@@ -434,6 +434,11 @@
   "skip": null
  },
  {
+  "name": "photutils_make_100gaussians_image",
+  "arguments": {},
+  "skip": null
+ },
+ {
   "name": "photutils_circular_aperture_do_photometry",
   "arguments": {
    "data": {
@@ -462,6 +467,415 @@
     ],
     "kwargs": {
      "r": 5.0
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_circular_aperture_to_mask",
+  "arguments": {
+   "_self": {
+    "__call__": "photutils.aperture.CircularAperture",
+    "args": [
+     [
+      [
+       20,
+       30
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       75,
+       25
+      ]
+     ]
+    ],
+    "kwargs": {
+     "r": 5.0
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_dao_star_finder",
+  "arguments": {
+   "threshold": 100.0,
+   "fwhm": 3.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_iraf_star_finder",
+  "arguments": {
+   "threshold": 100.0,
+   "fwhm": 3.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_dao_star_finder_create",
+  "arguments": {
+   "threshold": 100.0,
+   "fwhm": 3.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_iraf_star_finder_create",
+  "arguments": {
+   "threshold": 100.0,
+   "fwhm": 3.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_gaussian_prf_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_moffat_psf_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_radial_profile_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "xycen": {
+    "__type__": "tuple",
+    "items": [
+     50.0,
+     50.0
+    ]
+   },
+   "radii": [
+    0,
+    2,
+    4,
+    6
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_curve_of_growth_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "xycen": {
+    "__type__": "tuple",
+    "items": [
+     50.0,
+     50.0
+    ]
+   },
+   "radii": [
+    1,
+    2,
+    4,
+    6,
+    8
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_elliptical_curve_of_growth_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "xycen": {
+    "__type__": "tuple",
+    "items": [
+     50.0,
+     50.0
+    ]
+   },
+   "radii": [
+    1,
+    2,
+    4,
+    6
+   ],
+   "axis_ratio": 0.7
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_circular_aperture_create",
+  "arguments": {
+   "positions": [
+    [
+     20,
+     30
+    ],
+    [
+     50,
+     50
+    ],
+    [
+     75,
+     25
+    ]
+   ],
+   "r": 5.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_circular_annulus_create",
+  "arguments": {
+   "positions": [
+    [
+     20,
+     30
+    ],
+    [
+     50,
+     50
+    ],
+    [
+     75,
+     25
+    ]
+   ],
+   "r_in": 8.0,
+   "r_out": 12.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_elliptical_aperture_create",
+  "arguments": {
+   "positions": [
+    [
+     20,
+     30
+    ],
+    [
+     50,
+     50
+    ],
+    [
+     75,
+     25
+    ]
+   ],
+   "a": 6.0,
+   "b": 4.0,
+   "theta": 0.5
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_elliptical_annulus_create",
+  "arguments": {
+   "positions": [
+    [
+     20,
+     30
+    ],
+    [
+     50,
+     50
+    ],
+    [
+     75,
+     25
+    ]
+   ],
+   "a_in": 6.0,
+   "a_out": 10.0,
+   "b_out": 7.0,
+   "theta": 0.5
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_rectangular_aperture_create",
+  "arguments": {
+   "positions": [
+    [
+     20,
+     30
+    ],
+    [
+     50,
+     50
+    ],
+    [
+     75,
+     25
+    ]
+   ],
+   "w": 8.0,
+   "h": 4.0,
+   "theta": 0.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_background2d_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "box_size": 20
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_s_extractor_background_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_mmm_background_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_median_background_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_biweight_location_background_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_mad_std_background_rms_create",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "photutils_local_background_create",
+  "arguments": {
+   "inner_radius": 5,
+   "outer_radius": 10
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_source_grouper_create",
+  "arguments": {
+   "min_separation": 5.0
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_ellipse_geometry_create",
+  "arguments": {
+   "x0": 50.0,
+   "y0": 50.0,
+   "sma": 10.0,
+   "eps": 0.2,
+   "pa": 0.5
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_make_wcs",
+  "arguments": {
+   "shape": {
+    "__type__": "tuple",
+    "items": [
+     100,
+     100
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_cutout_image_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "position": {
+    "__type__": "tuple",
+    "items": [
+     50,
+     50
+    ]
+   },
+   "shape": {
+    "__type__": "tuple",
+    "items": [
+     21,
+     21
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_make_psf_model_image",
+  "arguments": {
+   "shape": {
+    "__type__": "tuple",
+    "items": [
+     50,
+     50
+    ]
+   },
+   "psf_model": {
+    "__call__": "photutils.psf.GaussianPRF",
+    "kwargs": {
+     "flux": 100,
+     "x_0": 25,
+     "y_0": 25,
+     "x_fwhm": 3,
+     "y_fwhm": 3
+    }
+   },
+   "n_sources": 3,
+   "seed": 1
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_segmentation_image_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.zeros",
+    "args": [
+     {
+      "__type__": "tuple",
+      "items": [
+       20,
+       20
+      ]
+     }
+    ],
+    "kwargs": {
+     "dtype": "int32"
     }
    }
   },

@@ -3176,7 +3176,7 @@
  {
   "name": "astroquery_horizons_ephemerides",
   "target": "astroquery.jplhorizons.Horizons.ephemerides",
-  "desc": "向 JPL Horizons 请求天体的天球视位置、星等、距离等星历表，指定观测地点与历元。主要参数：args、kwargs。属于「星历与轨道」，底层调用 astroquery.jplhorizons.Horizons.ephemerides。",
+  "desc": "查询 JPL Horizons 星历。需要 _self 为 Horizons 实例：{\"__call__\":\"astroquery.jplhorizons.Horizons\",\"args\":[\"433\"],\"kwargs\":{\"location\":\"500@399\",\"epochs\":{\"start\":\"YYYY-MM-DD\",\"stop\":\"YYYY-MM-DD\",\"step\":\"1d\"}}}；本工具不再接受顶层 location/epochs（那些是构造器参数）。返回 Table。底层 Horizons.ephemerides。",
   "params": [
    {
     "name": "args",
@@ -3264,7 +3264,7 @@
  {
   "name": "astroquery_mpc_query_object",
   "target": "astroquery.mpc.MPC.query_object",
-  "desc": "向 Minor Planet Center 查询小行星/彗星轨道和性质。主要参数：args、kwargs。属于「星历与轨道」，底层调用 astroquery.mpc.MPC.query_object。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "desc": "向 MPC 查询小行星/彗星。传 target（名称或编号，如 \"Ceres\"/\"1\"），不要用裸 _args。返回 Table。底层 MPC.query_object。",
   "params": [
    {
     "name": "args",
@@ -5093,7 +5093,7 @@
  {
   "name": "astroquery_x_match_query",
   "target": "astroquery.xmatch.XMatch.query",
-  "desc": "使用 CDS XMatch 服务在两张星表之间做大规模交叉匹配，返回匹配对。返回类型：astropy.table.Table。主要参数：cat1、cat2、max_distance、colRA1。属于「星表表格与交叉匹配」，底层调用 astroquery.xmatch.XMatch.query。",
+  "desc": "CDS XMatch 交叉匹配。cat1/cat2 可为 vizier:表名 或上传表；max_distance 为角距 Quantity；需要时传 colRA1/colDec1/colRA2/colDec2。返回匹配表。底层 XMatch.query。",
   "params": [
    {
     "name": "cat1",

@@ -236,6 +236,46 @@
   "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\ntarget[SkyCoord] 必填: Target celestial object(s)\nwhich[str] 可选: Choose which sunset relative to the present time would you like to calculate（默认 'nearest'）\nhorizon[object] 可选: Degrees above/below actual horizon to use for calculating rise/set times (i.e., -6 deg horizon = civil…（默认 库内部默认）\ngrid_times_targets[bool] 可选: If True, the target object will have extra dimensions packed onto the end, so that calculations with M…（默认 False）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
  },
  {
+  "name": "astroplan_observer_target_meridian_transit_time",
+  "target": "astroplan.Observer.target_meridian_transit_time",
+  "desc": "计算目标过子午圈时刻。返回类型：astropy.time.Time。主要参数：time、target、which、grid_times_targets。属于「望远镜观测规划」，底层调用 astroplan.Observer.target_meridian_transit_time。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…"
+   },
+   {
+    "name": "target",
+    "type": "SkyCoord",
+    "required": true,
+    "desc": "Target celestial object(s)"
+   },
+   {
+    "name": "which",
+    "type": "str",
+    "required": false,
+    "desc": "Choose which sunrise relative to the present time would you like to calculate（默认 'nearest'）"
+   },
+   {
+    "name": "grid_times_targets",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the target object will have extra dimensions packed onto the end, so that calculations with M…（默认 False）"
+   },
+   {
+    "name": "n_grid_points",
+    "type": "int",
+    "required": false,
+    "desc": "The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "目标中天时间",
+  "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\ntarget[SkyCoord] 必填: Target celestial object(s)\nwhich[str] 可选: Choose which sunrise relative to the present time would you like to calculate（默认 'nearest'）\ngrid_times_targets[bool] 可选: If True, the target object will have extra dimensions packed onto the end, so that calculations with M…（默认 False）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
   "name": "astroplan_observer_sun_rise_time",
   "target": "astroplan.Observer.sun_rise_time",
   "desc": "计算指定地平线的日出时间。返回类型：astropy.time.Time。主要参数：time、which、horizon、n_grid_points。属于「望远镜观测规划」，底层调用 astroplan.Observer.sun_rise_time。",
@@ -330,6 +370,180 @@
   "domain": "望远镜观测规划",
   "cn": "天文暮光结束",
   "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\nwhich[str] 可选: Choose which twilight relative to the present time would you like to calculate. Default is nearest.（默认 'nearest'）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
+  "name": "astroplan_observer_twilight_morning_astronomical",
+  "target": "astroplan.Observer.twilight_morning_astronomical",
+  "desc": "计算清晨天文晨光开始时刻。返回类型：astropy.time.Time。主要参数：time、which、n_grid_points。属于「望远镜观测规划」，底层调用 astroplan.Observer.twilight_morning_astronomical。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…"
+   },
+   {
+    "name": "which",
+    "type": "str",
+    "required": false,
+    "desc": "Choose which twilight relative to the present time would you like to calculate（默认 'nearest'）"
+   },
+   {
+    "name": "n_grid_points",
+    "type": "int",
+    "required": false,
+    "desc": "The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "天文晨光开始",
+  "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\nwhich[str] 可选: Choose which twilight relative to the present time would you like to calculate（默认 'nearest'）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
+  "name": "astroplan_observer_twilight_evening_nautical",
+  "target": "astroplan.Observer.twilight_evening_nautical",
+  "desc": "太阳 -12° 的傍晚时刻。返回类型：astropy.time.Time。主要参数：time、which、n_grid_points。属于「望远镜观测规划」，底层调用 astroplan.Observer.twilight_evening_nautical。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…"
+   },
+   {
+    "name": "which",
+    "type": "str",
+    "required": false,
+    "desc": "Choose which twilight relative to the present time would you like to calculate. Default is nearest.（默认 'nearest'）"
+   },
+   {
+    "name": "n_grid_points",
+    "type": "int",
+    "required": false,
+    "desc": "The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "航海暮光结束",
+  "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\nwhich[str] 可选: Choose which twilight relative to the present time would you like to calculate. Default is nearest.（默认 'nearest'）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
+  "name": "astroplan_observer_twilight_evening_civil",
+  "target": "astroplan.Observer.twilight_evening_civil",
+  "desc": "太阳 -6° 的傍晚时刻。返回类型：astropy.time.Time。主要参数：time、which、n_grid_points。属于「望远镜观测规划」，底层调用 astroplan.Observer.twilight_evening_civil。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…"
+   },
+   {
+    "name": "which",
+    "type": "str",
+    "required": false,
+    "desc": "Choose which twilight relative to the present time would you like to calculate. Default is nearest.（默认 'nearest'）"
+   },
+   {
+    "name": "n_grid_points",
+    "type": "int",
+    "required": false,
+    "desc": "The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "民用暮光结束",
+  "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\nwhich[str] 可选: Choose which twilight relative to the present time would you like to calculate. Default is nearest.（默认 'nearest'）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
+  "name": "astroplan_observer_moon_rise_time",
+  "target": "astroplan.Observer.moon_rise_time",
+  "desc": "计算月出时刻。主要参数：time、which、horizon、n_grid_points。属于「望远镜观测规划」，底层调用 astroplan.Observer.moon_rise_time。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…"
+   },
+   {
+    "name": "which",
+    "type": "str",
+    "required": false,
+    "desc": "Choose which moon rise relative to the present time would you like to calculate.（默认 'nearest'）"
+   },
+   {
+    "name": "horizon",
+    "type": "object",
+    "required": false,
+    "desc": "Degrees above/below actual horizon to use for calculating rise/set times (i.e., -6 deg horizon = civil…（默认 库内部默认）"
+   },
+   {
+    "name": "n_grid_points",
+    "type": "int",
+    "required": false,
+    "desc": "The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "月出时间",
+  "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\nwhich[str] 可选: Choose which moon rise relative to the present time would you like to calculate.（默认 'nearest'）\nhorizon[object] 可选: Degrees above/below actual horizon to use for calculating rise/set times (i.e., -6 deg horizon = civil…（默认 库内部默认）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
+  "name": "astroplan_observer_moon_set_time",
+  "target": "astroplan.Observer.moon_set_time",
+  "desc": "计算月落时刻。主要参数：time、which、horizon、n_grid_points。属于「望远镜观测规划」，底层调用 astroplan.Observer.moon_set_time。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…"
+   },
+   {
+    "name": "which",
+    "type": "str",
+    "required": false,
+    "desc": "Choose which moon set relative to the present time would you like to calculate.（默认 'nearest'）"
+   },
+   {
+    "name": "horizon",
+    "type": "object",
+    "required": false,
+    "desc": "Degrees above/below actual horizon to use for calculating set/set times (i.e., -6 deg horizon = civil…（默认 库内部默认）"
+   },
+   {
+    "name": "n_grid_points",
+    "type": "int",
+    "required": false,
+    "desc": "The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "月落时间",
+  "orig_params": "time[Time] 必填: Time of observation. This will be passed in as the first argument to the ~astropy.time.Time initializer, so…\nwhich[str] 可选: Choose which moon set relative to the present time would you like to calculate.（默认 'nearest'）\nhorizon[object] 可选: Degrees above/below actual horizon to use for calculating set/set times (i.e., -6 deg horizon = civil…（默认 库内部默认）\nn_grid_points[int] 可选: The number of grid points on which to search for the horizon crossings of the target over a 24 hour period,…（默认 150）"
+ },
+ {
+  "name": "astroplan_observer_moon_altaz",
+  "target": "astroplan.Observer.moon_altaz",
+  "desc": "月亮地平高度方位。返回类型：astropy.coordinates.SkyCoord。主要参数：time、ephemeris。属于「望远镜观测规划」，底层调用 astroplan.Observer.moon_altaz。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "time",
+    "type": "Time",
+    "required": true,
+    "desc": "This will be passed in as the first argument to the ~astropy.time.Time initializer, so it can be anything…"
+   },
+   {
+    "name": "ephemeris",
+    "type": "str",
+    "required": false,
+    "desc": "Ephemeris to use. If not given, use the one set with astropy.coordinates.solar_system_ephemeris.set (which is…（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "月亮地平坐标",
+  "orig_params": "time[Time] 必填: This will be passed in as the first argument to the ~astropy.time.Time initializer, so it can be anything…\nephemeris[str] 可选: Ephemeris to use. If not given, use the one set with astropy.coordinates.solar_system_ephemeris.set (which is…（默认 None）"
  },
  {
   "name": "astroplan_observer_moon_illumination",
@@ -444,6 +658,62 @@
   "orig_params": "time[Time] 必填: Observation time.\ntarget[FixedTarget] 必填: Target celestial object(s).\ngrid_times_targets[bool] 可选: If True, the target object will have extra dimensions packed onto the end, so that calculations with M…（默认 False）\nkind[str] 可选: Argument to the ~astropy.time.Time.sidereal_time function, which may be either 'mean' or 'apparent', i.e.,…（默认 'mean'）\nmodel[str] 可选: Precession (and nutation) model to use in the call to ~astropy.time.Time.sidereal_time, see docs for that…（默认 None）"
  },
  {
+  "name": "astroplan_observer_tonight",
+  "target": "astroplan.Observer.tonight",
+  "desc": "返回今晚（天文暮光之间）的时间范围。这是 Observer 实例方法，需要 _self 为 Observer（可用 astroplan_observer_create / observer_at_site 的返回值）；可选 time/horizon。底层 Observer.tonight。",
+  "params": [
+   {
+    "name": "time",
+    "type": "object",
+    "required": false,
+    "desc": "The start time for tonight, which is allowed to be arbitrary. See description above for behavior（默认 None）"
+   },
+   {
+    "name": "horizon",
+    "type": "object",
+    "required": false,
+    "desc": "Degrees above/below actual horizon to use for calculating rise/set times (e.g., -6 deg horizon = civil…（默认 库内部默认）"
+   },
+   {
+    "name": "obswl",
+    "type": "object",
+    "required": false,
+    "desc": "Wavelength of the observation used in the calculation（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "今夜时间范围",
+  "orig_params": "time[object] 可选: The start time for tonight, which is allowed to be arbitrary. See description above for behavior（默认 None）\nhorizon[object] 可选: Degrees above/below actual horizon to use for calculating rise/set times (e.g., -6 deg horizon = civil…（默认 库内部默认）\nobswl[object] 可选: Wavelength of the observation used in the calculation（默认 None）"
+ },
+ {
+  "name": "astroplan_fixed_target_create",
+  "target": "astroplan.FixedTarget",
+  "desc": "表示赤经赤纬固定的目标，支持名称解析。主要参数：coord、name、kwargs。属于「望远镜观测规划」，底层调用 astroplan.FixedTarget。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "coord",
+    "type": "object",
+    "required": true,
+    "desc": "天球坐标 SkyCoord"
+   },
+   {
+    "name": "name",
+    "type": "object",
+    "required": false,
+    "desc": "名称（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "固定目标",
+  "orig_params": "coord[object] 必填: 天球坐标 SkyCoord\nname[object] 可选: 名称（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
   "name": "astroplan_fixed_target_from_name",
   "target": "astroplan.FixedTarget.from_name",
   "desc": "通过名称解析创建 FixedTarget。主要参数：query_name、name、kwargs。属于「望远镜观测规划」，底层调用 astroplan.FixedTarget.from_name。通常作为后续求解、拟合或绘图步骤的输入准备。",
@@ -470,6 +740,206 @@
   "domain": "望远镜观测规划",
   "cn": "按名称创建目标",
   "orig_params": "query_name[str] 必填: Name of the target used to query for coordinates.\nname[str] 可选: Name of the target to use within astroplan. If None, query_name is used as name.（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroplan_altitude_constraint_create",
+  "target": "astroplan.AltitudeConstraint",
+  "desc": "要求目标高度角在 [min, max] 范围。主要参数：min、max、boolean_constraint。属于「望远镜观测规划」，底层调用 astroplan.AltitudeConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "min",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Minimum altitude of the target (inclusive). None indicates no limit.（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Maximum altitude of the target (inclusive). None indicates no limit.（默认 None）"
+   },
+   {
+    "name": "boolean_constraint",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the constraint is treated as a boolean (True for within the limits and False for outside). If False,…（默认 True）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "高度角约束",
+  "orig_params": "min[astropy.units.Quantity] 可选: Minimum altitude of the target (inclusive). None indicates no limit.（默认 None）\nmax[astropy.units.Quantity] 可选: Maximum altitude of the target (inclusive). None indicates no limit.（默认 None）\nboolean_constraint[bool] 可选: If True, the constraint is treated as a boolean (True for within the limits and False for outside). If False,…（默认 True）"
+ },
+ {
+  "name": "astroplan_airmass_constraint_create",
+  "target": "astroplan.AirmassConstraint",
+  "desc": "限制气团上限。主要参数：max、min、boolean_constraint。属于「望远镜观测规划」，底层调用 astroplan.AirmassConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "max",
+    "type": "float",
+    "required": false,
+    "desc": "Maximum airmass of the target. None indicates no limit.（默认 None）"
+   },
+   {
+    "name": "min",
+    "type": "float",
+    "required": false,
+    "desc": "Minimum airmass of the target. None indicates no limit.（默认 1）"
+   },
+   {
+    "name": "boolean_constraint",
+    "type": "bool",
+    "required": false,
+    "desc": "是否输出布尔而非评分（默认 True）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "大气质量约束",
+  "orig_params": "max[float] 可选: Maximum airmass of the target. None indicates no limit.（默认 None）\nmin[float] 可选: Minimum airmass of the target. None indicates no limit.（默认 1）\nboolean_constraint[bool] 可选: 是否输出布尔而非评分（默认 True）"
+ },
+ {
+  "name": "astroplan_at_night_constraint_create",
+  "target": "astroplan.AtNightConstraint",
+  "desc": "要求太阳低于指定高度（默认天文夜）。主要参数：max_solar_altitude、force_pressure_zero。属于「望远镜观测规划」，底层调用 astroplan.AtNightConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "max_solar_altitude",
+    "type": "object",
+    "required": false,
+    "desc": "太阳高度上限（默认 库内部默认）"
+   },
+   {
+    "name": "force_pressure_zero",
+    "type": "bool",
+    "required": false,
+    "desc": "是否强制气压为 0（默认 True）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "夜间约束",
+  "orig_params": "max_solar_altitude[object] 可选: 太阳高度上限（默认 库内部默认）\nforce_pressure_zero[bool] 可选: 是否强制气压为 0（默认 True）"
+ },
+ {
+  "name": "astroplan_moon_separation_constraint_create",
+  "target": "astroplan.MoonSeparationConstraint",
+  "desc": "要求目标距月亮的最小角距。主要参数：min、max、ephemeris。属于「望远镜观测规划」，底层调用 astroplan.MoonSeparationConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "min",
+    "type": "object",
+    "required": false,
+    "desc": "最小值（Quantity）（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "object",
+    "required": false,
+    "desc": "最大值（Quantity）（默认 None）"
+   },
+   {
+    "name": "ephemeris",
+    "type": "object",
+    "required": false,
+    "desc": "星历名称（默认内置）（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "月距约束",
+  "orig_params": "min[object] 可选: 最小值（Quantity）（默认 None）\nmax[object] 可选: 最大值（Quantity）（默认 None）\nephemeris[object] 可选: 星历名称（默认内置）（默认 None）"
+ },
+ {
+  "name": "astroplan_moon_illumination_constraint_create",
+  "target": "astroplan.MoonIlluminationConstraint",
+  "desc": "约束月亮照亮比例范围。主要参数：min、max、ephemeris。属于「望远镜观测规划」，底层调用 astroplan.MoonIlluminationConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "min",
+    "type": "object",
+    "required": false,
+    "desc": "最小值（Quantity）（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "object",
+    "required": false,
+    "desc": "最大值（Quantity）（默认 None）"
+   },
+   {
+    "name": "ephemeris",
+    "type": "object",
+    "required": false,
+    "desc": "星历名称（默认内置）（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "月相约束",
+  "orig_params": "min[object] 可选: 最小值（Quantity）（默认 None）\nmax[object] 可选: 最大值（Quantity）（默认 None）\nephemeris[object] 可选: 星历名称（默认内置）（默认 None）"
+ },
+ {
+  "name": "astroplan_sun_separation_constraint_create",
+  "target": "astroplan.SunSeparationConstraint",
+  "desc": "要求目标距太阳最小角距。主要参数：min、max。属于「望远镜观测规划」，底层调用 astroplan.SunSeparationConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "min",
+    "type": "object",
+    "required": false,
+    "desc": "最小值（Quantity）（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "object",
+    "required": false,
+    "desc": "最大值（Quantity）（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "日距约束",
+  "orig_params": "min[object] 可选: 最小值（Quantity）（默认 None）\nmax[object] 可选: 最大值（Quantity）（默认 None）"
+ },
+ {
+  "name": "astroplan_galactic_latitude_constraint_create",
+  "target": "astroplan.GalacticLatitudeConstraint",
+  "desc": "限制银纬范围，避开银盘。主要参数：min、max。属于「望远镜观测规划」，底层调用 astroplan.GalacticLatitudeConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "min",
+    "type": "object",
+    "required": false,
+    "desc": "最小值（Quantity）（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "object",
+    "required": false,
+    "desc": "最大值（Quantity）（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "银纬约束",
+  "orig_params": "min[object] 可选: 最小值（Quantity）（默认 None）\nmax[object] 可选: 最大值（Quantity）（默认 None）"
+ },
+ {
+  "name": "astroplan_time_constraint_create",
+  "target": "astroplan.TimeConstraint",
+  "desc": "限制观测在某时间区间。主要参数：min、max。属于「望远镜观测规划」，底层调用 astroplan.TimeConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "min",
+    "type": "object",
+    "required": false,
+    "desc": "最小值（Quantity）（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "object",
+    "required": false,
+    "desc": "最大值（Quantity）（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "时间窗约束",
+  "orig_params": "min[object] 可选: 最小值（Quantity）（默认 None）\nmax[object] 可选: 最大值（Quantity）（默认 None）"
  },
  {
   "name": "astroplan_is_observable",
@@ -562,6 +1032,86 @@
   "domain": "望远镜观测规划",
   "cn": "是否全程可观测",
   "orig_params": "constraints[list] 必填: Observational constraint(s)\nobserver[Observer] 必填: The observer who has constraints constraints\ntargets[object] 必填: Target or list of targets\ntimes[object] 可选: Array of times on which to test the constraint（默认 None）\ntime_range[object] 可选: Lower and upper bounds on time sequence, with spacing time_resolution. This will be passed as the first…（默认 None）\ntime_grid_resolution[object] 可选: If time_range is specified, determine whether constraints are met between test times in time_range by…（默认 库内部默认）"
+ },
+ {
+  "name": "astroplan_is_event_observable",
+  "target": "astroplan.is_event_observable",
+  "desc": "判断周期性事件（如凌星）是否可观测。返回类型：numpy.ndarray。主要参数：constraints、observer、target、times。属于「望远镜观测规划」，底层调用 astroplan.is_event_observable。",
+  "params": [
+   {
+    "name": "constraints",
+    "type": "list",
+    "required": true,
+    "desc": "Observational constraint(s)"
+   },
+   {
+    "name": "observer",
+    "type": "Observer",
+    "required": true,
+    "desc": "The observer who has constraints constraints"
+   },
+   {
+    "name": "target",
+    "type": "object",
+    "required": true,
+    "desc": "Target"
+   },
+   {
+    "name": "times",
+    "type": "object",
+    "required": false,
+    "desc": "Array of mid-event times on which to test the constraints（默认 None）"
+   },
+   {
+    "name": "times_ingress_egress",
+    "type": "object",
+    "required": false,
+    "desc": "Array of ingress and egress times for N events, with shape (N, 2).（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "周期事件可观测",
+  "orig_params": "constraints[list] 必填: Observational constraint(s)\nobserver[Observer] 必填: The observer who has constraints constraints\ntarget[object] 必填: Target\ntimes[object] 可选: Array of mid-event times on which to test the constraints（默认 None）\ntimes_ingress_egress[object] 可选: Array of ingress and egress times for N events, with shape (N, 2).（默认 None）"
+ },
+ {
+  "name": "astroplan_months_observable",
+  "target": "astroplan.months_observable",
+  "desc": "判断一年中哪些月份可观测。返回类型：list。主要参数：constraints、observer、targets、time_range。属于「望远镜观测规划」，底层调用 astroplan.months_observable。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "constraints",
+    "type": "list",
+    "required": true,
+    "desc": "Observational constraint(s)"
+   },
+   {
+    "name": "observer",
+    "type": "Observer",
+    "required": true,
+    "desc": "The observer who has constraints constraints"
+   },
+   {
+    "name": "targets",
+    "type": "object",
+    "required": true,
+    "desc": "Target or list of targets"
+   },
+   {
+    "name": "time_range",
+    "type": "object",
+    "required": false,
+    "desc": "Lower and upper bounds on time sequence If time_range is not specified, defaults to current year (localtime)（默认 库内部默认）"
+   },
+   {
+    "name": "time_grid_resolution",
+    "type": "object",
+    "required": false,
+    "desc": "If time_range is specified, determine whether constraints are met between test times in time_range by…（默认 库内部默认）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "可观测月份",
+  "orig_params": "constraints[list] 必填: Observational constraint(s)\nobserver[Observer] 必填: The observer who has constraints constraints\ntargets[object] 必填: Target or list of targets\ntime_range[object] 可选: Lower and upper bounds on time sequence If time_range is not specified, defaults to current year (localtime)（默认 库内部默认）\ntime_grid_resolution[object] 可选: If time_range is specified, determine whether constraints are met between test times in time_range by…（默认 库内部默认）"
  },
  {
   "name": "astroplan_observability_table",
@@ -676,9 +1226,55 @@
   "orig_params": "time_range[object] 必填: Lower and upper bounds on time sequence.\ntime_resolution[object] 可选: Time-grid spacing（默认 库内部默认）"
  },
  {
+  "name": "astroplan_eclipsing_system_create",
+  "target": "astroplan.EclipsingSystem",
+  "desc": "由历元、周期、持续时间定义凌星/食系统，可求下次食。主要参数：primary_eclipse_time、orbital_period、duration、name。属于「望远镜观测规划」，底层调用 astroplan.EclipsingSystem。",
+  "params": [
+   {
+    "name": "primary_eclipse_time",
+    "type": "object",
+    "required": true,
+    "desc": "主食中心时间"
+   },
+   {
+    "name": "orbital_period",
+    "type": "object",
+    "required": true,
+    "desc": "轨道周期"
+   },
+   {
+    "name": "duration",
+    "type": "object",
+    "required": false,
+    "desc": "曝光总时长（默认 None）"
+   },
+   {
+    "name": "name",
+    "type": "object",
+    "required": false,
+    "desc": "名称（默认 None）"
+   },
+   {
+    "name": "eccentricity",
+    "type": "object",
+    "required": false,
+    "desc": "偏心率（默认 None）"
+   },
+   {
+    "name": "argument_of_periapsis",
+    "type": "object",
+    "required": false,
+    "desc": "近心点幅角（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "食双星系统",
+  "orig_params": "primary_eclipse_time[object] 必填: 主食中心时间\norbital_period[object] 必填: 轨道周期\nduration[object] 可选: 曝光总时长（默认 None）\nname[object] 可选: 名称（默认 None）\neccentricity[object] 可选: 偏心率（默认 None）\nargument_of_periapsis[object] 可选: 近心点幅角（默认 None）"
+ },
+ {
   "name": "astroplan_eclipsing_system_next_primary_eclipse_time",
   "target": "astroplan.EclipsingSystem.next_primary_eclipse_time",
-  "desc": "计算下一次主食中心时间。返回类型：astropy.time.Time。主要参数：time、n_eclipses。属于「望远镜观测规划」，底层调用 astroplan.EclipsingSystem.next_primary_eclipse_time。",
+  "desc": "计算下一次主食中心时刻。需要 _self 为 EclipsingSystem（可用 astroplan_eclipsing_system_create 的返回值），并传 time。底层 EclipsingSystem.next_primary_eclipse_time。",
   "params": [
    {
     "name": "time",
@@ -696,5 +1292,153 @@
   "domain": "望远镜观测规划",
   "cn": "下次主食时间",
   "orig_params": "time[Time] 必填: Find the next primary eclipse after time\nn_eclipses[int] 可选: Return the times of eclipse for the next n_eclipses after time. Default is 1.（默认 1）"
+ },
+ {
+  "name": "astroplan_observing_block_create",
+  "target": "astroplan.ObservingBlock",
+  "desc": "定义目标、曝光时长、优先级的观测单元。主要参数：target、duration、priority、configuration。属于「望远镜观测规划」，底层调用 astroplan.ObservingBlock。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "target",
+    "type": "object",
+    "required": true,
+    "desc": "观测目标 FixedTarget/SkyCoord"
+   },
+   {
+    "name": "duration",
+    "type": "object",
+    "required": true,
+    "desc": "曝光总时长"
+   },
+   {
+    "name": "priority",
+    "type": "object",
+    "required": true,
+    "desc": "优先级（越小越高）"
+   },
+   {
+    "name": "configuration",
+    "type": "dict",
+    "required": false,
+    "desc": "仪器配置字典（默认 {}）"
+   },
+   {
+    "name": "constraints",
+    "type": "object",
+    "required": false,
+    "desc": "约束列表（默认 None）"
+   },
+   {
+    "name": "name",
+    "type": "object",
+    "required": false,
+    "desc": "名称（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "观测块",
+  "orig_params": "target[object] 必填: 观测目标 FixedTarget/SkyCoord\nduration[object] 必填: 曝光总时长\npriority[object] 必填: 优先级（越小越高）\nconfiguration[dict] 可选: 仪器配置字典（默认 {}）\nconstraints[object] 可选: 约束列表（默认 None）\nname[object] 可选: 名称（默认 None）"
+ },
+ {
+  "name": "astroplan_observing_block_from_exposures",
+  "target": "astroplan.ObservingBlock.from_exposures",
+  "desc": "由曝光时间、次数、读出时间创建 OB。主要参数：target、priority、time_per_exposure、number_exposures。属于「望远镜观测规划」，底层调用 astroplan.ObservingBlock.from_exposures。",
+  "params": [
+   {
+    "name": "target",
+    "type": "object",
+    "required": true,
+    "desc": "观测目标 FixedTarget/SkyCoord"
+   },
+   {
+    "name": "priority",
+    "type": "object",
+    "required": true,
+    "desc": "优先级（越小越高）"
+   },
+   {
+    "name": "time_per_exposure",
+    "type": "object",
+    "required": true,
+    "desc": "每次曝光时长"
+   },
+   {
+    "name": "number_exposures",
+    "type": "object",
+    "required": true,
+    "desc": "曝光次数"
+   },
+   {
+    "name": "readout_time",
+    "type": "object",
+    "required": false,
+    "desc": "读出时间（默认 库内部默认）"
+   },
+   {
+    "name": "configuration",
+    "type": "dict",
+    "required": false,
+    "desc": "仪器配置字典（默认 {}）"
+   },
+   {
+    "name": "constraints",
+    "type": "object",
+    "required": false,
+    "desc": "约束列表（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "由曝光创建观测块",
+  "orig_params": "target[object] 必填: 观测目标 FixedTarget/SkyCoord\npriority[object] 必填: 优先级（越小越高）\ntime_per_exposure[object] 必填: 每次曝光时长\nnumber_exposures[object] 必填: 曝光次数\nreadout_time[object] 可选: 读出时间（默认 库内部默认）\nconfiguration[dict] 可选: 仪器配置字典（默认 {}）\nconstraints[object] 可选: 约束列表（默认 None）"
+ },
+ {
+  "name": "astroplan_schedule_create",
+  "target": "astroplan.Schedule",
+  "desc": "保存调度结果的 Schedule 对象，可输出表格。主要参数：start_time、end_time、constraints。属于「望远镜观测规划」，底层调用 astroplan.Schedule。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "start_time",
+    "type": "object",
+    "required": true,
+    "desc": "起始时间 Time"
+   },
+   {
+    "name": "end_time",
+    "type": "object",
+    "required": true,
+    "desc": "结束时间 Time"
+   },
+   {
+    "name": "constraints",
+    "type": "object",
+    "required": false,
+    "desc": "约束列表（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "观测日程",
+  "orig_params": "start_time[object] 必填: 起始时间 Time\nend_time[object] 必填: 结束时间 Time\nconstraints[object] 可选: 约束列表（默认 None）"
+ },
+ {
+  "name": "astroplan_transitioner_create",
+  "target": "astroplan.Transitioner",
+  "desc": "定义目标间换星/换仪器转场时间。主要参数：slew_rate、instrument_reconfig_times。属于「望远镜观测规划」，底层调用 astroplan.Transitioner。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "slew_rate",
+    "type": "object",
+    "required": false,
+    "desc": "转台转速（默认 None）"
+   },
+   {
+    "name": "instrument_reconfig_times",
+    "type": "object",
+    "required": false,
+    "desc": "仪器重配置时间字典（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "转场时间模型",
+  "orig_params": "slew_rate[object] 可选: 转台转速（默认 None）\ninstrument_reconfig_times[object] 可选: 仪器重配置时间字典（默认 None）"
  }
 ]

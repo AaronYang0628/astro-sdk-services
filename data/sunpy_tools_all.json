@@ -2,7 +2,7 @@
  {
   "name": "sunpy_map",
   "target": "sunpy.map.Map",
-  "desc": "读取 FITS 等并构造 GenericMap，自动识别 SDO/AIA、HMI、SOHO 等仪器。返回类型：sunpy.map.GenericMap。主要参数：args、composite、sequence、allow_errors。属于「太阳物理」，底层调用 sunpy.map.Map。",
+  "desc": "构造 sunpy Map。入参用 _args 传位置参数：[data, header]，其中 data 为二维数组，header 可用 sunpy_make_fitswcs_header 的返回值，或直接传 FITS 路径字符串（单元素 _args）。返回 GenericMap，可再交给 generic_map_* 工具（那些工具需要 _self 为 Map 对象）。底层 sunpy.map.Map。",
   "params": [
    {
     "name": "args",
@@ -1439,7 +1439,7 @@
  {
   "name": "sunpy_get",
   "target": "sunpy.sun.constants.get",
-  "desc": "获取太阳物理常数（半径、质量、光度等）。返回类型：astropy.constants.Constant。主要参数：key。属于「太阳物理」，底层调用 sunpy.sun.constants.get。",
+  "desc": "读取太阳物理常数。key 常用值：radius、mass、surface_gravity、density、luminosity、average_angular_size 等。返回 Constant（带单位）。底层 sunpy.sun.constants.get。",
   "params": [
    {
     "name": "key",
