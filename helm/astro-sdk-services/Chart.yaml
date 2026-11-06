@@ -2,4 +2,4 @@ apiVersion: v2
 name: astro-sdk-services
 description: Astronomy SDK tool services (HTTP + MCP); all-in-one by default, path-routed on a single Ingress host
 version: 0.2.9
-appVersion: "1873d07"
+appVersion: "a6cfc58"
