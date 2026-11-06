@@ -20,4 +20,12 @@ spec:
             pathType: Prefix
             backend: {service: {name: {{ if $.Values.allInOne }}astro-all{{ else }}astro-{{ .name }}{{ end }}, port: {number: 80}}}
           {{- end }}
+          {{- if .Values.allInOne }}
+          - path: /tools
+            pathType: Prefix
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          - path: /health
+            pathType: Exact
+            backend: {service: {name: astro-all, port: {number: 80}}}
+          {{- end }}
 {{- end }}

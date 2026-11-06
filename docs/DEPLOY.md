@@ -85,7 +85,7 @@ docker run -d --name astro-sdk -p 8000:8000 \
 
 ## 4. Kubernetes：Helm（推荐）
 
-Chart 在仓库 `helm/astro-sdk-services`（0.2.7）。默认 `allInOne: true`：1 个 Deployment + 1 个 Service `astro-all`，1 个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 都转发过去。
+Chart 在仓库 `helm/astro-sdk-services`（0.2.7）。默认 `allInOne: true`：1 个 Deployment + 1 个 Service `astro-all`，1 个 Ingress 把 `/astropy`、`/astroquery`、`/photutils`、`/astroplan`、`/sunpy`、`/euclid` 以及聚合目录 `/tools`、总健康检查 `/health` 都转发过去。
 
 `my-values.yaml`（只需改域名、证书、存储）：
 ```yaml
