@@ -58,3 +58,22 @@ SELECT = [
  "affine_transform","resample","reshape_image_to_4d_superpixel",
  "time_create","instrument_create","wavelength_create","level_create","source_create",
 ]
+# --- round 3 expansion ---
+ARGS.update({
+ "rotated_sun_frame_create": {"base": C("sunpy.coordinates.HeliographicStonyhurst", obstime="2026-10-01T00:00:00"), "duration": Q(1, "day")},
+ "differential_rotate": {"smap": SMAP, "time": "2026-10-01T06:00:00"},
+ "map_sequence_create": {"_args": [SMAP, SMAP]},
+ "composite_map_create": {"_args": [SMAP, SMAP]},
+ "fido_search": {"_args": [C("sunpy.net.attrs.Time", "2026-10-01 00:00", "2026-10-01 00:10"), C("sunpy.net.attrs.Instrument", "AIA")]},
+ "sample_create": {"value": Q(1, "minute")},
+ "generic_map_reproject_to": {"target_wcs": C("astropy.wcs.WCS", HDR)},
+})
+
+# round 3 expansion (smoke-tested; dropped: differential_rotate, rotated_sun_frame_create)
+SELECT += [
+ "generic_map_reproject_to",
+ "map_sequence_create",
+ "composite_map_create",
+ "fido_search",
+ "sample_create",
+]

@@ -1366,5 +1366,134 @@
    }
   },
   "skip": null
+ },
+ {
+  "name": "astroplan_phase_constraint_create",
+  "arguments": {
+   "periodic_event": {
+    "__call__": "astroplan.EclipsingSystem",
+    "kwargs": {
+     "primary_eclipse_time": {
+      "__call__": "astropy.time.Time",
+      "args": [
+       "2026-10-01 00:00:00"
+      ]
+     },
+     "orbital_period": {
+      "value": 2.5,
+      "unit": "d"
+     }
+    }
+   },
+   "min": 0.4,
+   "max": 0.6
+  },
+  "skip": null
+ },
+ {
+  "name": "astroplan_sequential_scheduler_create",
+  "arguments": {
+   "constraints": [
+    {
+     "__call__": "astroplan.AltitudeConstraint",
+     "kwargs": {
+      "min": {
+       "value": 30,
+       "unit": "deg"
+      }
+     }
+    },
+    {
+     "__call__": "astroplan.AtNightConstraint.twilight_astronomical"
+    }
+   ],
+   "observer": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   },
+   "transitioner": {
+    "__call__": "astroplan.Transitioner",
+    "kwargs": {
+     "slew_rate": {
+      "value": 1,
+      "unit": "deg/s"
+     }
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroplan_priority_scheduler_create",
+  "arguments": {
+   "constraints": [
+    {
+     "__call__": "astroplan.AltitudeConstraint",
+     "kwargs": {
+      "min": {
+       "value": 30,
+       "unit": "deg"
+      }
+     }
+    },
+    {
+     "__call__": "astroplan.AtNightConstraint.twilight_astronomical"
+    }
+   ],
+   "observer": {
+    "__call__": "astroplan.Observer",
+    "kwargs": {
+     "location": {
+      "__call__": "astropy.coordinates.EarthLocation.from_geodetic",
+      "args": [
+       {
+        "value": -155.47,
+        "unit": "deg"
+       },
+       {
+        "value": 19.82,
+        "unit": "deg"
+       },
+       {
+        "value": 4200,
+        "unit": "m"
+       }
+      ]
+     },
+     "name": "TestSite",
+     "timezone": "UTC"
+    }
+   },
+   "transitioner": {
+    "__call__": "astroplan.Transitioner",
+    "kwargs": {
+     "slew_rate": {
+      "value": 1,
+      "unit": "deg/s"
+     }
+    }
+   }
+  },
+  "skip": null
  }
 ]

@@ -1131,5 +1131,127 @@
   "domain": "太阳物理",
   "cn": "卫星源属性",
   "orig_params": "value[str] 必填: A keyword describing the Data Source."
+ },
+ {
+  "name": "sunpy_generic_map_reproject_to",
+  "target": "sunpy.map.GenericMap.reproject_to",
+  "desc": "把图重投影到目标 WCS（使用 reproject）。返回类型：sunpy.map.GenericMap。主要参数：target_wcs、algorithm、return_footprint、auto_extent。属于「太阳物理」，底层调用 sunpy.map.GenericMap.reproject_to。",
+  "params": [
+   {
+    "name": "target_wcs",
+    "type": "dict",
+    "required": true,
+    "desc": "The destination FITS WCS header or WCS instance"
+   },
+   {
+    "name": "algorithm",
+    "type": "str",
+    "required": false,
+    "desc": "One of the supported reproject algorithms (see below)（默认 'interpolation'）"
+   },
+   {
+    "name": "return_footprint",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the footprint is returned in addition to the new map. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "auto_extent",
+    "type": "object",
+    "required": false,
+    "desc": "If None, the extent of the reprojected map comes from the target WCS. If not None, the extent of the…（默认 None）"
+   },
+   {
+    "name": "preserve_date_obs",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the observation time of the reprojected map is set to the observation time of the original map…（默认 False）"
+   },
+   {
+    "name": "reproject_args",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "重投影到另一WCS",
+  "orig_params": "target_wcs[dict] 必填: The destination FITS WCS header or WCS instance\nalgorithm[str] 可选: One of the supported reproject algorithms (see below)（默认 'interpolation'）\nreturn_footprint[bool] 可选: If True, the footprint is returned in addition to the new map. Defaults to False.（默认 False）\nauto_extent[object] 可选: If None, the extent of the reprojected map comes from the target WCS. If not None, the extent of the…（默认 None）\npreserve_date_obs[bool] 可选: If True, the observation time of the reprojected map is set to the observation time of the original map…（默认 False）\nreproject_args[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_map_sequence_create",
+  "target": "sunpy.map.MapSequence",
+  "desc": "时间序列 Map，可批量叠加、动画。主要参数：args、sortby。属于「太阳物理」，底层调用 sunpy.map.MapSequence。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "sortby",
+    "type": "str",
+    "required": false,
+    "desc": "Method by which the MapSequence should be sorted along the z-axis. Defaults to sorting by: \"date\" and is the…（默认 'date'）"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "图序列",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nsortby[str] 可选: Method by which the MapSequence should be sorted along the z-axis. Defaults to sorting by: \"date\" and is the…（默认 'date'）"
+ },
+ {
+  "name": "sunpy_composite_map_create",
+  "target": "sunpy.map.CompositeMap",
+  "desc": "叠加多张 Map 绘制。主要参数：args、kwargs。属于「太阳物理」，底层调用 sunpy.map.CompositeMap。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "复合图",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "sunpy_fido_search",
+  "target": "sunpy.net.Fido.search",
+  "desc": "用 attrs 组合在 VSO、JSOC、GOES 等源统一搜索太阳数据。主要参数：query。属于「太阳物理」，底层调用 sunpy.net.Fido.search。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "query",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "Fido统一搜索",
+  "orig_params": "query[tuple] 可选: 额外位置参数"
+ },
+ {
+  "name": "sunpy_sample_create",
+  "target": "sunpy.net.attrs.Sample",
+  "desc": "指定采样节奏。主要参数：value。属于「太阳物理」，底层调用 sunpy.net.attrs.Sample。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "value",
+    "type": "astropy.units.Quantity",
+    "required": true,
+    "desc": "A sampling rate convertible to seconds."
+   }
+  ],
+  "domain": "太阳物理",
+  "cn": "采样间隔属性",
+  "orig_params": "value[astropy.units.Quantity] 必填: A sampling rate convertible to seconds."
  }
 ]

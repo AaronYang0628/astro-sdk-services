@@ -64,3 +64,37 @@ SELECT = [
  "local_background_create","source_grouper_create","ellipse_geometry_create",
  "make_wcs","cutout_image_create","make_psf_model_image","segmentation_image_create",
 ]
+# --- round 3 expansion ---
+SEG = C("photutils.segmentation.detect_sources", IMG, 200.0, 5)
+STARS = C("astropy.table.Table", {"x": [20, 50, 75], "y": [30, 50, 25]})
+ARGS.update({
+ "deblend_sources": {"data": IMG, "segment_img": SEG, "n_pixels": 5},
+ "star_finder_create": {"threshold": 100.0, "kernel": C("numpy.ones", {"__type__": "tuple", "items": [5, 5]})},
+ "source_finder_create": {"n_pixels": 5},
+ "source_catalog_create": {"data": IMG, "segment_img": SEG},
+ "sky_circular_aperture_create": {"positions": SC(10.684, 41.269), "r": Q(2, "arcsec")},
+ "sky_circular_annulus_create": {"positions": SC(10.684, 41.269), "r_in": Q(3, "arcsec"), "r_out": Q(5, "arcsec")},
+ "aperture_stats_create": {"data": IMG, "aperture": ap},
+ "extract_stars": {"data": C("astropy.nddata.NDData", IMG), "catalogs": STARS, "size": 11},
+ "ellipse_create": {"image": IMG},
+ "make_model_image": {"shape": {"__type__": "tuple", "items": [30, 30]}, "model": C("astropy.modeling.models.Gaussian2D"), "params_table": C("astropy.table.Table", {"x_mean": [10.0, 20.0], "y_mean": [10.0, 15.0], "amplitude": [100.0, 50.0], "x_stddev": [2.0, 2.0], "y_stddev": [2.0, 2.0], "theta": [0.0, 0.0]})},
+ "image_depth_create": {"aper_radius": 4, "nsigma": 5.0, "napers": 50, "niters": 2, "seed": 1},
+ "psf_photometry_create": {"psf_model": C("photutils.psf.GaussianPRF", x_fwhm=3, y_fwhm=3), "fit_shape": 7},
+ "epsf_builder_create": {"oversampling": 2, "maxiters": 3},
+})
+
+# round 3 expansion (smoke-tested; dropped: make_model_image)
+SELECT += [
+ "deblend_sources",
+ "star_finder_create",
+ "source_finder_create",
+ "source_catalog_create",
+ "sky_circular_aperture_create",
+ "sky_circular_annulus_create",
+ "aperture_stats_create",
+ "psf_photometry_create",
+ "epsf_builder_create",
+ "extract_stars",
+ "ellipse_create",
+ "image_depth_create",
+]

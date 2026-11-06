@@ -880,5 +880,230 @@
    }
   },
   "skip": null
+ },
+ {
+  "name": "photutils_deblend_sources",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "segment_img": {
+    "__call__": "photutils.segmentation.detect_sources",
+    "args": [
+     {
+      "__call__": "numpy.load",
+      "args": [
+       "/workspace/astro_services/fixtures/image.npy"
+      ]
+     },
+     200.0,
+     5
+    ]
+   },
+   "n_pixels": 5
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_star_finder_create",
+  "arguments": {
+   "threshold": 100.0,
+   "kernel": {
+    "__call__": "numpy.ones",
+    "args": [
+     {
+      "__type__": "tuple",
+      "items": [
+       5,
+       5
+      ]
+     }
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_source_finder_create",
+  "arguments": {
+   "n_pixels": 5
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_source_catalog_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "segment_img": {
+    "__call__": "photutils.segmentation.detect_sources",
+    "args": [
+     {
+      "__call__": "numpy.load",
+      "args": [
+       "/workspace/astro_services/fixtures/image.npy"
+      ]
+     },
+     200.0,
+     5
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_sky_circular_aperture_create",
+  "arguments": {
+   "positions": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "r": {
+    "value": 2,
+    "unit": "arcsec"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_sky_circular_annulus_create",
+  "arguments": {
+   "positions": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "r_in": {
+    "value": 3,
+    "unit": "arcsec"
+   },
+   "r_out": {
+    "value": 5,
+    "unit": "arcsec"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_aperture_stats_create",
+  "arguments": {
+   "data": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   },
+   "aperture": {
+    "__call__": "photutils.aperture.CircularAperture",
+    "args": [
+     [
+      [
+       20,
+       30
+      ],
+      [
+       50,
+       50
+      ],
+      [
+       75,
+       25
+      ]
+     ]
+    ],
+    "kwargs": {
+     "r": 5.0
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_psf_photometry_create",
+  "arguments": {
+   "psf_model": {
+    "__call__": "photutils.psf.GaussianPRF",
+    "kwargs": {
+     "x_fwhm": 3,
+     "y_fwhm": 3
+    }
+   },
+   "fit_shape": 7
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_epsf_builder_create",
+  "arguments": {
+   "oversampling": 2,
+   "maxiters": 3
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_extract_stars",
+  "arguments": {
+   "data": {
+    "__call__": "astropy.nddata.NDData",
+    "args": [
+     {
+      "__call__": "numpy.load",
+      "args": [
+       "/workspace/astro_services/fixtures/image.npy"
+      ]
+     }
+    ]
+   },
+   "catalogs": {
+    "__call__": "astropy.table.Table",
+    "args": [
+     {
+      "x": [
+       20,
+       50,
+       75
+      ],
+      "y": [
+       30,
+       50,
+       25
+      ]
+     }
+    ]
+   },
+   "size": 11
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_ellipse_create",
+  "arguments": {
+   "image": {
+    "__call__": "numpy.load",
+    "args": [
+     "/workspace/astro_services/fixtures/image.npy"
+    ]
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "photutils_image_depth_create",
+  "arguments": {
+   "aper_radius": 4,
+   "nsigma": 5.0,
+   "napers": 50,
+   "niters": 2,
+   "seed": 1
+  },
+  "skip": null
  }
 ]

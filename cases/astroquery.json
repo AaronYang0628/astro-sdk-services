@@ -474,5 +474,665 @@
    }
   },
   "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_bibobj",
+  "arguments": {
+   "bibcode": "2005A&A...430..165F"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_bibcode",
+  "arguments": {
+   "bibcode": "2005A&A...430..165F"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_query_hierarchy",
+  "arguments": {
+   "_args": [
+    "M31"
+   ],
+   "hierarchy": "children"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_get_votable_fields",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_list_columns",
+  "arguments": {
+   "_args": [
+    "basic"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_list_linked_tables",
+  "arguments": {
+   "table": "basic"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_get_field_description",
+  "arguments": {
+   "field_name": "ra"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_simbad_list_wildcards",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_vizier_get_catalogs",
+  "arguments": {
+   "catalog": "I/239/hip_main"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_vizier_get_catalog_metadata",
+  "arguments": {
+   "catalog": "I/239"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.02,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_query_criteria",
+  "arguments": {
+   "obs_collection": "HST",
+   "proposal_id": "12000"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_query_criteria_count",
+  "arguments": {
+   "obs_collection": "HST",
+   "proposal_id": "12000"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_query_object_count",
+  "arguments": {
+   "_args": [
+    "M31"
+   ],
+   "radius": "0.02 deg"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_observations_query_region_count",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.02,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_catalogs_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.01,
+    "unit": "deg"
+   },
+   "catalog": "TIC"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_catalogs_query_criteria",
+  "arguments": {
+   "catalog": "TIC",
+   "ID": "261136679"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_gaia_cone_search_async",
+  "arguments": {
+   "coordinate": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.01,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_gaia_launch_job_async",
+  "arguments": {
+   "query": "SELECT TOP 3 source_id, ra, dec FROM gaiadr3.gaia_source"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_gaia_load_table",
+  "arguments": {
+   "table": "gaiadr3.gaia_source"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_ned_query_region_iau",
+  "arguments": {
+   "iau_name": "1234-423",
+   "frame": "SuperGalactic",
+   "equinox": "J2000"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_ned_query_refcode",
+  "arguments": {
+   "refcode": "1997A&A...323...31K"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_query_tap",
+  "arguments": {
+   "query": "SELECT TOP 3 ra, dec, j_m FROM fp_psc"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_query_sia",
+  "arguments": {
+   "pos": {
+    "__type__": "tuple",
+    "items": [
+     {
+      "ra": 10.684,
+      "dec": 41.269,
+      "unit": "deg"
+     },
+     {
+      "value": 0.01,
+      "unit": "deg"
+     }
+    ]
+   },
+   "collection": "spitzer_seip"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_query_ssa",
+  "arguments": {
+   "pos": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.01,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_list_collections",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_irsa_dust_get_query_table",
+  "arguments": {
+   "coordinate": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_query_region_catalogs",
+  "arguments": {
+   "position": "M31",
+   "radius": "0.02 deg",
+   "catalogs": "HSC",
+   "row_limit": 5
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_query_object_maps",
+  "arguments": {
+   "position": "M31",
+   "missions": "HST-OPTICAL"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_query_region_maps",
+  "arguments": {
+   "position": "M31",
+   "radius": "0.02 deg",
+   "missions": "HST-OPTICAL"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_query_object_spectra",
+  "arguments": {
+   "position": "M31",
+   "missions": "HST-UV"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_query_region_spectra",
+  "arguments": {
+   "position": "M31",
+   "radius": "0.02 deg",
+   "missions": "HST-UV"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_find_sso",
+  "arguments": {
+   "sso_name": "Ceres"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_sky_list_spectra",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_query_objects",
+  "arguments": {
+   "target_type": "asteroid",
+   "name": "Ceres"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_mpc_get_observations",
+  "arguments": {
+   "targetid": "12893"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_skybot_cone_search",
+  "arguments": {
+   "coo": {
+    "ra": 10.684,
+    "dec": 11.269,
+    "unit": "deg"
+   },
+   "rad": {
+    "value": 0.5,
+    "unit": "deg"
+   },
+   "epoch": {
+    "__type__": "Time",
+    "value": "2026-10-12T00:00:00",
+    "scale": "utc"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_alma_query_object",
+  "arguments": {
+   "object_name": "M83"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_alma_query",
+  "arguments": {
+   "payload": {
+    "source_name_resolver": "M83"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_alma_query_tap",
+  "arguments": {
+   "query": "SELECT TOP 3 obs_id, target_name FROM ivoa.obscore"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sdss_query_crossid",
+  "arguments": {
+   "coordinates": {
+    "__call__": "astropy.coordinates.SkyCoord",
+    "args": [
+     [
+      10.684
+     ],
+     [
+      41.269
+     ]
+    ],
+    "kwargs": {
+     "unit": "deg"
+    }
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sdss_query_photoobj",
+  "arguments": {
+   "run": 5714,
+   "camcol": 6,
+   "field": 98
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sdss_query_specobj",
+  "arguments": {
+   "plate": 2340
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_sky_view_get_image_list",
+  "arguments": {
+   "position": "M31",
+   "survey": [
+    "DSS"
+   ]
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_heasarc_query_tap",
+  "arguments": {
+   "query": "SELECT TOP 3 name, ra, dec FROM rosmaster"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_eso_list_instruments",
+  "arguments": {},
+  "skip": null
+ },
+ {
+  "name": "astroquery_jpl_spec_query_lines",
+  "arguments": {
+   "min_frequency": {
+    "value": 100,
+    "unit": "GHz"
+   },
+   "max_frequency": {
+    "value": 101,
+    "unit": "GHz"
+   },
+   "molecule": "28001 CO"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_cdms_query_lines",
+  "arguments": {
+   "min_frequency": {
+    "value": 100,
+    "unit": "GHz"
+   },
+   "max_frequency": {
+    "value": 120,
+    "unit": "GHz"
+   },
+   "molecule": "028503 CO"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_atomic_line_list_query_object",
+  "arguments": {
+   "wavelength_range": [
+    {
+     "value": 6560,
+     "unit": "Angstrom"
+    },
+    {
+     "value": 6570,
+     "unit": "Angstrom"
+    }
+   ],
+   "wavelength_type": "Air",
+   "element_spectrum": "H I"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_nasa_exoplanet_archive_query_region",
+  "arguments": {
+   "table": "pscomppars",
+   "coordinates": {
+    "ra": 346.6,
+    "dec": -5.04,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 1,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_svo_fps_get_filter_index",
+  "arguments": {
+   "wavelength_eff_min": {
+    "value": 4000,
+    "unit": "Angstrom"
+   },
+   "wavelength_eff_max": {
+    "value": 7000,
+    "unit": "Angstrom"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_svo_fps_get_transmission_data",
+  "arguments": {
+   "filter_id": "HST/ACS_WFC.F555W"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_cadc_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.01,
+    "unit": "deg"
+   },
+   "collection": "CFHT"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_cadc_query_name",
+  "arguments": {
+   "name": "M31"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_ukidss_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 180.0,
+    "dec": 0.5,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 6,
+    "unit": "arcsec"
+   },
+   "programme_id": "LAS"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_vsa_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 266.4,
+    "dec": -29.0,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 6,
+    "unit": "arcsec"
+   },
+   "programme_id": "VVV"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_hubble_cone_search",
+  "arguments": {
+   "coordinates": {
+    "ra": 10.684,
+    "dec": 41.269,
+    "unit": "deg"
+   },
+   "radius": 1
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_hubble_query_target",
+  "arguments": {
+   "name": "M31"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_hubble_query_criteria",
+  "arguments": {
+   "calibration_level": 3,
+   "instrument_name": "WFC3",
+   "get_query": true
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_esa_hubble_query_tap",
+  "arguments": {
+   "query": "SELECT TOP 3 observation_id FROM ehst.observation"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_jwst_query_target",
+  "arguments": {
+   "target_name": "M1",
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_jwst_cone_search",
+  "arguments": {
+   "coordinate": {
+    "ra": 83.633,
+    "dec": 22.014,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_xmm_newton_query_xsa_tap",
+  "arguments": {
+   "query": "SELECT TOP 3 observation_id FROM xsa.v_public_observations"
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_casda_query_region",
+  "arguments": {
+   "coordinates": {
+    "ra": 333.0,
+    "dec": -50.0,
+    "unit": "deg"
+   },
+   "radius": {
+    "value": 0.05,
+    "unit": "deg"
+   }
+  },
+  "skip": null
+ },
+ {
+  "name": "astroquery_fermi_lat_query_object",
+  "arguments": {
+   "name_or_coords": "Crab",
+   "searchradius": "1",
+   "obsdates": "2020-01-01 00:00:00, 2020-01-02 00:00:00",
+   "energyrange_MeV": "1000, 100000"
+  },
+  "skip": null
  }
 ]

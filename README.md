@@ -1,15 +1,15 @@
 # astro-sdk-services
 
 One small FastAPI HTTP service per astronomy SDK (prototype). Each service exposes a curated whitelist of tools
-(247 in total across five SDKs; euclid is separate), with JSON-serialisable inputs/outputs.
+(552 in total across five SDKs; euclid is separate), with JSON-serialisable inputs/outputs.
 
 | SDK | port | tools |
 |---|---|---|
-| astropy | 9101 | 61 |
-| astroquery | 9102 | 51 (network: SIMBAD/VizieR/Gaia/NED/SDSS/IRSA/HEASARC/MPC/Horizons/MAST/ESASky/…) |
-| photutils | 9103 | 49 |
-| astroplan | 9104 | 44 |
-| sunpy | 9105 | 42 |
+| astropy | 9101 | 281 |
+| astroquery | 9102 | 116 (network: SIMBAD/VizieR/Gaia/NED/SDSS/IRSA/HEASARC/MPC/Horizons/MAST/ESASky/…) |
+| photutils | 9103 | 61 |
+| astroplan | 9104 | 47 |
+| sunpy | 9105 | 47 |
 | euclid | (all-in-one `/euclid`) | 14 (HTTPS FITS URL or local MER cutout + PNG preview; EUCLID_CACHE_DIR / EUCLID_OUTPUT_DIR; optional `output_path` into EUCLID_WRITE_ROOTS, e.g. a 021 project ResearchSpace) |
 
 Services bind to `127.0.0.1` only. Behind an Ingress (`https://astro.example.com/<sdk>/...`) the services accept the

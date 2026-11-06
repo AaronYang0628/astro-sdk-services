@@ -1637,5 +1637,2482 @@
   "domain": "星表查询与数据获取",
   "cn": "ALMA区域查询",
   "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_simbad_query_bibobj",
+  "target": "astroquery.simbad.Simbad.query_bibobj",
+  "desc": "按文献 bibcode 查询该论文涉及的所有天体。返回类型：astropy.table.Table。主要参数：bibcode、criteria、get_query_payload、async_job。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_bibobj。",
+  "params": [
+   {
+    "name": "bibcode",
+    "type": "str",
+    "required": true,
+    "desc": "the bibcode of the article"
+   },
+   {
+    "name": "criteria",
+    "type": "object",
+    "required": false,
+    "desc": "criteria，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "是否输出详细信息（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD文献天体查询",
+  "orig_params": "bibcode[str] 必填: the bibcode of the article\ncriteria[object] 可选: criteria，详见官方 API 文档（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nverbose[bool] 可选: 是否输出详细信息（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_query_bibcode",
+  "target": "astroquery.simbad.Simbad.query_bibcode",
+  "desc": "按 bibcode 通配符查询文献元数据。返回类型：astropy.table.Table。主要参数：bibcode、wildcard、abstract、criteria。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_bibcode。",
+  "params": [
+   {
+    "name": "bibcode",
+    "type": "str",
+    "required": true,
+    "desc": "The bibcode of the article to be queried"
+   },
+   {
+    "name": "wildcard",
+    "type": "bool",
+    "required": false,
+    "desc": "When it is set to True it implies that the object is specified with wildcards.（默认 False）"
+   },
+   {
+    "name": "abstract",
+    "type": "bool",
+    "required": false,
+    "desc": "When this is set to True, the abstract of the article is also included to the result.（默认 False）"
+   },
+   {
+    "name": "criteria",
+    "type": "str",
+    "required": false,
+    "desc": "Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "object",
+    "required": false,
+    "desc": "是否输出详细信息（默认 None）"
+   },
+   {
+    "name": "cache",
+    "type": "object",
+    "required": false,
+    "desc": "是否缓存下载结果（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD文献查询",
+  "orig_params": "bibcode[str] 必填: The bibcode of the article to be queried\nwildcard[bool] 可选: When it is set to True it implies that the object is specified with wildcards.（默认 False）\nabstract[bool] 可选: When this is set to True, the abstract of the article is also included to the result.（默认 False）\ncriteria[str] 可选: Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）\nverbose[object] 可选: 是否输出详细信息（默认 None）\ncache[object] 可选: 是否缓存下载结果（默认 None）"
+ },
+ {
+  "name": "astroquery_simbad_query_hierarchy",
+  "target": "astroquery.simbad.Simbad.query_hierarchy",
+  "desc": "查询天体的层级关系（父系统/子成员，如星团成员、双星分量）。返回类型：astropy.table.Table。主要参数：name、hierarchy、detailed_hierarchy、criteria。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.query_hierarchy。",
+  "params": [
+   {
+    "name": "name",
+    "type": "str",
+    "required": true,
+    "desc": "name of the object"
+   },
+   {
+    "name": "hierarchy",
+    "type": "str",
+    "required": true,
+    "desc": "Can take the values \"parents\" to return the parents of the object (ex: a galaxy cluster is a parent of a…"
+   },
+   {
+    "name": "detailed_hierarchy",
+    "type": "bool",
+    "required": false,
+    "desc": "Whether to add the two extra columns 'hierarchy_bibcode' that gives the article in which the hierarchy link…（默认 True）"
+   },
+   {
+    "name": "criteria",
+    "type": "str",
+    "required": false,
+    "desc": "Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD层级查询",
+  "orig_params": "name[str] 必填: name of the object\nhierarchy[str] 必填: Can take the values \"parents\" to return the parents of the object (ex: a galaxy cluster is a parent of a…\ndetailed_hierarchy[bool] 可选: Whether to add the two extra columns 'hierarchy_bibcode' that gives the article in which the hierarchy link…（默认 True）\ncriteria[str] 可选: Criteria to be applied to the query. These should be written in the ADQL syntax in a single string. See…（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）\nasync_job[bool] 可选: When set to True, the query will be executed in asynchronous mode. This is better for very long queries, as…（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_get_votable_fields",
+  "target": "astroquery.simbad.Simbad.get_votable_fields",
+  "desc": "查看当前会话已启用的输出字段。无需额外参数。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.get_votable_fields。",
+  "params": [],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD当前输出字段",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astroquery_simbad_list_columns",
+  "target": "astroquery.simbad.Simbad.list_columns",
+  "desc": "列出指定 SIMBAD 表的列及其说明。返回类型：astropy.table.Table。主要参数：tables、keyword、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.list_columns。",
+  "params": [
+   {
+    "name": "tables",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "keyword",
+    "type": "str",
+    "required": false,
+    "desc": "A keyword to look for in column names, table names, or descriptions.（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD列列表",
+  "orig_params": "tables[tuple] 可选: 额外位置参数\nkeyword[str] 可选: A keyword to look for in column names, table names, or descriptions.（默认 None）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_list_linked_tables",
+  "target": "astroquery.simbad.Simbad.list_linked_tables",
+  "desc": "列出与某表可连接的关联表。返回类型：astropy.table.Table。主要参数：table、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.list_linked_tables。",
+  "params": [
+   {
+    "name": "table",
+    "type": "str",
+    "required": true,
+    "desc": "One of SIMBAD's tables name"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD关联表",
+  "orig_params": "table[str] 必填: One of SIMBAD's tables name\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters without querying SIMBAD. The ADQL string is…（默认 False）"
+ },
+ {
+  "name": "astroquery_simbad_get_field_description",
+  "target": "astroquery.simbad.Simbad.get_field_description",
+  "desc": "返回某输出字段的详细说明。主要参数：field_name。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.get_field_description。",
+  "params": [
+   {
+    "name": "field_name",
+    "type": "object",
+    "required": true,
+    "desc": "field_name，详见官方 API 文档"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD字段描述",
+  "orig_params": "field_name[object] 必填: field_name，详见官方 API 文档"
+ },
+ {
+  "name": "astroquery_simbad_list_wildcards",
+  "target": "astroquery.simbad.Simbad.list_wildcards",
+  "desc": "列出 SIMBAD 支持的通配符语法。无需额外参数。属于「星表查询与数据获取」，底层调用 astroquery.simbad.Simbad.list_wildcards。",
+  "params": [],
+  "domain": "星表查询与数据获取",
+  "cn": "SIMBAD通配符说明",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astroquery_vizier_get_catalogs",
+  "target": "astroquery.vizier.Vizier.get_catalogs",
+  "desc": "按星表标识符下载完整星表。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.vizier.Vizier.get_catalogs。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "VizieR获取整表",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_vizier_get_catalog_metadata",
+  "target": "astroquery.vizier.Vizier.get_catalog_metadata",
+  "desc": "获取当前设置星表的元数据（作者、引用）。返回类型：astropy.table.Table。主要参数：catalog、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.vizier.Vizier.get_catalog_metadata。",
+  "params": [
+   {
+    "name": "catalog",
+    "type": "str",
+    "required": false,
+    "desc": "The catalog identifier. It usually looks like 'III/55' for big surveys or 'J/ApJ/811/67' for catalogs linked…（默认 None）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When True, returns the dict of HTTP request parameters. This does not execute the search for metadata.（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "VizieR星表元数据",
+  "orig_params": "catalog[str] 可选: The catalog identifier. It usually looks like 'III/55' for big surveys or 'J/ApJ/811/67' for catalogs linked…（默认 None）\nget_query_payload[bool] 可选: When True, returns the dict of HTTP request parameters. This does not execute the search for metadata.（默认 False）"
+ },
+ {
+  "name": "astroquery_observations_query_region",
+  "target": "astroquery.mast.Observations.query_region",
+  "desc": "按天区锥形搜索 MAST 观测。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.mast.Observations.query_region。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST区域查询观测",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_observations_query_criteria",
+  "target": "astroquery.mast.Observations.query_criteria",
+  "desc": "用 obs_collection、instrument_name、t_exptime 等条件筛选观测。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.mast.Observations.query_criteria。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST条件查询观测",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_observations_query_criteria_count",
+  "target": "astroquery.mast.Observations.query_criteria_count",
+  "desc": "返回满足条件的观测数量。主要参数：pagesize、page、resolver、criteria。属于「星表查询与数据获取」，底层调用 astroquery.mast.Observations.query_criteria_count。",
+  "params": [
+   {
+    "name": "pagesize",
+    "type": "int",
+    "required": false,
+    "desc": "Can be used to override the default pagesize. E.g. when using a slow internet connection.（默认 None）"
+   },
+   {
+    "name": "page",
+    "type": "int",
+    "required": false,
+    "desc": "Can be used to override the default behavior of all results being returned to obtain one specific page of…（默认 None）"
+   },
+   {
+    "name": "resolver",
+    "type": "str",
+    "required": false,
+    "desc": "The resolver to use when resolving a named target into coordinates. Valid options are \"SIMBAD\" and \"NED\". If…（默认 None）"
+   },
+   {
+    "name": "criteria",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST条件计数",
+  "orig_params": "pagesize[int] 可选: Can be used to override the default pagesize. E.g. when using a slow internet connection.（默认 None）\npage[int] 可选: Can be used to override the default behavior of all results being returned to obtain one specific page of…（默认 None）\nresolver[str] 可选: The resolver to use when resolving a named target into coordinates. Valid options are \"SIMBAD\" and \"NED\". If…（默认 None）\ncriteria[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_observations_query_object_count",
+  "target": "astroquery.mast.Observations.query_object_count",
+  "desc": "返回某天体附近观测条数。主要参数：objectname、radius、pagesize、page。属于「星表查询与数据获取」，底层调用 astroquery.mast.Observations.query_object_count。",
+  "params": [
+   {
+    "name": "objectname",
+    "type": "str",
+    "required": true,
+    "desc": "The name of the target around which to search."
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）"
+   },
+   {
+    "name": "pagesize",
+    "type": "int",
+    "required": false,
+    "desc": "Can be used to override the default pagesize. E.g. when using a slow internet connection.（默认 None）"
+   },
+   {
+    "name": "page",
+    "type": "int",
+    "required": false,
+    "desc": "Can be used to override the default behavior of all results being returned to obtain one specific page of…（默认 None）"
+   },
+   {
+    "name": "resolver",
+    "type": "str",
+    "required": false,
+    "desc": "The resolver to use when resolving a named target into coordinates. Valid options are \"SIMBAD\" and \"NED\". If…（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST天体观测计数",
+  "orig_params": "objectname[str] 必填: The name of the target around which to search.\nradius[str] 可选: The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）\npagesize[int] 可选: Can be used to override the default pagesize. E.g. when using a slow internet connection.（默认 None）\npage[int] 可选: Can be used to override the default behavior of all results being returned to obtain one specific page of…（默认 None）\nresolver[str] 可选: The resolver to use when resolving a named target into coordinates. Valid options are \"SIMBAD\" and \"NED\". If…（默认 None）"
+ },
+ {
+  "name": "astroquery_observations_query_region_count",
+  "target": "astroquery.mast.Observations.query_region_count",
+  "desc": "返回区域内观测条数。主要参数：coordinates、radius、pagesize、page。属于「星表查询与数据获取」，底层调用 astroquery.mast.Observations.query_region_count。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "str",
+    "required": true,
+    "desc": "The target around which to search. It may be specified as a string or as the appropriate ~astropy.coordinates…"
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）"
+   },
+   {
+    "name": "pagesize",
+    "type": "int",
+    "required": false,
+    "desc": "Can be used to override the default pagesize for. E.g. when using a slow internet connection.（默认 None）"
+   },
+   {
+    "name": "page",
+    "type": "int",
+    "required": false,
+    "desc": "Can be used to override the default behavior of all results being returned to obtain a specific page of…（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST区域观测计数",
+  "orig_params": "coordinates[str] 必填: The target around which to search. It may be specified as a string or as the appropriate ~astropy.coordinates…\nradius[str] 可选: The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）\npagesize[int] 可选: Can be used to override the default pagesize for. E.g. when using a slow internet connection.（默认 None）\npage[int] 可选: Can be used to override the default behavior of all results being returned to obtain a specific page of…（默认 None）"
+ },
+ {
+  "name": "astroquery_catalogs_query_region",
+  "target": "astroquery.mast.Catalogs.query_region",
+  "desc": "在 MAST 星表中按天区查询，如 TIC 与 Pan-STARRS。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.mast.Catalogs.query_region。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST星表区域查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_catalogs_query_criteria",
+  "target": "astroquery.mast.Catalogs.query_criteria",
+  "desc": "在 MAST 星表中按列条件查询。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.mast.Catalogs.query_criteria。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "MAST星表条件查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_gaia_cone_search_async",
+  "target": "astroquery.gaia.Gaia.cone_search_async",
+  "desc": "异步版本锥形搜索，适合大结果集。主要参数：coordinate、radius、table_name、ra_column_name。属于「天体测量与Gaia数据」，底层调用 astroquery.gaia.Gaia.cone_search_async。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "str",
+    "required": true,
+    "desc": "coordinates center point"
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "radius（默认 None）"
+   },
+   {
+    "name": "table_name",
+    "type": "str",
+    "required": false,
+    "desc": "str, optional, default main gaia table name doing the cone search against（默认 None）"
+   },
+   {
+    "name": "ra_column_name",
+    "type": "str",
+    "required": false,
+    "desc": "ra column doing the cone search against（默认 'ra'）"
+   },
+   {
+    "name": "dec_column_name",
+    "type": "str",
+    "required": false,
+    "desc": "dec column doing the cone search against（默认 'dec'）"
+   },
+   {
+    "name": "background",
+    "type": "bool",
+    "required": false,
+    "desc": "when the job is executed in asynchronous mode, this flag specifies whether the execution will wait until…（默认 False）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format. Available formats are: 'votable', 'votable_plain', 'fits', 'csv', 'ecsv' and 'json', default…（默认 'votable_gzip'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "dump_to_file",
+    "type": "bool",
+    "required": false,
+    "desc": "if True, the results are saved in a file instead of using memory（默认 False）"
+   },
+   {
+    "name": "columns",
+    "type": "tuple",
+    "required": false,
+    "desc": "if empty, all columns will be selected（默认 ()）"
+   }
+  ],
+  "domain": "天体测量与Gaia数据",
+  "cn": "Gaia锥形搜索(异步)",
+  "orig_params": "coordinate[str] 必填: coordinates center point\nradius[str] 可选: radius（默认 None）\ntable_name[str] 可选: str, optional, default main gaia table name doing the cone search against（默认 None）\nra_column_name[str] 可选: ra column doing the cone search against（默认 'ra'）\ndec_column_name[str] 可选: dec column doing the cone search against（默认 'dec'）\nbackground[bool] 可选: when the job is executed in asynchronous mode, this flag specifies whether the execution will wait until…（默认 False）\noutput_file[str] 可选: file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）\noutput_format[str] 可选: results format. Available formats are: 'votable', 'votable_plain', 'fits', 'csv', 'ecsv' and 'json', default…（默认 'votable_gzip'）\nverbose[bool] 可选: flag to display information about the process（默认 False）\ndump_to_file[bool] 可选: if True, the results are saved in a file instead of using memory（默认 False）\ncolumns[tuple] 可选: if empty, all columns will be selected（默认 ()）"
+ },
+ {
+  "name": "astroquery_gaia_launch_job_async",
+  "target": "astroquery.gaia.Gaia.launch_job_async",
+  "desc": "异步提交 ADQL 作业，可下载大表。主要参数：query、name、output_file、output_format。属于「天体测量与Gaia数据」，底层调用 astroquery.gaia.Gaia.launch_job_async。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "query to be executed"
+   },
+   {
+    "name": "name",
+    "type": "str",
+    "required": false,
+    "desc": "custom name defined by the user for the job that is going to be created（默认 None）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format. Available formats are: 'votable_gzip', 'votable', 'votable_plain', 'fits', 'csv' and 'json',…（默认 'votable_gzip'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "dump_to_file",
+    "type": "bool",
+    "required": false,
+    "desc": "if True, the results are saved in a file instead of using memory（默认 False）"
+   },
+   {
+    "name": "background",
+    "type": "bool",
+    "required": false,
+    "desc": "when the job is executed in asynchronous mode, this flag specifies whether the execution will wait until…（默认 False）"
+   },
+   {
+    "name": "upload_resource",
+    "type": "str",
+    "required": false,
+    "desc": "resource to be uploaded to UPLOAD_SCHEMA（默认 None）"
+   },
+   {
+    "name": "upload_table_name",
+    "type": "str",
+    "required": false,
+    "desc": "resource temporary table name associated to the uploaded resource. This argument is required if…（默认 None）"
+   },
+   {
+    "name": "autorun",
+    "type": "bool",
+    "required": false,
+    "desc": "if 'True', sets 'phase' parameter to 'RUN', so the framework can start the job.（默认 True）"
+   }
+  ],
+  "domain": "天体测量与Gaia数据",
+  "cn": "Gaia异步ADQL",
+  "orig_params": "query[str] 必填: query to be executed\nname[str] 可选: custom name defined by the user for the job that is going to be created（默认 None）\noutput_file[str] 可选: file name where the results are saved if dump_to_file is True. If this parameter is not provided, the jobid…（默认 None）\noutput_format[str] 可选: results format. Available formats are: 'votable_gzip', 'votable', 'votable_plain', 'fits', 'csv' and 'json',…（默认 'votable_gzip'）\nverbose[bool] 可选: flag to display information about the process（默认 False）\ndump_to_file[bool] 可选: if True, the results are saved in a file instead of using memory（默认 False）\nbackground[bool] 可选: when the job is executed in asynchronous mode, this flag specifies whether the execution will wait until…（默认 False）\nupload_resource[str] 可选: resource to be uploaded to UPLOAD_SCHEMA（默认 None）\nupload_table_name[str] 可选: resource temporary table name associated to the uploaded resource. This argument is required if…（默认 None）\nautorun[bool] 可选: if 'True', sets 'phase' parameter to 'RUN', so the framework can start the job.（默认 True）"
+ },
+ {
+  "name": "astroquery_gaia_load_table",
+  "target": "astroquery.gaia.Gaia.load_table",
+  "desc": "加载某表元数据与列信息。主要参数：table、verbose。属于「天体测量与Gaia数据」，底层调用 astroquery.gaia.Gaia.load_table。",
+  "params": [
+   {
+    "name": "table",
+    "type": "str",
+    "required": true,
+    "desc": "full qualified table name (i.e. schema name + table name)"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   }
+  ],
+  "domain": "天体测量与Gaia数据",
+  "cn": "Gaia表元数据",
+  "orig_params": "table[str] 必填: full qualified table name (i.e. schema name + table name)\nverbose[bool] 可选: flag to display information about the process（默认 False）"
+ },
+ {
+  "name": "astroquery_ned_query_region_iau",
+  "target": "astroquery.ned.Ned.query_region_iau",
+  "desc": "按 IAU 坐标式名称搜索。返回类型：astropy.table.Table。主要参数：iau_name、frame、equinox、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.ned.Ned.query_region_iau。",
+  "params": [
+   {
+    "name": "iau_name",
+    "type": "str",
+    "required": true,
+    "desc": "IAU coordinate-based name of target on which search is centered. Definition of IAU coordinates at…"
+   },
+   {
+    "name": "frame",
+    "type": "str",
+    "required": false,
+    "desc": "May be one of 'Equatorial', 'Ecliptic', 'Galactic', 'SuperGalactic'. Defaults to 'Equatorial'.（默认 'Equatorial'）"
+   },
+   {
+    "name": "equinox",
+    "type": "str",
+    "required": false,
+    "desc": "The equinox may be one of J2000.0 or B1950.0. Defaults to B1950.0（默认 'B1950.0'）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "if set to True then returns the dictionary sent as the HTTP request. Defaults to False（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "NED IAU名称查询",
+  "orig_params": "iau_name[str] 必填: IAU coordinate-based name of target on which search is centered. Definition of IAU coordinates at…\nframe[str] 可选: May be one of 'Equatorial', 'Ecliptic', 'Galactic', 'SuperGalactic'. Defaults to 'Equatorial'.（默认 'Equatorial'）\nequinox[str] 可选: The equinox may be one of J2000.0 or B1950.0. Defaults to B1950.0（默认 'B1950.0'）\nget_query_payload[bool] 可选: if set to True then returns the dictionary sent as the HTTP request. Defaults to False（默认 False）\nverbose[bool] 可选: When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）"
+ },
+ {
+  "name": "astroquery_ned_query_refcode",
+  "target": "astroquery.ned.Ned.query_refcode",
+  "desc": "按参考文献代码查询天体。返回类型：astropy.table.Table。主要参数：refcode、get_query_payload、verbose。属于「星表查询与数据获取」，底层调用 astroquery.ned.Ned.query_refcode。",
+  "params": [
+   {
+    "name": "refcode",
+    "type": "str",
+    "required": true,
+    "desc": "19 digit reference code. Example: 1997A&A...323...31K."
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "if set to True then returns the dictionary sent as the HTTP request. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "NED文献查询",
+  "orig_params": "refcode[str] 必填: 19 digit reference code. Example: 1997A&A...323...31K.\nget_query_payload[bool] 可选: if set to True then returns the dictionary sent as the HTTP request. Defaults to False.（默认 False）\nverbose[bool] 可选: When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）"
+ },
+ {
+  "name": "astroquery_irsa_query_tap",
+  "target": "astroquery.ipac.irsa.Irsa.query_tap",
+  "desc": "向 IRSA TAP 服务提交 ADQL。返回类型：pyvo.dal.TAPResults。主要参数：query、async_job、maxrec。属于「星表查询与数据获取」，底层调用 astroquery.ipac.irsa.Irsa.query_tap。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "ADQL query to be executed"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "if True query is run in asynchronous mode（默认 False）"
+   },
+   {
+    "name": "maxrec",
+    "type": "int",
+    "required": false,
+    "desc": "maximum number of records to return（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "IRSA TAP查询",
+  "orig_params": "query[str] 必填: ADQL query to be executed\nasync_job[bool] 可选: if True query is run in asynchronous mode（默认 False）\nmaxrec[int] 可选: maximum number of records to return（默认 None）"
+ },
+ {
+  "name": "astroquery_irsa_query_sia",
+  "target": "astroquery.ipac.irsa.Irsa.query_sia",
+  "desc": "用 SIA 协议查询图像。主要参数：pos、band、time、pol。属于「星表查询与数据获取」，底层调用 astroquery.ipac.irsa.Irsa.query_sia。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "pos",
+    "type": "object",
+    "required": false,
+    "desc": "angle units (default: deg) the positional region(s) to be searched for data. Each region can be expressed as…（默认 None）"
+   },
+   {
+    "name": "band",
+    "type": "float",
+    "required": false,
+    "desc": "(spectral units (default: meter) the energy interval(s) to be searched for data.（默认 None）"
+   },
+   {
+    "name": "time",
+    "type": "object",
+    "required": false,
+    "desc": "the time interval(s) to be searched for data.（默认 None）"
+   },
+   {
+    "name": "pol",
+    "type": "object",
+    "required": false,
+    "desc": "the polarization state(s) to be searched for data.（默认 None）"
+   },
+   {
+    "name": "field_of_view",
+    "type": "object",
+    "required": false,
+    "desc": "angle units (default arcsec) the range(s) of field of view (size) to be searched for data（默认 None）"
+   },
+   {
+    "name": "spatial_resolution",
+    "type": "object",
+    "required": false,
+    "desc": "angle units required the range(s) of spatial resolution to be searched for data（默认 None）"
+   },
+   {
+    "name": "spectral_resolving_power",
+    "type": "object",
+    "required": false,
+    "desc": "the range(s) of spectral resolving power to be searched for data（默认 None）"
+   },
+   {
+    "name": "exptime",
+    "type": "object",
+    "required": false,
+    "desc": "time units (default: second) the range(s) of exposure times to be searched for data（默认 None）"
+   },
+   {
+    "name": "timeres",
+    "type": "object",
+    "required": false,
+    "desc": "time units (default: second) the range(s) of temporal resolution to be searched for data（默认 None）"
+   },
+   {
+    "name": "publisher_did",
+    "type": "object",
+    "required": false,
+    "desc": "specifies the unique identifier of dataset(s). It is global because it must include information regarding the…（默认 None）"
+   },
+   {
+    "name": "facility",
+    "type": "object",
+    "required": false,
+    "desc": "specifies the name of the facility (usually telescope) where the data was acquired.（默认 None）"
+   },
+   {
+    "name": "collection",
+    "type": "object",
+    "required": false,
+    "desc": "name of the collection that the data belongs to（默认 None）"
+   },
+   {
+    "name": "instrument",
+    "type": "object",
+    "required": false,
+    "desc": "specifies the name of the instrument with which the data was acquired.（默认 None）"
+   },
+   {
+    "name": "data_type",
+    "type": "str",
+    "required": false,
+    "desc": "specifies the type of the data（默认 None）"
+   },
+   {
+    "name": "calib_level",
+    "type": "object",
+    "required": false,
+    "desc": "pyvo.dam.obscore.CALIBRATION_LEVELS specifies the calibration level of the data. Can be a single value or a…（默认 None）"
+   },
+   {
+    "name": "target_name",
+    "type": "object",
+    "required": false,
+    "desc": "specifies the name of the target (e.g. the intention of the original science program or observation)（默认 None）"
+   },
+   {
+    "name": "res_format",
+    "type": "object",
+    "required": false,
+    "desc": "specifies response format(s).（默认 None）"
+   },
+   {
+    "name": "maxrec",
+    "type": "object",
+    "required": false,
+    "desc": "maxrec，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "IRSA SIA图像查询",
+  "orig_params": "pos[object] 可选: angle units (default: deg) the positional region(s) to be searched for data. Each region can be expressed as…（默认 None）\nband[float] 可选: (spectral units (default: meter) the energy interval(s) to be searched for data.（默认 None）\ntime[object] 可选: the time interval(s) to be searched for data.（默认 None）\npol[object] 可选: the polarization state(s) to be searched for data.（默认 None）\nfield_of_view[object] 可选: angle units (default arcsec) the range(s) of field of view (size) to be searched for data（默认 None）\nspatial_resolution[object] 可选: angle units required the range(s) of spatial resolution to be searched for data（默认 None）\nspectral_resolving_power[object] 可选: the range(s) of spectral resolving power to be searched for data（默认 None）\nexptime[object] 可选: time units (default: second) the range(s) of exposure times to be searched for data（默认 None）\ntimeres[object] 可选: time units (default: second) the range(s) of temporal resolution to be searched for data（默认 None）\npublisher_did[object] 可选: specifies the unique identifier of dataset(s). It is global because it must include information regarding the…（默认 None）\nfacility[object] 可选: specifies the name of the facility (usually telescope) where the data was acquired.（默认 None）\ncollection[object] 可选: name of the collection that the data belongs to（默认 None）\ninstrument[object] 可选: specifies the name of the instrument with which the data was acquired.（默认 None）\ndata_type[str] 可选: specifies the type of the data（默认 None）\ncalib_level[object] 可选: pyvo.dam.obscore.CALIBRATION_LEVELS specifies the calibration level of the data. Can be a single value or a…（默认 None）\ntarget_name[object] 可选: specifies the name of the target (e.g. the intention of the original science program or observation)（默认 None）\nres_format[object] 可选: specifies response format(s).（默认 None）\nmaxrec[object] 可选: maxrec，详见官方 API 文档（默认 None）\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_irsa_query_ssa",
+  "target": "astroquery.ipac.irsa.Irsa.query_ssa",
+  "desc": "用 SSA 协议查询光谱。主要参数：pos、radius、band、time。属于「星表查询与数据获取」，底层调用 astroquery.ipac.irsa.Irsa.query_ssa。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "pos",
+    "type": "object",
+    "required": false,
+    "desc": "the position of the center of the circular search region. assuming icrs decimal degrees if unit is not…（默认 None）"
+   },
+   {
+    "name": "radius",
+    "type": "object",
+    "required": false,
+    "desc": "搜索半径（角度 Quantity）（默认 None）"
+   },
+   {
+    "name": "band",
+    "type": "object",
+    "required": false,
+    "desc": "the bandwidth range the observations belong to. assuming meters if unit is not specified.（默认 None）"
+   },
+   {
+    "name": "time",
+    "type": "object",
+    "required": false,
+    "desc": "the datetime range the observations were made in. assuming iso 8601 if format is not specified.（默认 None）"
+   },
+   {
+    "name": "collection",
+    "type": "str",
+    "required": false,
+    "desc": "Name of the collection that the data belongs to.（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "IRSA SSA光谱查询",
+  "orig_params": "pos[object] 可选: the position of the center of the circular search region. assuming icrs decimal degrees if unit is not…（默认 None）\nradius[object] 可选: 搜索半径（角度 Quantity）（默认 None）\nband[object] 可选: the bandwidth range the observations belong to. assuming meters if unit is not specified.（默认 None）\ntime[object] 可选: the datetime range the observations were made in. assuming iso 8601 if format is not specified.（默认 None）\ncollection[str] 可选: Name of the collection that the data belongs to.（默认 None）"
+ },
+ {
+  "name": "astroquery_irsa_list_collections",
+  "target": "astroquery.ipac.irsa.Irsa.list_collections",
+  "desc": "列出 IRSA SIA/SSA 集合。返回类型：A astropy.table.Table object.。主要参数：servicetype、filter。属于「星表查询与数据获取」，底层调用 astroquery.ipac.irsa.Irsa.list_collections。",
+  "params": [
+   {
+    "name": "servicetype",
+    "type": "str",
+    "required": false,
+    "desc": "Service type to list collections for. Returns all collections when not provided. Currently supported service…（默认 None）"
+   },
+   {
+    "name": "filter",
+    "type": "str",
+    "required": false,
+    "desc": "If specified we only return collections then their collection_name contains the filter string.（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "IRSA集合列表",
+  "orig_params": "servicetype[str] 可选: Service type to list collections for. Returns all collections when not provided. Currently supported service…（默认 None）\nfilter[str] 可选: If specified we only return collections then their collection_name contains the filter string.（默认 None）"
+ },
+ {
+  "name": "astroquery_irsa_dust_get_query_table",
+  "target": "astroquery.irsa_dust.IrsaDust.get_query_table",
+  "desc": "查询天区的尘埃图统计数据。返回类型：astropy.table.Table。主要参数：coordinate、radius、section、timeout。属于「星表查询与数据获取」，底层调用 astroquery.irsa_dust.IrsaDust.get_query_table。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "str",
+    "required": true,
+    "desc": "Can be either the name of an object or a coordinate string If a name, must be resolvable by NED, SIMBAD,…"
+   },
+   {
+    "name": "radius",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The size of the region to include in the dust query, in radian, degree or hour as per format specified by…（默认 None）"
+   },
+   {
+    "name": "section",
+    "type": "str",
+    "required": false,
+    "desc": "When missing, all the sections of the query result are returned. Otherwise only the specified section ('ebv',…（默认 None）"
+   },
+   {
+    "name": "timeout",
+    "type": "int",
+    "required": false,
+    "desc": "Time limit for establishing successful connection with remote server. Defaults to…（默认 30）"
+   },
+   {
+    "name": "url",
+    "type": "str",
+    "required": false,
+    "desc": "Only provided for debugging. Should generally not be assigned. Defaults to…（默认 见文档）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "IRSA尘埃查询表",
+  "orig_params": "coordinate[str] 必填: Can be either the name of an object or a coordinate string If a name, must be resolvable by NED, SIMBAD,…\nradius[astropy.units.Quantity] 可选: The size of the region to include in the dust query, in radian, degree or hour as per format specified by…（默认 None）\nsection[str] 可选: When missing, all the sections of the query result are returned. Otherwise only the specified section ('ebv',…（默认 None）\ntimeout[int] 可选: Time limit for establishing successful connection with remote server. Defaults to…（默认 30）\nurl[str] 可选: Only provided for debugging. Should generally not be assigned. Defaults to…（默认 见文档）"
+ },
+ {
+  "name": "astroquery_esa_sky_query_region_catalogs",
+  "target": "astroquery.esasky.ESASky.query_region_catalogs",
+  "desc": "按天区查询 ESASky 星表。返回类型：astroquery.utils.TableList。主要参数：position、radius、catalogs、row_limit。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.query_region_catalogs。",
+  "params": [
+   {
+    "name": "position",
+    "type": "str",
+    "required": true,
+    "desc": "Can either be a string of the location, eg 'M51', or the coordinates of the object."
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": true,
+    "desc": "The radius of a region."
+   },
+   {
+    "name": "catalogs",
+    "type": "str",
+    "required": false,
+    "desc": "Can be either a specific catalog or a list of catalogs (all catalog names are found in list_catalogs()) or…（默认 'all'）"
+   },
+   {
+    "name": "row_limit",
+    "type": "int",
+    "required": false,
+    "desc": "Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky区域星表查询",
+  "orig_params": "position[str] 必填: Can either be a string of the location, eg 'M51', or the coordinates of the object.\nradius[str] 必填: The radius of a region.\ncatalogs[str] 可选: Can be either a specific catalog or a list of catalogs (all catalog names are found in list_catalogs()) or…（默认 'all'）\nrow_limit[int] 可选: Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）\ncache[bool] 可选: When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）\nverbose[bool] 可选: Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_sky_query_object_maps",
+  "target": "astroquery.esasky.ESASky.query_object_maps",
+  "desc": "按名称查询 ESASky 图像观测。返回类型：astroquery.utils.TableList。主要参数：position、missions、get_query_payload、cache。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.query_object_maps。",
+  "params": [
+   {
+    "name": "position",
+    "type": "str",
+    "required": true,
+    "desc": "Can either be a string of the location, eg 'M51', or the coordinates of the object."
+   },
+   {
+    "name": "missions",
+    "type": "str",
+    "required": false,
+    "desc": "Can be either a specific mission or a list of missions (all mission names are found in list_missions()) or…（默认 'all'）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+   },
+   {
+    "name": "row_limit",
+    "type": "int",
+    "required": false,
+    "desc": "Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky天体观测图查询",
+  "orig_params": "position[str] 必填: Can either be a string of the location, eg 'M51', or the coordinates of the object.\nmissions[str] 可选: Can be either a specific mission or a list of missions (all mission names are found in list_missions()) or…（默认 'all'）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）\ncache[bool] 可选: When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）\nrow_limit[int] 可选: Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）\nverbose[bool] 可选: Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_sky_query_region_maps",
+  "target": "astroquery.esasky.ESASky.query_region_maps",
+  "desc": "按天区查询图像观测。返回类型：astroquery.utils.TableList。主要参数：position、radius、missions、get_query_payload。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.query_region_maps。",
+  "params": [
+   {
+    "name": "position",
+    "type": "str",
+    "required": true,
+    "desc": "Can either be a string of the location, eg 'M51', or the coordinates of the object."
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": true,
+    "desc": "The radius of a region."
+   },
+   {
+    "name": "missions",
+    "type": "str",
+    "required": false,
+    "desc": "Can be either a specific mission or a list of missions (all mission names are found in list_missions()) or…（默认 'all'）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+   },
+   {
+    "name": "row_limit",
+    "type": "int",
+    "required": false,
+    "desc": "Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky区域观测图查询",
+  "orig_params": "position[str] 必填: Can either be a string of the location, eg 'M51', or the coordinates of the object.\nradius[str] 必填: The radius of a region.\nmissions[str] 可选: Can be either a specific mission or a list of missions (all mission names are found in list_missions()) or…（默认 'all'）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）\ncache[bool] 可选: When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）\nrow_limit[int] 可选: Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）\nverbose[bool] 可选: Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_sky_query_object_spectra",
+  "target": "astroquery.esasky.ESASky.query_object_spectra",
+  "desc": "按名称查询 ESASky 光谱。返回类型：astroquery.utils.TableList。主要参数：position、missions、get_query_payload、cache。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.query_object_spectra。",
+  "params": [
+   {
+    "name": "position",
+    "type": "str",
+    "required": true,
+    "desc": "Can either be a string of the location, eg 'M51', or the coordinates of the object."
+   },
+   {
+    "name": "missions",
+    "type": "str",
+    "required": false,
+    "desc": "Can be either a specific mission or a list of missions (all mission names are found in list_spectra()) or…（默认 'all'）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+   },
+   {
+    "name": "row_limit",
+    "type": "int",
+    "required": false,
+    "desc": "Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky天体光谱查询",
+  "orig_params": "position[str] 必填: Can either be a string of the location, eg 'M51', or the coordinates of the object.\nmissions[str] 可选: Can be either a specific mission or a list of missions (all mission names are found in list_spectra()) or…（默认 'all'）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）\ncache[bool] 可选: When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）\nrow_limit[int] 可选: Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）\nverbose[bool] 可选: Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_sky_query_region_spectra",
+  "target": "astroquery.esasky.ESASky.query_region_spectra",
+  "desc": "按天区查询光谱。返回类型：astroquery.utils.TableList。主要参数：position、radius、missions、row_limit。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.query_region_spectra。",
+  "params": [
+   {
+    "name": "position",
+    "type": "str",
+    "required": true,
+    "desc": "Can either be a string of the location, eg 'M51', or the coordinates of the object."
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": true,
+    "desc": "The radius of a region."
+   },
+   {
+    "name": "missions",
+    "type": "str",
+    "required": false,
+    "desc": "Can be either a specific mission or a list of missions (all mission names are found in list_spectra()) or…（默认 'all'）"
+   },
+   {
+    "name": "row_limit",
+    "type": "int",
+    "required": false,
+    "desc": "Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky区域光谱查询",
+  "orig_params": "position[str] 必填: Can either be a string of the location, eg 'M51', or the coordinates of the object.\nradius[str] 必填: The radius of a region.\nmissions[str] 可选: Can be either a specific mission or a list of missions (all mission names are found in list_spectra()) or…（默认 'all'）\nrow_limit[int] 可选: Determines how many rows that will be fetched from the database for each mission. Can be -1 to select maximum…（默认 10000）\nget_query_payload[bool] 可选: When set to True the method returns the HTTP request parameters. Defaults to False.（默认 False）\ncache[bool] 可选: When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）\nverbose[bool] 可选: Defaults to False. If True warnings are displayed when any FITS data or VOTable doesn't conform to its…（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_sky_find_sso",
+  "target": "astroquery.esasky.ESASky.find_sso",
+  "desc": "查找太阳系天体信息。返回类型：list。主要参数：sso_name、sso_type、cache。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.find_sso。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "sso_name",
+    "type": "str",
+    "required": true,
+    "desc": "A name or alias of a solar system object recognized by SsODNet."
+   },
+   {
+    "name": "sso_type",
+    "type": "str",
+    "required": false,
+    "desc": "Can be any of the sso types found in SSO_TYPES. Defaults to 'all'.（默认 'ALL'）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky太阳系天体检索",
+  "orig_params": "sso_name[str] 必填: A name or alias of a solar system object recognized by SsODNet.\nsso_type[str] 可选: Can be any of the sso types found in SSO_TYPES. Defaults to 'all'.（默认 'ALL'）\ncache[bool] 可选: When set to True the method will use a cache located at .astropy/astroquery/cache. Defaults to True.（默认 True）"
+ },
+ {
+  "name": "astroquery_esa_sky_list_spectra",
+  "target": "astroquery.esasky.ESASky.list_spectra",
+  "desc": "列出可用光谱任务。无需额外参数。属于「星表查询与数据获取」，底层调用 astroquery.esasky.ESASky.list_spectra。",
+  "params": [],
+  "domain": "星表查询与数据获取",
+  "cn": "ESASky光谱任务列表",
+  "orig_params": "无参数"
+ },
+ {
+  "name": "astroquery_mpc_query_objects",
+  "target": "astroquery.mpc.MPC.query_objects",
+  "desc": "批量查询 MPC 小天体。主要参数：args、kwargs。属于「星历与轨道」，底层调用 astroquery.mpc.MPC.query_objects。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星历与轨道",
+  "cn": "MPC批量天体查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_mpc_get_observations",
+  "target": "astroquery.mpc.MPC.get_observations",
+  "desc": "获取天体的天体测量观测。主要参数：args、kwargs。属于「星历与轨道」，底层调用 astroquery.mpc.MPC.get_observations。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星历与轨道",
+  "cn": "MPC观测记录",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_skybot_cone_search",
+  "target": "astroquery.imcce.Skybot.cone_search",
+  "desc": "查询指定时刻视场中已知太阳系天体，来自 IMCCE。主要参数：args、kwargs。属于「星历与轨道」，底层调用 astroquery.imcce.Skybot.cone_search。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星历与轨道",
+  "cn": "SkyBoT锥形搜索",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_alma_query_object",
+  "target": "astroquery.alma.Alma.query_object",
+  "desc": "查询 ALMA 档案中对该天体的观测。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.alma.Alma.query_object。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ALMA按天体查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_alma_query",
+  "target": "astroquery.alma.Alma.query",
+  "desc": "用多种 ALMA 参数（频率、分辨率等）检索观测。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.alma.Alma.query。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ALMA条件查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_alma_query_tap",
+  "target": "astroquery.alma.Alma.query_tap",
+  "desc": "向 ALMA TAP 提交 ADQL。主要参数：query、maxrec、uploads。属于「星表查询与数据获取」，底层调用 astroquery.alma.Alma.query_tap。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "query",
+    "type": "object",
+    "required": true,
+    "desc": "query，详见官方 API 文档"
+   },
+   {
+    "name": "maxrec",
+    "type": "object",
+    "required": false,
+    "desc": "maxrec，详见官方 API 文档（默认 None）"
+   },
+   {
+    "name": "uploads",
+    "type": "object",
+    "required": false,
+    "desc": "uploads，详见官方 API 文档（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ALMA TAP查询",
+  "orig_params": "query[object] 必填: query，详见官方 API 文档\nmaxrec[object] 可选: maxrec，详见官方 API 文档（默认 None）\nuploads[object] 可选: uploads，详见官方 API 文档（默认 None）"
+ },
+ {
+  "name": "astroquery_sdss_query_crossid",
+  "target": "astroquery.sdss.SDSS.query_crossid",
+  "desc": "对坐标列表在 SDSS 中做交叉匹配。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.sdss.SDSS.query_crossid。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SDSS交叉证认",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_sdss_query_photoobj",
+  "target": "astroquery.sdss.SDSS.query_photoobj",
+  "desc": "基于 SDSS PhotoObj 参数查询测光对象。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.sdss.SDSS.query_photoobj。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SDSS测光查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_sdss_query_specobj",
+  "target": "astroquery.sdss.SDSS.query_specobj",
+  "desc": "基于 SpecObj 参数查询光谱对象。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.sdss.SDSS.query_specobj。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SDSS光谱对象查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_sky_view_get_image_list",
+  "target": "astroquery.skyview.SkyView.get_image_list",
+  "desc": "获取 SkyView 图像 URL。返回类型：list of image urls。主要参数：position、survey、coordinates、projection。属于「星表查询与数据获取」，底层调用 astroquery.skyview.SkyView.get_image_list。",
+  "params": [
+   {
+    "name": "position",
+    "type": "str",
+    "required": true,
+    "desc": "Determines the center of the field to be retrieved. Both coordinates (also equatorial ones) and object names…"
+   },
+   {
+    "name": "survey",
+    "type": "str",
+    "required": true,
+    "desc": "Select data from one or more surveys. The number of surveys determines the number of resulting file…"
+   },
+   {
+    "name": "coordinates",
+    "type": "str",
+    "required": false,
+    "desc": "Choose among common equatorial, galactic and ecliptic coordinate systems (\"J2000\", \"B1950\", \"Galactic\",…（默认 None）"
+   },
+   {
+    "name": "projection",
+    "type": "str",
+    "required": false,
+    "desc": "Choose among the map projections (the value in parentheses denotes the string to be passed): Gnomonic (Tan),…（默认 None）"
+   },
+   {
+    "name": "pixels",
+    "type": "str",
+    "required": false,
+    "desc": "Selects the pixel dimensions of the image to be produced. A scalar value or a pair of values separated by…（默认 None）"
+   },
+   {
+    "name": "scaling",
+    "type": "str",
+    "required": false,
+    "desc": "Selects the transformation between pixel intensity and intensity on the displayed image. The supported values…（默认 None）"
+   },
+   {
+    "name": "sampler",
+    "type": "str",
+    "required": false,
+    "desc": "The sampling algorithm determines how the data requested will be resampled so that it can be displayed.（默认 None）"
+   },
+   {
+    "name": "resolver",
+    "type": "str",
+    "required": false,
+    "desc": "The name resolver allows to choose a name resolver to use when looking up a name which was passed in the…（默认 None）"
+   },
+   {
+    "name": "deedger",
+    "type": "str",
+    "required": false,
+    "desc": "When multiple input images with different backgrounds are resampled the edges between the images may be…（默认 None）"
+   },
+   {
+    "name": "radius",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The angular radius of the specified field. Overrides the width and height parameters.（默认 None）"
+   },
+   {
+    "name": "width",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The width of the specified field. Must be specified with height.（默认 None）"
+   },
+   {
+    "name": "height",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "The height of the specified field. Must be specified with width.（默认 None）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to True. If set overrides global caching behavior. See caching documentation <astroquery_cache>.（默认 True）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "为 True 时只返回查询载荷，不真正发起请求（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "SkyView图像链接",
+  "orig_params": "position[str] 必填: Determines the center of the field to be retrieved. Both coordinates (also equatorial ones) and object names…\nsurvey[str] 必填: Select data from one or more surveys. The number of surveys determines the number of resulting file…\ncoordinates[str] 可选: Choose among common equatorial, galactic and ecliptic coordinate systems (\"J2000\", \"B1950\", \"Galactic\",…（默认 None）\nprojection[str] 可选: Choose among the map projections (the value in parentheses denotes the string to be passed): Gnomonic (Tan),…（默认 None）\npixels[str] 可选: Selects the pixel dimensions of the image to be produced. A scalar value or a pair of values separated by…（默认 None）\nscaling[str] 可选: Selects the transformation between pixel intensity and intensity on the displayed image. The supported values…（默认 None）\nsampler[str] 可选: The sampling algorithm determines how the data requested will be resampled so that it can be displayed.（默认 None）\nresolver[str] 可选: The name resolver allows to choose a name resolver to use when looking up a name which was passed in the…（默认 None）\ndeedger[str] 可选: When multiple input images with different backgrounds are resampled the edges between the images may be…（默认 None）\nradius[astropy.units.Quantity] 可选: The angular radius of the specified field. Overrides the width and height parameters.（默认 None）\nwidth[astropy.units.Quantity] 可选: The width of the specified field. Must be specified with height.（默认 None）\nheight[astropy.units.Quantity] 可选: The height of the specified field. Must be specified with width.（默认 None）\ncache[bool] 可选: Defaults to True. If set overrides global caching behavior. See caching documentation <astroquery_cache>.（默认 True）\nget_query_payload[bool] 可选: 为 True 时只返回查询载荷，不真正发起请求（默认 False）"
+ },
+ {
+  "name": "astroquery_heasarc_query_tap",
+  "target": "astroquery.heasarc.Heasarc.query_tap",
+  "desc": "HEASARC TAP 服务 ADQL 查询。返回类型：pyvo.dal.TAPResults。主要参数：query、maxrec。属于「星表查询与数据获取」，底层调用 astroquery.heasarc.Heasarc.query_tap。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "ADQL query to be executed"
+   },
+   {
+    "name": "maxrec",
+    "type": "int",
+    "required": false,
+    "desc": "maximum number of records to return（默认 None）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "HEASARC TAP查询",
+  "orig_params": "query[str] 必填: ADQL query to be executed\nmaxrec[int] 可选: maximum number of records to return（默认 None）"
+ },
+ {
+  "name": "astroquery_eso_list_instruments",
+  "target": "astroquery.eso.Eso.list_instruments",
+  "desc": "列出 ESO 仪器。返回类型：list of strings。主要参数：cache。属于「星表查询与数据获取」，底层调用 astroquery.eso.Eso.list_instruments。",
+  "params": [
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "是否缓存下载结果（默认 True）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "ESO仪器列表",
+  "orig_params": "cache[bool] 可选: 是否缓存下载结果（默认 True）"
+ },
+ {
+  "name": "astroquery_jpl_spec_query_lines",
+  "target": "astroquery.jplspec.JPLSpec.query_lines",
+  "desc": "查询 JPL 分子谱线目录。主要参数：args、kwargs。属于「光谱分析」，底层调用 astroquery.jplspec.JPLSpec.query_lines。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "光谱分析",
+  "cn": "JPL谱线查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_cdms_query_lines",
+  "target": "astroquery.linelists.cdms.CDMS.query_lines",
+  "desc": "查询科隆分子谱数据库。主要参数：args、kwargs。属于「光谱分析」，底层调用 astroquery.linelists.cdms.CDMS.query_lines。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "光谱分析",
+  "cn": "CDMS谱线查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_atomic_line_list_query_object",
+  "target": "astroquery.atomic.AtomicLineList.query_object",
+  "desc": "按波长范围和元素查询 NIST 原子谱线列表。返回类型：astropy.table.Table。主要参数：wavelength_range、wavelength_type、wavelength_accuracy、element_spectrum。属于「光谱分析」，底层调用 astroquery.atomic.AtomicLineList.query_object。",
+  "params": [
+   {
+    "name": "wavelength_range",
+    "type": "object",
+    "required": false,
+    "desc": "Wavelength range. Can be done in two ways: supply a lower and upper limit for the region or, supply the…（默认 None）"
+   },
+   {
+    "name": "wavelength_type",
+    "type": "str",
+    "required": false,
+    "desc": "Either 'Air' or 'Vacuum'.（默认 None）"
+   },
+   {
+    "name": "wavelength_accuracy",
+    "type": "str",
+    "required": false,
+    "desc": "All wavelengths in the line list have relative accuracies of 5% or better. The default is to list all lines,…（默认 None）"
+   },
+   {
+    "name": "element_spectrum",
+    "type": "str",
+    "required": false,
+    "desc": "Restrict the search to a range of elements and/or ionization stages. The elements should be entered by their…（默认 None）"
+   },
+   {
+    "name": "minimal_abundance",
+    "type": "str",
+    "required": false,
+    "desc": "Impose a lower limit on the abundances of elements to be considered for possible identifications. Default is…（默认 None）"
+   },
+   {
+    "name": "depl_factor",
+    "type": "str",
+    "required": false,
+    "desc": "For nebular conditions it is not a realistic assumption that the elements have standard cosmic abundances…（默认 None）"
+   },
+   {
+    "name": "lower_level_energy_range",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "Default is to consider all values for the lower/upper level energy to find a possible identification. To…（默认 None）"
+   },
+   {
+    "name": "upper_level_energy_range",
+    "type": "astropy.units.Quantity",
+    "required": false,
+    "desc": "See parameter lower_level_energy_range.（默认 None）"
+   },
+   {
+    "name": "nmax",
+    "type": "int",
+    "required": false,
+    "desc": "Maximum for principal quantum number n. Default is to consider all possible values for the principal quantum…（默认 None）"
+   },
+   {
+    "name": "multiplet",
+    "type": "str",
+    "required": false,
+    "desc": "This option (case sensitive) can be used to find all lines in a specific multiplet within a certain…（默认 None）"
+   },
+   {
+    "name": "transitions",
+    "type": "str",
+    "required": false,
+    "desc": "Possible values are: - 'all': The default, consider all transition types. - 'nebular': Consider only allowed…（默认 None）"
+   },
+   {
+    "name": "show_fine_structure",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, the fine structure components will be included in the output. Refer to [1]_ for more information.（默认 None）"
+   },
+   {
+    "name": "show_auto_ionizing_transitions",
+    "type": "bool",
+    "required": false,
+    "desc": "If True, transitions originating from auto-ionizing levels will be included in the output. In this context,…（默认 None）"
+   },
+   {
+    "name": "output_columns",
+    "type": "tuple",
+    "required": false,
+    "desc": "A Tuple of strings indicating which output columns are retrieved. A subset of ('spec', 'type', 'conf',…（默认 见文档）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "Defaults to True. If set overrides global caching behavior. See caching documentation <astroquery_cache>.（默认 True）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "为 True 时只返回查询载荷，不真正发起请求（默认 False）"
+   }
+  ],
+  "domain": "光谱分析",
+  "cn": "原子谱线表查询",
+  "orig_params": "wavelength_range[object] 可选: Wavelength range. Can be done in two ways: supply a lower and upper limit for the region or, supply the…（默认 None）\nwavelength_type[str] 可选: Either 'Air' or 'Vacuum'.（默认 None）\nwavelength_accuracy[str] 可选: All wavelengths in the line list have relative accuracies of 5% or better. The default is to list all lines,…（默认 None）\nelement_spectrum[str] 可选: Restrict the search to a range of elements and/or ionization stages. The elements should be entered by their…（默认 None）\nminimal_abundance[str] 可选: Impose a lower limit on the abundances of elements to be considered for possible identifications. Default is…（默认 None）\ndepl_factor[str] 可选: For nebular conditions it is not a realistic assumption that the elements have standard cosmic abundances…（默认 None）\nlower_level_energy_range[astropy.units.Quantity] 可选: Default is to consider all values for the lower/upper level energy to find a possible identification. To…（默认 None）\nupper_level_energy_range[astropy.units.Quantity] 可选: See parameter lower_level_energy_range.（默认 None）\nnmax[int] 可选: Maximum for principal quantum number n. Default is to consider all possible values for the principal quantum…（默认 None）\nmultiplet[str] 可选: This option (case sensitive) can be used to find all lines in a specific multiplet within a certain…（默认 None）\ntransitions[str] 可选: Possible values are: - 'all': The default, consider all transition types. - 'nebular': Consider only allowed…（默认 None）\nshow_fine_structure[bool] 可选: If True, the fine structure components will be included in the output. Refer to [1]_ for more information.（默认 None）\nshow_auto_ionizing_transitions[bool] 可选: If True, transitions originating from auto-ionizing levels will be included in the output. In this context,…（默认 None）\noutput_columns[tuple] 可选: A Tuple of strings indicating which output columns are retrieved. A subset of ('spec', 'type', 'conf',…（默认 见文档）\ncache[bool] 可选: Defaults to True. If set overrides global caching behavior. See caching documentation <astroquery_cache>.（默认 True）\nget_query_payload[bool] 可选: 为 True 时只返回查询载荷，不真正发起请求（默认 False）"
+ },
+ {
+  "name": "astroquery_nasa_exoplanet_archive_query_region",
+  "target": "astroquery.nasa_exoplanet_archive.NasaExoplanetArchive.query_region",
+  "desc": "按天区查询系外行星。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.nasa_exoplanet_archive.NasaExoplanetArchive.query_region。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "系外行星区域查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_svo_fps_get_filter_index",
+  "target": "astroquery.svo_fps.SvoFps.get_filter_index",
+  "desc": "按波长范围获取滤光片索引。主要参数：wavelength_eff_min、wavelength_eff_max、kwargs。属于「合成测光与天体光谱模型」，底层调用 astroquery.svo_fps.SvoFps.get_filter_index。",
+  "params": [
+   {
+    "name": "wavelength_eff_min",
+    "type": "object",
+    "required": true,
+    "desc": "Minimum value of Wavelength Effective"
+   },
+   {
+    "name": "wavelength_eff_max",
+    "type": "object",
+    "required": true,
+    "desc": "Maximum value of Wavelength Effective"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "合成测光与天体光谱模型",
+  "cn": "SVO滤光片索引",
+  "orig_params": "wavelength_eff_min[object] 必填: Minimum value of Wavelength Effective\nwavelength_eff_max[object] 必填: Maximum value of Wavelength Effective\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_svo_fps_get_transmission_data",
+  "target": "astroquery.svo_fps.SvoFps.get_transmission_data",
+  "desc": "下载滤光片透过率曲线。主要参数：filter_id、kwargs。属于「合成测光与天体光谱模型」，底层调用 astroquery.svo_fps.SvoFps.get_transmission_data。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "filter_id",
+    "type": "str",
+    "required": true,
+    "desc": "Filter ID in the format SVO specifies it: 'facilty/instrument.filter'. This is returned by get_filter_list…"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "合成测光与天体光谱模型",
+  "cn": "SVO滤光片透过率",
+  "orig_params": "filter_id[str] 必填: Filter ID in the format SVO specifies it: 'facilty/instrument.filter'. This is returned by get_filter_list…\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_cadc_query_region",
+  "target": "astroquery.cadc.Cadc.query_region",
+  "desc": "查询加拿大天文数据中心档案。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.cadc.Cadc.query_region。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "CADC区域查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_cadc_query_name",
+  "target": "astroquery.cadc.Cadc.query_name",
+  "desc": "按天体名称查询 CADC。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.cadc.Cadc.query_name。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "CADC按名称查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_ukidss_query_region",
+  "target": "astroquery.ukidss.Ukidss.query_region",
+  "desc": "查询 UKIDSS 近红外巡天星表。返回类型：astropy.table.Table。主要参数：coordinates、radius、programme_id、database。属于「星表查询与数据获取」，底层调用 astroquery.ukidss.Ukidss.query_region。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "str",
+    "required": true,
+    "desc": "The target around which to search. It may be specified as a string in which case it is resolved using online…"
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）"
+   },
+   {
+    "name": "programme_id",
+    "type": "str",
+    "required": false,
+    "desc": "The survey or programme in which to search for. See list_catalogs.（默认 None）"
+   },
+   {
+    "name": "database",
+    "type": "str",
+    "required": false,
+    "desc": "The WFAU database to use.（默认 None）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "If True then returns the dictionary sent as the HTTP request. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "system",
+    "type": "str",
+    "required": false,
+    "desc": "The system in which to perform the query. Can affect the output data columns.（默认 'J2000'）"
+   },
+   {
+    "name": "attributes",
+    "type": "list",
+    "required": false,
+    "desc": "Attributes to select from the table. See, e.g., http://wsa.roe.ac.uk/crossID_notes.html（默认 ['default']）"
+   },
+   {
+    "name": "constraints",
+    "type": "str",
+    "required": false,
+    "desc": "SQL constraints to the search. Default is empty (no constrains applied).（默认 ''）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "UKIDSS区域查询",
+  "orig_params": "coordinates[str] 必填: The target around which to search. It may be specified as a string in which case it is resolved using online…\nradius[str] 可选: The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）\nprogramme_id[str] 可选: The survey or programme in which to search for. See list_catalogs.（默认 None）\ndatabase[str] 可选: The WFAU database to use.（默认 None）\nverbose[bool] 可选: When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）\nget_query_payload[bool] 可选: If True then returns the dictionary sent as the HTTP request. Defaults to False.（默认 False）\nsystem[str] 可选: The system in which to perform the query. Can affect the output data columns.（默认 'J2000'）\nattributes[list] 可选: Attributes to select from the table. See, e.g., http://wsa.roe.ac.uk/crossID_notes.html（默认 ['default']）\nconstraints[str] 可选: SQL constraints to the search. Default is empty (no constrains applied).（默认 ''）"
+ },
+ {
+  "name": "astroquery_vsa_query_region",
+  "target": "astroquery.vsa.Vsa.query_region",
+  "desc": "查询 VISTA Science Archive 星表。返回类型：astropy.table.Table。主要参数：coordinates、radius、programme_id、database。属于「星表查询与数据获取」，底层调用 astroquery.vsa.Vsa.query_region。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "str",
+    "required": true,
+    "desc": "The target around which to search. It may be specified as a string in which case it is resolved using online…"
+   },
+   {
+    "name": "radius",
+    "type": "str",
+    "required": false,
+    "desc": "The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）"
+   },
+   {
+    "name": "programme_id",
+    "type": "str",
+    "required": false,
+    "desc": "The survey or programme in which to search for. See list_catalogs.（默认 None）"
+   },
+   {
+    "name": "database",
+    "type": "str",
+    "required": false,
+    "desc": "The WFAU database to use.（默认 None）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）"
+   },
+   {
+    "name": "get_query_payload",
+    "type": "bool",
+    "required": false,
+    "desc": "If True then returns the dictionary sent as the HTTP request. Defaults to False.（默认 False）"
+   },
+   {
+    "name": "system",
+    "type": "str",
+    "required": false,
+    "desc": "The system in which to perform the query. Can affect the output data columns.（默认 'J2000'）"
+   },
+   {
+    "name": "attributes",
+    "type": "list",
+    "required": false,
+    "desc": "Attributes to select from the table. See, e.g., http://wsa.roe.ac.uk/crossID_notes.html（默认 ['default']）"
+   },
+   {
+    "name": "constraints",
+    "type": "str",
+    "required": false,
+    "desc": "SQL constraints to the search. Default is empty (no constrains applied).（默认 ''）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "VISTA区域查询",
+  "orig_params": "coordinates[str] 必填: The target around which to search. It may be specified as a string in which case it is resolved using online…\nradius[str] 可选: The string must be parsable by ~astropy.coordinates.Angle. The appropriate ~astropy.units.Quantity object…（默认 库内部默认）\nprogramme_id[str] 可选: The survey or programme in which to search for. See list_catalogs.（默认 None）\ndatabase[str] 可选: The WFAU database to use.（默认 None）\nverbose[bool] 可选: When set to True displays warnings if the returned VOTable does not conform to the standard. Defaults to…（默认 False）\nget_query_payload[bool] 可选: If True then returns the dictionary sent as the HTTP request. Defaults to False.（默认 False）\nsystem[str] 可选: The system in which to perform the query. Can affect the output data columns.（默认 'J2000'）\nattributes[list] 可选: Attributes to select from the table. See, e.g., http://wsa.roe.ac.uk/crossID_notes.html（默认 ['default']）\nconstraints[str] 可选: SQL constraints to the search. Default is empty (no constrains applied).（默认 ''）"
+ },
+ {
+  "name": "astroquery_esa_hubble_cone_search",
+  "target": "astroquery.esa.hubble.ESAHubble.cone_search",
+  "desc": "在 ESA Hubble 档案中做锥形搜索。主要参数：coordinates、radius、filename、output_format。属于「星表查询与数据获取」，底层调用 astroquery.esa.hubble.ESAHubble.cone_search。",
+  "params": [
+   {
+    "name": "coordinates",
+    "type": "object",
+    "required": true,
+    "desc": "coordinates of the center in the cone search"
+   },
+   {
+    "name": "radius",
+    "type": "float",
+    "required": true,
+    "desc": "radius in arcmin (int, float) or quantity of the cone_search"
+   },
+   {
+    "name": "filename",
+    "type": "str",
+    "required": false,
+    "desc": "Path and name of the file to store the results. If the filename is defined, the file will be automatically…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format. Options are: 'votable': str, binary VOTable format 'csv': str, comma-separated values format（默认 'votable'）"
+   },
+   {
+    "name": "cache",
+    "type": "bool",
+    "required": false,
+    "desc": "optional, default 'True' Flag to save the results in the local cache（默认 True）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "HST档案锥形搜索",
+  "orig_params": "coordinates[object] 必填: coordinates of the center in the cone search\nradius[float] 必填: radius in arcmin (int, float) or quantity of the cone_search\nfilename[str] 可选: Path and name of the file to store the results. If the filename is defined, the file will be automatically…（默认 None）\noutput_format[str] 可选: results format. Options are: 'votable': str, binary VOTable format 'csv': str, comma-separated values format（默认 'votable'）\ncache[bool] 可选: optional, default 'True' Flag to save the results in the local cache（默认 True）\nasync_job[bool] 可选: executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）\nverbose[bool] 可选: flag to display information about the process（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_hubble_query_target",
+  "target": "astroquery.esa.hubble.ESAHubble.query_target",
+  "desc": "按目标名称在 eHST 查询观测。主要参数：name、filename、output_format、verbose。属于「星表查询与数据获取」，底层调用 astroquery.esa.hubble.ESAHubble.query_target。",
+  "params": [
+   {
+    "name": "name",
+    "type": "str",
+    "required": true,
+    "desc": "target name to be requested, mandatory"
+   },
+   {
+    "name": "filename",
+    "type": "str",
+    "required": false,
+    "desc": "file name to be used to store the metadata, optional, default None（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "optional, default 'votable' output format of the query（默认 'votable'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "optional, default 'False' Flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）"
+   },
+   {
+    "name": "radius",
+    "type": "int",
+    "required": false,
+    "desc": "optional, default 7 radius in arcmin (int, float) or quantity of the cone_search（默认 7）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "HST按目标查询",
+  "orig_params": "name[str] 必填: target name to be requested, mandatory\nfilename[str] 可选: file name to be used to store the metadata, optional, default None（默认 None）\noutput_format[str] 可选: optional, default 'votable' output format of the query（默认 'votable'）\nverbose[bool] 可选: optional, default 'False' Flag to display information about the process（默认 False）\nasync_job[bool] 可选: executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）\nradius[int] 可选: optional, default 7 radius in arcmin (int, float) or quantity of the cone_search（默认 7）"
+ },
+ {
+  "name": "astroquery_esa_hubble_query_criteria",
+  "target": "astroquery.esa.hubble.ESAHubble.query_criteria",
+  "desc": "按多条件查询 eHST。主要参数：calibration_level、data_product_type、intent、obs_collection。属于「星表查询与数据获取」，底层调用 astroquery.esa.hubble.ESAHubble.query_criteria。",
+  "params": [
+   {
+    "name": "calibration_level",
+    "type": "str",
+    "required": false,
+    "desc": "The identifier of the data reduction/processing applied to the data. RAW (1), CALIBRATED (2), PRODUCT (3) or…（默认 None）"
+   },
+   {
+    "name": "data_product_type",
+    "type": "str",
+    "required": false,
+    "desc": "High level description of the product. image, spectrum or timeseries.（默认 None）"
+   },
+   {
+    "name": "intent",
+    "type": "str",
+    "required": false,
+    "desc": "The intent of the original observer in acquiring this observation. SCIENCE or CALIBRATION（默认 None）"
+   },
+   {
+    "name": "obs_collection",
+    "type": "object",
+    "required": false,
+    "desc": "List of collections that are available in eHST catalogue. HLA, HST, HAP（默认 None）"
+   },
+   {
+    "name": "instrument_name",
+    "type": "str",
+    "required": false,
+    "desc": "Name(s) of the instrument(s) used to generate the dataset（默认 None）"
+   },
+   {
+    "name": "filters",
+    "type": "object",
+    "required": false,
+    "desc": "Name(s) of the filter(s) used to generate the dataset（默认 None）"
+   },
+   {
+    "name": "proposal",
+    "type": "int",
+    "required": false,
+    "desc": "Proposal ID associated to the observations（默认 None）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 True）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format（默认 'votable'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "get_query",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to return the query associated to the criteria as the result of this function.（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "HST条件查询",
+  "orig_params": "calibration_level[str] 可选: The identifier of the data reduction/processing applied to the data. RAW (1), CALIBRATED (2), PRODUCT (3) or…（默认 None）\ndata_product_type[str] 可选: High level description of the product. image, spectrum or timeseries.（默认 None）\nintent[str] 可选: The intent of the original observer in acquiring this observation. SCIENCE or CALIBRATION（默认 None）\nobs_collection[object] 可选: List of collections that are available in eHST catalogue. HLA, HST, HAP（默认 None）\ninstrument_name[str] 可选: Name(s) of the instrument(s) used to generate the dataset（默认 None）\nfilters[object] 可选: Name(s) of the filter(s) used to generate the dataset（默认 None）\nproposal[int] 可选: Proposal ID associated to the observations（默认 None）\nasync_job[bool] 可选: executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 True）\noutput_file[str] 可选: file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）\noutput_format[str] 可选: results format（默认 'votable'）\nverbose[bool] 可选: flag to display information about the process（默认 False）\nget_query[bool] 可选: flag to return the query associated to the criteria as the result of this function.（默认 False）"
+ },
+ {
+  "name": "astroquery_esa_hubble_query_tap",
+  "target": "astroquery.esa.hubble.ESAHubble.query_tap",
+  "desc": "eHST TAP ADQL 查询。主要参数：query、async_job、output_file、output_format。属于「星表查询与数据获取」，底层调用 astroquery.esa.hubble.ESAHubble.query_tap。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "query (adql) to be executed"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format（默认 'votable'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "HST TAP查询",
+  "orig_params": "query[str] 必填: query (adql) to be executed\nasync_job[bool] 可选: executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）\noutput_file[str] 可选: file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）\noutput_format[str] 可选: results format（默认 'votable'）\nverbose[bool] 可选: flag to display information about the process（默认 False）"
+ },
+ {
+  "name": "astroquery_jwst_query_target",
+  "target": "astroquery.esa.jwst.Jwst.query_target",
+  "desc": "在 ESA JWST 档案中按名称查询。主要参数：target_name、target_resolver、radius、width。属于「星表查询与数据获取」，底层调用 astroquery.esa.jwst.Jwst.query_target。",
+  "params": [
+   {
+    "name": "target_name",
+    "type": "str",
+    "required": true,
+    "desc": "name of the target that will be used as center point"
+   },
+   {
+    "name": "target_resolver",
+    "type": "str",
+    "required": false,
+    "desc": "resolver used to associate the target name with its coordinates. The ALL option evaluates a \"SIMBAD then NED…（默认 'ALL'）"
+   },
+   {
+    "name": "radius",
+    "type": "object",
+    "required": false,
+    "desc": "provided. radius (deg)（默认 None）"
+   },
+   {
+    "name": "width",
+    "type": "object",
+    "required": false,
+    "desc": "box width（默认 None）"
+   },
+   {
+    "name": "height",
+    "type": "object",
+    "required": false,
+    "desc": "box height（默认 None）"
+   },
+   {
+    "name": "observation_id",
+    "type": "str",
+    "required": false,
+    "desc": "get the observation given by its ID.（默认 None）"
+   },
+   {
+    "name": "cal_level",
+    "type": "str",
+    "required": false,
+    "desc": "get the planes with the given calibration level. Options are: 'Top': str, only the planes with the highest…（默认 'Top'）"
+   },
+   {
+    "name": "prod_type",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations providing the given product type. Options are: 'image','cube','measurements','spectrum':…（默认 None）"
+   },
+   {
+    "name": "instrument_name",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations corresponding to the given instrument name. Options are: 'NIRISS', 'NIRSPEC', 'NIRCAM',…（默认 None）"
+   },
+   {
+    "name": "filter_name",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations made with the given filter.（默认 None）"
+   },
+   {
+    "name": "proposal_id",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations from the given proposal ID.（默认 None）"
+   },
+   {
+    "name": "only_public",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to show only metadata corresponding to public observations（默认 False）"
+   },
+   {
+    "name": "show_all_columns",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to show all available columns in the output. Default behaviour is to show the most representative…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "JWST按目标查询",
+  "orig_params": "target_name[str] 必填: name of the target that will be used as center point\ntarget_resolver[str] 可选: resolver used to associate the target name with its coordinates. The ALL option evaluates a \"SIMBAD then NED…（默认 'ALL'）\nradius[object] 可选: provided. radius (deg)（默认 None）\nwidth[object] 可选: box width（默认 None）\nheight[object] 可选: box height（默认 None）\nobservation_id[str] 可选: get the observation given by its ID.（默认 None）\ncal_level[str] 可选: get the planes with the given calibration level. Options are: 'Top': str, only the planes with the highest…（默认 'Top'）\nprod_type[str] 可选: get the observations providing the given product type. Options are: 'image','cube','measurements','spectrum':…（默认 None）\ninstrument_name[str] 可选: get the observations corresponding to the given instrument name. Options are: 'NIRISS', 'NIRSPEC', 'NIRCAM',…（默认 None）\nfilter_name[str] 可选: get the observations made with the given filter.（默认 None）\nproposal_id[str] 可选: get the observations from the given proposal ID.（默认 None）\nonly_public[bool] 可选: flag to show only metadata corresponding to public observations（默认 False）\nshow_all_columns[bool] 可选: flag to show all available columns in the output. Default behaviour is to show the most representative…（默认 False）\nasync_job[bool] 可选: executes the query (job) in asynchronous/synchronous mode (default synchronous)（默认 False）\nverbose[bool] 可选: flag to display information about the process（默认 False）"
+ },
+ {
+  "name": "astroquery_jwst_cone_search",
+  "target": "astroquery.esa.jwst.Jwst.cone_search",
+  "desc": "JWST 档案锥形搜索。主要参数：coordinate、radius、observation_id、cal_level。属于「星表查询与数据获取」，底层调用 astroquery.esa.jwst.Jwst.cone_search。",
+  "params": [
+   {
+    "name": "coordinate",
+    "type": "object",
+    "required": true,
+    "desc": "coordinates center point"
+   },
+   {
+    "name": "radius",
+    "type": "object",
+    "required": true,
+    "desc": "radius"
+   },
+   {
+    "name": "observation_id",
+    "type": "str",
+    "required": false,
+    "desc": "get the observation given by its ID.（默认 None）"
+   },
+   {
+    "name": "cal_level",
+    "type": "str",
+    "required": false,
+    "desc": "get the planes with the given calibration level. Options are: 'Top': str, only the planes with the highest…（默认 'Top'）"
+   },
+   {
+    "name": "prod_type",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations providing the given product type. Options are: 'image','cube','measurements','spectrum':…（默认 None）"
+   },
+   {
+    "name": "instrument_name",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations corresponding to the given instrument name. Options are: 'NIRISS', 'NIRSPEC', 'NIRCAM',…（默认 None）"
+   },
+   {
+    "name": "filter_name",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations made with the given filter.（默认 None）"
+   },
+   {
+    "name": "proposal_id",
+    "type": "str",
+    "required": false,
+    "desc": "get the observations from the given proposal ID.（默认 None）"
+   },
+   {
+    "name": "only_public",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to show only metadata corresponding to public observations（默认 False）"
+   },
+   {
+    "name": "show_all_columns",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to show all available columns in the output. Default behaviour is to show the most representative…（默认 False）"
+   },
+   {
+    "name": "async_job",
+    "type": "bool",
+    "required": false,
+    "desc": "executes the job in asynchronous/synchronous mode (default synchronous)（默认 False）"
+   },
+   {
+    "name": "background",
+    "type": "bool",
+    "required": false,
+    "desc": "when the job is executed in asynchronous mode, this flag specifies whether the execution will wait until…（默认 False）"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "results format. Options are: 'votable': str, binary VOTable format 'csv': str, comma-separated values format…（默认 'votable'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   },
+   {
+    "name": "dump_to_file",
+    "type": "bool",
+    "required": false,
+    "desc": "if True, the results are saved in a file instead of using memory（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "JWST锥形搜索",
+  "orig_params": "coordinate[object] 必填: coordinates center point\nradius[object] 必填: radius\nobservation_id[str] 可选: get the observation given by its ID.（默认 None）\ncal_level[str] 可选: get the planes with the given calibration level. Options are: 'Top': str, only the planes with the highest…（默认 'Top'）\nprod_type[str] 可选: get the observations providing the given product type. Options are: 'image','cube','measurements','spectrum':…（默认 None）\ninstrument_name[str] 可选: get the observations corresponding to the given instrument name. Options are: 'NIRISS', 'NIRSPEC', 'NIRCAM',…（默认 None）\nfilter_name[str] 可选: get the observations made with the given filter.（默认 None）\nproposal_id[str] 可选: get the observations from the given proposal ID.（默认 None）\nonly_public[bool] 可选: flag to show only metadata corresponding to public observations（默认 False）\nshow_all_columns[bool] 可选: flag to show all available columns in the output. Default behaviour is to show the most representative…（默认 False）\nasync_job[bool] 可选: executes the job in asynchronous/synchronous mode (default synchronous)（默认 False）\nbackground[bool] 可选: when the job is executed in asynchronous mode, this flag specifies whether the execution will wait until…（默认 False）\noutput_file[str] 可选: file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）\noutput_format[str] 可选: results format. Options are: 'votable': str, binary VOTable format 'csv': str, comma-separated values format…（默认 'votable'）\nverbose[bool] 可选: flag to display information about the process（默认 False）\ndump_to_file[bool] 可选: if True, the results are saved in a file instead of using memory（默认 False）"
+ },
+ {
+  "name": "astroquery_xmm_newton_query_xsa_tap",
+  "target": "astroquery.esa.xmm_newton.XMMNewton.query_xsa_tap",
+  "desc": "XMM-Newton 科学档案 ADQL 查询。主要参数：query、output_file、output_format、verbose。属于「星表查询与数据获取」，底层调用 astroquery.esa.xmm_newton.XMMNewton.query_xsa_tap。",
+  "params": [
+   {
+    "name": "query",
+    "type": "str",
+    "required": true,
+    "desc": "query (adql) to be executed"
+   },
+   {
+    "name": "output_file",
+    "type": "str",
+    "required": false,
+    "desc": "file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）"
+   },
+   {
+    "name": "output_format",
+    "type": "str",
+    "required": false,
+    "desc": "possible values 'votable' or 'csv'（默认 'votable'）"
+   },
+   {
+    "name": "verbose",
+    "type": "bool",
+    "required": false,
+    "desc": "flag to display information about the process（默认 False）"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "XMM-Newton TAP查询",
+  "orig_params": "query[str] 必填: query (adql) to be executed\noutput_file[str] 可选: file name where the results are saved if dumpToFile is True. If this parameter is not provided, the jobid is…（默认 None）\noutput_format[str] 可选: possible values 'votable' or 'csv'（默认 'votable'）\nverbose[bool] 可选: flag to display information about the process（默认 False）"
+ },
+ {
+  "name": "astroquery_casda_query_region",
+  "target": "astroquery.casda.Casda.query_region",
+  "desc": "查询 ASKAP CASDA 档案。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.casda.Casda.query_region。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "CASDA区域查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroquery_fermi_lat_query_object",
+  "target": "astroquery.fermi.FermiLAT.query_object",
+  "desc": "提交 Fermi-LAT 光子数据查询。主要参数：args、kwargs。属于「星表查询与数据获取」，底层调用 astroquery.fermi.FermiLAT.query_object。该接口依赖远程在线服务，调用需要联网，结果受服务端限速与可用性影响。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "星表查询与数据获取",
+  "cn": "Fermi-LAT查询",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
  }
 ]

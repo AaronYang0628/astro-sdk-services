@@ -66,4 +66,16 @@ SELECT = [
  "moon_illumination","moon_phase_angle","time_grid_from_range",
  "eclipsing_system_create","eclipsing_system_next_primary_eclipse_time",
  "observing_block_create","observing_block_from_exposures","schedule_create","transitioner_create",
+]# --- round 3 expansion ---
+ARGS.update({
+ "phase_constraint_create": {"periodic_event": SELF["astroplan.EclipsingSystem"], "min": 0.4, "max": 0.6},
+ "sequential_scheduler_create": {"constraints": cons, "observer": obs, "transitioner": C("astroplan.Transitioner", slew_rate=Q(1, "deg/s"))},
+ "priority_scheduler_create": {"constraints": cons, "observer": obs, "transitioner": C("astroplan.Transitioner", slew_rate=Q(1, "deg/s"))},
+})
+
+# round 3 expansion (smoke-tested; dropped: none)
+SELECT += [
+ "phase_constraint_create",
+ "sequential_scheduler_create",
+ "priority_scheduler_create",
 ]

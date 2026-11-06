@@ -1440,5 +1440,77 @@
   "domain": "望远镜观测规划",
   "cn": "转场时间模型",
   "orig_params": "slew_rate[object] 可选: 转台转速（默认 None）\ninstrument_reconfig_times[object] 可选: 仪器重配置时间字典（默认 None）"
+ },
+ {
+  "name": "astroplan_phase_constraint_create",
+  "target": "astroplan.PhaseConstraint",
+  "desc": "限定周期事件相位范围。主要参数：periodic_event、min、max。属于「望远镜观测规划」，底层调用 astroplan.PhaseConstraint。通常作为后续求解、拟合或绘图步骤的输入准备。",
+  "params": [
+   {
+    "name": "periodic_event",
+    "type": "object",
+    "required": true,
+    "desc": "周期性事件 PeriodicEvent"
+   },
+   {
+    "name": "min",
+    "type": "object",
+    "required": false,
+    "desc": "最小值（Quantity）（默认 None）"
+   },
+   {
+    "name": "max",
+    "type": "object",
+    "required": false,
+    "desc": "最大值（Quantity）（默认 None）"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "相位约束",
+  "orig_params": "periodic_event[object] 必填: 周期性事件 PeriodicEvent\nmin[object] 可选: 最小值（Quantity）（默认 None）\nmax[object] 可选: 最大值（Quantity）（默认 None）"
+ },
+ {
+  "name": "astroplan_sequential_scheduler_create",
+  "target": "astroplan.SequentialScheduler",
+  "desc": "按给定顺序贪心安排观测块，返回 Schedule。主要参数：args、kwargs。属于「望远镜观测规划」，底层调用 astroplan.SequentialScheduler。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "顺序调度器",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
+ },
+ {
+  "name": "astroplan_priority_scheduler_create",
+  "target": "astroplan.PriorityScheduler",
+  "desc": "按优先级与评分调度观测块。主要参数：args、kwargs。属于「望远镜观测规划」，底层调用 astroplan.PriorityScheduler。计算过程在本地完成，输入输出均可直接衔接 numpy/astropy 数据结构。",
+  "params": [
+   {
+    "name": "args",
+    "type": "tuple",
+    "required": false,
+    "desc": "额外位置参数"
+   },
+   {
+    "name": "kwargs",
+    "type": "dict",
+    "required": false,
+    "desc": "额外关键字参数，原样传递给底层函数"
+   }
+  ],
+  "domain": "望远镜观测规划",
+  "cn": "优先级调度器",
+  "orig_params": "args[tuple] 可选: 额外位置参数\nkwargs[dict] 可选: 额外关键字参数，原样传递给底层函数"
  }
 ]
